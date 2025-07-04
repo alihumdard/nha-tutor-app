@@ -43,19 +43,19 @@
             <input type="checkbox" class="mr-2 rounded border-gray-300" />
             Remember me
           </label>
-          <a href="#" class="text-sm text-orange-600 hover:underline">Forgot Password?</a>
+          <a href="#" class="text-sm text-green-600 hover:underline">Forgot Password?</a>
         </div>
 
         <button
           type="submit"
-          class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition duration-200"
+          class="w-full bg-green-600 hover:bg-green-600 text-white font-semibold py-2 rounded-md transition duration-200"
         >
           Sign In
         </button>
 
         <p class="text-center text-sm text-gray-600 mt-6">
           Don't have an account?
-          <a href="#" class="text-orange-600 hover:underline font-medium">Register</a>
+          <a href="#" class="text-green-600 hover:underline font-medium">Register</a>
         </p>
       </form>
     </div>

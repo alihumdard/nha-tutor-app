@@ -22,3 +22,13 @@ Route::get('/login', function () {
 Route::get('/signup', function () {
     return view('pages.auth.Signup');
 });
+
+Route::get('/Moduledetail', function () {
+    return view('pages.Moduledetail');
+});
+Route::get('/terms&Condition', function () {
+    return view('pages.Terms&Condition');
+});
+Route::get('/homedetail', function () {
+    return view('pages.homedetail');
+});

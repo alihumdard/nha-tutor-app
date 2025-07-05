@@ -16,3 +16,19 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('pages.landingpage');
 });
+Route::get('/login', function () {
+    return view('pages.auth.login');
+});
+Route::get('/signup', function () {
+    return view('pages.auth.Signup');
+});
+
+Route::get('/Moduledetail', function () {
+    return view('pages.Moduledetail');
+});
+Route::get('/terms&Condition', function () {
+    return view('pages.Terms&Condition');
+});
+Route::get('/homedetail', function () {
+    return view('pages.homedetail');
+});

@@ -32,3 +32,11 @@ Route::get('/terms&Condition', function () {
 Route::get('/homedetail', function () {
     return view('pages.homedetail');
 });
+
+Route::get('/New_homedetail', function () {
+    return view('pages.New_homedetail');
+});
+
+Route::get('/New_Moduledetail', function () {
+    return view('pages.New_Moduledetail');
+});

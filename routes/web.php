@@ -1,42 +1,44 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
+// Change the view path from 'welcome' to 'pages.welcome'
 Route::get('/', function () {
-    return view('pages.landingpage');
-});
-Route::get('/login', function () {
-    return view('pages.auth.login');
-});
-Route::get('/signup', function () {
-    return view('pages.auth.Signup');
-});
+    return view('pages.welcome'); // This line is updated
+})->name('home');
 
-Route::get('/Moduledetail', function () {
-    return view('pages.Moduledetail');
-});
-Route::get('/terms&Condition', function () {
-    return view('pages.Terms&Condition');
-});
-Route::get('/homedetail', function () {
-    return view('pages.homedetail');
-});
+// Auth routes
+Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('login', [AuthController::class, 'login']);
+Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
+Route::post('register', [AuthController::class, 'register']);
+Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/New_homedetail', function () {
-    return view('pages.New_homedetail');
-});
+// Forgot Password routes
+Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('verify-otp', [ForgotPasswordController::class, 'showOtpForm'])->name('password.otp.form');
+Route::post('verify-otp', [ForgotPasswordController::class, 'verifyOtp'])->name('password.otp.verify');
+Route::get('reset-password', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset.form');
+Route::post('reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update');
 
-Route::get('/New_Moduledetail', function () {
-    return view('pages.New_Moduledetail');
+
+// Authenticated user routes
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/quiz', function() {
+        return view('pages.quiz');
+    })->name('quiz');
+
+    // ++ NEW: Route for the terms & conditions page ++
+    Route::get('/terms-and-conditions', function() {
+        return view('pages.terms_condition');
+    })->name('terms');
+
+    Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('dashboard');
+    });
 });

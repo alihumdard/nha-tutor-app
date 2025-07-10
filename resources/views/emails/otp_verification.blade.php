@@ -91,7 +91,7 @@
             <div><i class="fas fa-lock otp-lock"></i></div>
             <div class="welcome-section">
                 <div class="app-name">
-                    {{ config('app.name') }}
+                    NHA TUTOR
                 </div>
                 <div class="welcome-text">
                     Thanks for using our service!
@@ -110,7 +110,7 @@
         </div>
         <div class="footer-text">
             <p>If you did not request this OTP, please ignore this email.</p>
-            <p>Thank you,<br>The {{ config('app.name') }} Team</p>
+            <p>Thank you,<br>The NHA Tutor Team</p>
         </div>
     </div>
 </body>

@@ -515,19 +515,22 @@
         NHA Tutor Pro
       </div>
       <nav>
-        <a
-          href="/"
-          style="
-            padding: 8px 16px;
-            font-size: 20px;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-          "
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit"
+            style="
+                padding: 8px 16px;
+                font-size: 20px;
+                border: none;
+                cursor: pointer;
+                font-weight: 500;
+                background-color: transparent; /* Makes the button look like a link */
+            "
         >
-          Log out
-        </a>
-      </nav>
+            Log out
+        </button>
+    </form>
+</nav>
     </header>
 
     <div class="min-h-screen w-full flex flex-col">
@@ -2386,7 +2389,7 @@
           <!-- Bottom Navigation -->
           <div class="bottom-nav">
             <div class="nav-items">
-              <a href="/" class="nav-link group">
+              <a href="{{ route('home') }}" class="nav-link group">
                 <div class="icon-wrapper">
                   <svg
                     class="icon blue"
@@ -2405,7 +2408,7 @@
                 <span class="label">Home</span>
               </a>
 
-              <a href="{{ route('dashboard') }}" class="nav-link group">
+              <a href="{{ route('quiz') }}" class="nav-link group">
                 <div class="icon-wrapper">
                   <svg
                     class="icon indigo"

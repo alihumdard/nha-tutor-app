@@ -476,7 +476,7 @@
           <span class="label">Home</span>
         </a>
 
-        <a href="/quiz.html" class="nav-link group">
+        <a href="{{ route('quiz') }}" class="nav-link group">
           <div class="icon-wrapper">
             <svg
               class="icon indigo"
@@ -495,7 +495,7 @@
           <span class="label">Modules</span>
         </a>
 
-        <a href="/quiz.html" class="nav-link group">
+        <a href="{{ route('quiz') }}" class="nav-link group">
           <div class="icon-wrapper">
             <svg
               class="icon purple"
@@ -514,7 +514,7 @@
           <span class="label">Quizzes</span>
         </a>
 
-        <a href="/dashboard.html" class="nav-link group">
+        <a href="{{ route('dashboard') }}" class="nav-link group">
           <div class="icon-wrapper">
             <svg
               class="icon green"

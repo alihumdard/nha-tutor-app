@@ -1,13 +1,20 @@
 <?php
 
+use App\Http\Controllers\Admin\CrmController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\DashboardController;
+Route::get('/', function () {
+    $content = \App\Models\HomepageContent::first();
 
-  Route::get('/', function () {
-        return view('pages.welcome');
-    })->name('home');
+    if (!$content) {
+        $content = new \App\Models\HomepageContent();
+    }
+
+    return view('pages.welcome', compact('content'));
+})->name('home');
+
 // Routes only for guests (not logged in)
 Route::middleware('guest')->group(function () {
   
@@ -40,7 +47,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/quiz', fn() => view('pages.quiz'))->name('quiz');
     Route::get('/terms-and-conditions', fn() => view('pages.terms_condition'))->name('terms');
-
+    Route::get('/manage/homepage', [CrmController::class, 'edit'])->name('admin.crm.edit');
+    Route::post('/manage/homepage', [CrmController::class, 'update'])->name('admin.crm.update');
     Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('dashboard');
     });

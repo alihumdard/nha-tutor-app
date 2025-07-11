@@ -64,9 +64,5 @@ Route::middleware('auth')->group(function () {
         return "Payment successful!";
     })->name('subscribe.success');
 
-    Route::get('/subscribe/cancel', function () {
-        return "Payment canceled.";
-    })->name('subscribe.cancel');
-
     Route::get('/subscribe/{priceId}', [PaymentController::class, 'subscribe'])->name('subscribe');
 });

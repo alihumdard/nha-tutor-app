@@ -35,6 +35,7 @@ class CrmController extends Controller
             'plans.*.description' => 'nullable|string',
             'plans.*.details' => 'nullable|array',
             'plans.*.price' => 'nullable|string',
+            'plans.*.stripe_price_id' => 'nullable|string', // Add this line
             'why_choose_us_main_heading' => 'nullable|string',
             'why_choose_us_items' => 'nullable|array',
         ]);
@@ -58,6 +59,7 @@ class CrmController extends Controller
                 $newPlan['description'] = $planData['description'];
                 $newPlan['details'] = isset($planData['details']) ? array_filter($planData['details']) : [];
                 $newPlan['price'] = $planData['price'];
+                $newPlan['stripe_price_id'] = $planData['stripe_price_id'] ?? null; // 2. ADD THIS LINE TO SAVE THE ID
                 $newPlansData[] = $newPlan;
             }
         }

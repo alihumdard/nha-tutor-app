@@ -6,13 +6,15 @@
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f8f9fa; padding: 2rem; }
         .container { max-width: 1200px; margin: auto; background: #fff; padding: 2.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        h1, h2, h3, h4 { color: #343a40; }
-        h1, h2 { border-bottom: 2px solid #dee2e6; padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #dee2e6; padding-bottom: 0.5rem; margin-bottom: 1.5rem;}
+        h1, h2, h3, h4 { color: #343a40; margin: 0; }
+        h2 { border-bottom: 2px solid #dee2e6; padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
         .form-group { margin-bottom: 1.5rem; }
         label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: #495057; }
         input[type="text"], input[type="file"], textarea { width: 100%; padding: 0.75rem; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; transition: border-color 0.2s; }
         .btn { padding: 0.5rem 1rem; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; font-size: 0.9rem; font-weight: 500; }
         .btn-primary { background-color: #007bff; color: white; padding: 0.75rem 1.5rem; font-size: 1rem;}
+        .btn-secondary { background-color: #6c757d; color: white; }
         .btn-danger { background-color: #dc3545; color: white; }
         .btn-success { background-color: #28a745; color: white; }
         .item-group { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; }
@@ -23,7 +25,10 @@
 </head>
 <body>
     <div class="container">
-        <h1>Manage Homepage Content</h1>
+        <div class="page-header">
+            <h1>Manage Homepage Content</h1>
+            <button type="button" class="btn btn-secondary" onclick="history.back()">Back</button>
+        </div>
 
         <form action="{{ route('admin.crm.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -65,6 +70,16 @@
                             <button type="button" class="btn btn-success" onclick="addPlanDetail(this, {{ $index }})">Add Detail</button>
                         </div>
                         <div class="form-group"><label>Plan Price</label><input type="text" name="plans[{{$index}}][price]" value="{{ $plan['price'] ?? '' }}"></div>
+                        <div class="form-group">
+                            <label>Stripe Price ID</label>
+                            <input 
+                                type="text" 
+                                name="plans[{{ $index }}][stripe_price_id]" 
+                                id="plan_{{ $index }}_stripe_id"
+                                value="{{ $plan['stripe_price_id'] ?? '' }}"
+                                placeholder="price_..."
+                            >
+                        </div>
                     </div>
                 @endforeach
             </div>
@@ -112,6 +127,7 @@
                         <button type="button" class="btn btn-success" onclick="addPlanDetail(this, ${newPlanIndex})">Add Detail</button>
                     </div>
                     <div class="form-group"><label>Plan Price</label><input type="text" name="plans[${newPlanIndex}][price]"></div>
+                    <div class="form-group"><label>Stripe Price ID</label><input type="text" name="plans[${newPlanIndex}][stripe_price_id]" placeholder="price_..."></div>
                 </div>`;
             container.insertAdjacentHTML('beforeend', html);
         }

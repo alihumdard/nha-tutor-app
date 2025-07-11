@@ -474,6 +474,7 @@
       color: #f97316;
     }
 
+    
     /* Responsive Gaps */
     @media (max-width: 540px) {
       body {
@@ -522,17 +523,22 @@
         padding: 12px 24px;
         background-color: #f9fafb;
       ">
-    <a
-      href="/"
-      style="
-          font-size: 20px;
-          border: none;
-          cursor: pointer;
-          font-weight: 400;
-          color: gray;
-        ">
-      Unsubscribe
+    @auth
+    @if(auth()->user()->subscribed('default'))
+    <form method="POST" action="{{ route('subscribe.cancel') }}">
+      @csrf
+      <button type="submit" style="font-size: 20px; border: none; cursor: pointer; font-weight: 400; color: gray; background-color: transparent;">
+        Unsubscribe
+      </button>
+    </form>
+    @else
+    <a href="{{ route('home') }}" style="font-size: 20px; border: none; cursor: pointer; font-weight: 400; color: gray; text-decoration: none;">
+      View Plans
     </a>
+    @endif
+    @else
+    <div style="width: 120px;"></div>
+    @endauth
     <div
       class="brand"
       style="font-size: 1.6rem; font-weight: 600; color: #1f2937">
@@ -2472,7 +2478,7 @@
             <a href="{{ route('admin.crm.edit') }}" style="background-color: #007bff; color: white; padding: 8px 18px; border-radius: 8px; text-decoration: none;">
               Manage Homepage
             </a>
-            
+
             <a href="{{ route('terms') }}" class="nav-link group">
               <div class="icon-wrapper">
                 <svg

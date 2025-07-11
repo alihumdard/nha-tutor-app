@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\WebhookController;
+
 Route::get('/', function () {
     $content = \App\Models\HomepageContent::first();
 
@@ -15,10 +18,12 @@ Route::get('/', function () {
     return view('pages.welcome', compact('content'));
 })->name('home');
 
-// Routes only for guests (not logged in)
-Route::middleware('guest')->group(function () {
-  
+Route::post(
+    '/stripe/webhook',
+    [WebhookController::class, 'handleWebhook']
+)->name('cashier.webhook');
 
+Route::middleware('guest')->group(function () {
     Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('login', [AuthController::class, 'login']);
 
@@ -40,8 +45,6 @@ Route::middleware('guest')->group(function () {
     Route::post('reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update');
 });
 
-
-// Routes only for authenticated (logged in) users
 Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -49,7 +52,21 @@ Route::middleware('auth')->group(function () {
     Route::get('/terms-and-conditions', fn() => view('pages.terms_condition'))->name('terms');
     Route::get('/manage/homepage', [CrmController::class, 'edit'])->name('admin.crm.edit');
     Route::post('/manage/homepage', [CrmController::class, 'update'])->name('admin.crm.update');
+
     Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('dashboard');
     });
+
+    Route::get('/subscribe/swap/{priceId}', [PaymentController::class, 'swapPlan'])->name('subscribe.swap');
+    Route::post('/subscribe/cancel', [PaymentController::class, 'cancelSubscription'])->name('subscribe.cancel');
+
+    Route::get('/subscribe/success', function () {
+        return "Payment successful!";
+    })->name('subscribe.success');
+
+    Route::get('/subscribe/cancel', function () {
+        return "Payment canceled.";
+    })->name('subscribe.cancel');
+
+    Route::get('/subscribe/{priceId}', [PaymentController::class, 'subscribe'])->name('subscribe');
 });

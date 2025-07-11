@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
     <title>NHA Tutor Pro</title>
     <style>
         :root { --teal: #3cb371; --dark: #051014; --gray: #666; --border: #e5e7eb; --radius: 8px; }

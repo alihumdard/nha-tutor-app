@@ -474,7 +474,7 @@
       color: #f97316;
     }
 
-    
+
     /* Responsive Gaps */
     @media (max-width: 540px) {
       body {
@@ -2475,9 +2475,23 @@
               <span class="label">Dashboard</span>
             </a>
 
-            <a href="{{ route('admin.crm.edit') }}" style="background-color: #007bff; color: white; padding: 8px 18px; border-radius: 8px; text-decoration: none;">
-              Manage Homepage
+            <a href="{{ route('admin.crm.edit') }}" class="nav-link group">
+              <div class="icon-wrapper">
+                <svg
+                  class="icon blue"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 4h16v4H4V4zm0 6h16v2H4v-2zm0 4h10v2H4v-2zm0 4h10v2H4v-2z" />
+                </svg>
+              </div>
+              <span class="label">CMS</span>
             </a>
+
 
             <a href="{{ route('terms') }}" class="nav-link group">
               <div class="icon-wrapper">

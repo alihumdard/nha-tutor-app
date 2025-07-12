@@ -533,7 +533,7 @@
           <span class="label">Dashboard</span>
         </a>
 
-        <a href="/terms_condition.html" class="nav-link group">
+        <a href="{{ route('terms') }}" class="nav-link group">
           <div class="icon-wrapper">
             <svg
               class="icon orange"

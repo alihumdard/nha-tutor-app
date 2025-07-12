@@ -30,7 +30,7 @@
             <button type="button" class="btn btn-secondary" onclick="history.back()">Back</button>
         </div>
 
-        <form action="{{ route('admin.crm.update') }}" method="POST" enctype="multipart/form-data">
+        <form id="crmForm" action="{{ route('admin.crm.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <h2>Main Section</h2>
             <div class="form-group">
@@ -107,6 +107,10 @@
     </div>
 
     <script>
+        @if(session('success'))
+            alert("{{ session('success') }}");
+        @endif
+
         let planIndex = {{ count(old('plans', $content->plans ?? [])) }};
         
         function addPlan() {

@@ -25,34 +25,40 @@ class AuthController extends Controller
         return view('pages.auth.login');
     }
 
-    public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
-        
-        $user = User::where('email', $credentials['email'])->first();
+   public function login(Request $request)
+{
+    $credentials = $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required'],
+    ]);
+    
+    $user = User::where('email', $credentials['email'])->first();
 
-        if ($user && !$user->email_verified_at) {
-            return back()
-                ->with('verify_error', 'Please verify your email address before logging in.')
-                ->with('email_for_verification', $user->email);
-        }
-
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            $user = Auth::user();
-            if ($user->role === 'admin') {
-                return redirect()->intended('admin/dashboard');
-            }
-            return redirect()->intended('dashboard');
-        }
-
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
+    if ($user && !$user->email_verified_at) {
+        return back()
+            ->with('verify_error', 'Please verify your email address before logging in.')
+            ->with('email_for_verification', $user->email);
     }
+
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
+        $user = Auth::user();
+        if ($user->role === 'admin') {
+            return redirect()->intended('admin/dashboard');
+        }
+
+        if (!$user->subscribed('default')) {
+            return redirect()->route('home')->with('error', 'You must subscribe to a plan to access the dashboard.');
+        }
+
+        return redirect()->intended('dashboard');
+    }
+
+    return back()->withErrors([
+        'email' => 'The provided credentials do not match our records.',
+    ])->onlyInput('email');
+}
+
 
     public function showRegisterForm()
     {

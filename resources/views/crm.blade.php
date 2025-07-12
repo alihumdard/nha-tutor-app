@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Homepage Content Management</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f8f9fa; padding: 2rem; }
         .container { max-width: 1200px; margin: auto; background: #fff; padding: 2.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
@@ -107,9 +108,55 @@
     </div>
 
     <script>
-        @if(session('success'))
-            alert("{{ session('success') }}");
-        @endif
+        document.getElementById('crmForm').addEventListener('submit', function(e) {
+            e.preventDefault(); 
+            
+            let formData = new FormData(this);
+            const submitButton = this.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Saving...';
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                    'Accept': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: data.message,
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                } else {
+                     Swal.fire({
+                        title: 'Error!',
+                        text: 'Something went wrong. Please check the form for errors.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An unexpected network error occurred.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            })
+            .finally(() => {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Save All Changes';
+            });
+        });
 
         let planIndex = {{ count(old('plans', $content->plans ?? [])) }};
         

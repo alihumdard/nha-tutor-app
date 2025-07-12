@@ -73,6 +73,10 @@ class CrmController extends Controller
             'why_choose_us_items' => isset($request->why_choose_us_items) ? array_filter($request->why_choose_us_items) : [],
         ]);
 
-        return redirect()->route('admin.crm.edit')->with('success', 'Homepage content updated successfully!');
+        // New code - sends a JSON response
+        return response()->json([
+            'success' => true,
+            'message' => 'Homepage content updated successfully!'
+        ]);
     }
 }

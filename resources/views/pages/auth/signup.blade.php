@@ -27,15 +27,6 @@
             <hr class="flex-grow border-gray-300" />
         </div>
 
-        <button
-            class="flex items-center justify-center w-full border border-gray-300 rounded-lg px-4 py-3 space-x-3 hover:bg-gray-100 transition mb-6">
-            <svg class="w-5 h-5 fill-blue-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                <path
-                    d="M279.1 288l14.2-92.7h-88.9v-60.1c0-25.4 12.4-50.1 52.2-50.1h40.4V6.3S267.7 0 234.8 0c-73.4 0-121.4 44.3-121.4 124.7v70.6H56v92.7h57.4V512h111.1V288z" />
-            </svg>
-            <span class="text-sm font-medium">Continue with Facebook</span>
-        </button>
-
         <form class="space-y-5" method="POST" action="{{ route('register') }}">
             @csrf
             <div>

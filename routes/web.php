@@ -8,6 +8,43 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\WebhookController;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Http\Request;
+
+
+Route::get('/run-commands', function (Request $request) {
+  
+  Artisan::call('optimize:clear');
+    $optimizeClear = Artisan::output();
+
+    Artisan::call('optimize');
+    $optimize = Artisan::output();
+
+    Artisan::call('route:clear');
+    $routeClear = Artisan::output();
+
+    Artisan::call('config:clear');
+    $configClear = Artisan::output();
+
+    Artisan::call('key:generate');
+    $keyGenerate = Artisan::output();
+
+    Artisan::call('storage:link');
+    $storageLink = Artisan::output();
+
+        return response()->json([
+        'message' => 'Selected commands executed successfully.',
+        'results' => [
+            'optimize:clear' => $optimizeClear,
+            'optimize'       => $optimize,
+            'route:clear'    => $routeClear,
+            'config:clear'   => $configClear,
+            'key:generate'   => $keyGenerate,
+            'storage:link'   => $storageLink,
+        ]
+    ]);
+
+});
 
 Route::get('/', function () {
     $content = \App\Models\HomepageContent::first();
@@ -21,6 +58,7 @@ Route::post(
     '/stripe/webhook',
     [WebhookController::class, 'handleWebhook']
 )->name('cashier.webhook');
+
 
 Route::middleware('guest')->group(function () {
     Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');

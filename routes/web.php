@@ -10,6 +10,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Http\Request;
+use App\Http\Controllers\LessonController;
 
 
 Route::get('/run-commands', function (Request $request) {
@@ -97,4 +98,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/subscribe/swap/{priceId}', [PaymentController::class, 'swapPlan'])->name('subscribe.swap');
     Route::post('/subscribe/cancel', [PaymentController::class, 'cancelSubscription'])->name('subscribe.cancel');
     Route::get('/subscribe/{priceId}', [PaymentController::class, 'subscribe'])->name('subscribe');
+    Route::get('/lession/{less_name}', [LessonController::class, 'sendTopic'])->name('send.topic');
+    
 });

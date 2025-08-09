@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NHA Tutor Pro</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
     /* Base Styles */
     body {
@@ -623,29 +624,32 @@
               <div class="modules-grid" id="coreModulesContainer">
                 <!-- CORE Modules -->
                 <div class="module-card">
-                  <div class="flex-grow">
-                    <h3>Quality of Care</h3>
+                  <div class="flex-grow" style="cursor: pointer;">
+                    <a href="{{ route('send.topic',['less_name' => 'Quality of Care']) }}"  class="send-topic" data-topic="Quality of Care">Quality of Care</a>
                   </div>
                   <div class="mt-auto text-center">
                     <button class="">Quiz</button>
                   </div>
                 </div>
+
                 <div class="module-card">
                   <div class="flex-grow">
-                    <h3>Medical and Nursing Care Practices</h3>
+                    <h3  class="send-topic" data-topic="Medical and Nursing Care Practices">Medical and Nursing Care Practices</h3>
                   </div>
                   <div class="mt-auto text-center">
                     <button>Quiz</button>
                   </div>
                 </div>
+
                 <div class="module-card">
                   <div class="flex-grow">
-                    <h3>Medication Management and Administration</h3>
+                    <h3  class="send-topic" data-topic="Medication Management and Administration">Medication Management and Administration</h3>
                   </div>
                   <div class="mt-auto text-center">
                     <button>Quiz</button>
                   </div>
                 </div>
+
                 <div class="module-card">
                   <div class="flex-grow">
                     <h3>

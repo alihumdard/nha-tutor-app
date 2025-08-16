@@ -84,7 +84,7 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('subscribed')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-        Route::get('/quiz', [PageController::class, 'quiz'])->name('quiz');
+        Route::get('/quiz/{less_name?}', [PageController::class, 'quiz'])->name('quiz');
         Route::get('/terms-and-conditions', [PageController::class, 'terms'])->name('terms');
     });
 

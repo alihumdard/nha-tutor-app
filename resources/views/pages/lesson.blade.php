@@ -448,7 +448,7 @@
       <article class="lesson-content">
         <section class="content-block-green">
           <p>
-            <?=$data['lesson_content'] ?>
+            <?=$data['lesson_content'] ?? ' Data is not found' ?>
           </p>
         </section>
         </section>

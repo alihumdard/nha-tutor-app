@@ -480,27 +480,20 @@
     <main class="main-content" style="margin: 20px 0px">
       <!-- Lesson -->
       <article class="lesson-content">
+        @foreach($data['questions'] as $key => $question)
         <section class="content-block-green">
           <p>
-            <strong>A1:</strong> Welcome to Module 2. Let's begin by
-            understanding what resident rights mean under federal regulations.
-            Residents have the right to... [lesson content continues]
+            <strong>A{{ ++$key }}:</strong> {{ $question['question'] }}
           </p>
         </section>
 
         <section class="content-block-gray">
+          @foreach($question['options'] as $option)
           <label>
-            <input type="radio" value="A"> A
+            <input type="radio" value="{{ $option }}" name="question-{{ $key }}">
+            {{ $option }}
           </label><br>
-          <label>
-            <input type="radio" value="B"> B
-          </label><br>
-          <label>
-            <input type="radio" value="C"> C
-          </label><br>
-          <label>
-            <input type="radio" value="D"> D
-          </label>
+          @endforeach
         </section>
 
         <section class="content-block-green">
@@ -509,7 +502,7 @@
           </div>
           <div class="panel">
             <p>
-              <b>Correct B</b>
+              Correct : <b>{{ $question['answer'] }}</b>
             </p>
           </div>
         </section>
@@ -520,10 +513,11 @@
           </div>
           <div class="panel">
             <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, nobis laborum quasi at ab quia sequi aut iusto quod adipisci.
+              {{ $question['explanation'] }}
             </p>
           </div>
         </section>
+        @endforeach
       </article>
 
       <!-- Tools -->

@@ -18,7 +18,6 @@ class PageController extends Controller
             ]);
     
             $result =  $response->json();
-            dd($result);
         }
         return view('pages.quiz', ['data' => $result]);
     }

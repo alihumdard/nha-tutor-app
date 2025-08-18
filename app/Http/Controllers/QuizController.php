@@ -24,7 +24,7 @@ class QuizController extends Controller
         $result = [];
         if ($topic_name) {
             $apiUrl = 'https://nha-tutor.onrender.com/take-quiz';
-            $response = Http::post($apiUrl, [
+            $response = Http::timeout(120)->post($apiUrl, [
                 'topic' => $topic_name,
             ]);
             $result = $response->json();

@@ -173,6 +173,40 @@
       gap: 1rem;
       font-size: 0.95rem;
       word-wrap: break-word;
+      margin-bottom: 40px;
+    }
+
+    .accordion {
+      background-color: #ecfdf5;
+      /* green */
+      color: black;
+      cursor: pointer;
+      padding: 12px;
+      border-radius: 5px;
+      user-select: none;
+    }
+
+    .accordion p {
+      margin: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .arrow {
+      transition: transform 0.3s;
+    }
+
+    .accordion.active .arrow {
+      transform: rotate(90deg);
+      /* arrow rotate on open */
+    }
+
+    .panel {
+      padding: 10px 15px;
+      display: none;
+      background-color: #f1f1f1;
+      border-radius: 0 0 5px 5px;
     }
 
     /* Content Blocks */
@@ -412,6 +446,61 @@
         padding-bottom: 50px;
       }
     }
+
+    [type="radio"]:checked,
+    [type="radio"]:not(:checked) {
+      position: absolute;
+      left: -9999px;
+    }
+
+    [type="radio"]:checked+label,
+    [type="radio"]:not(:checked)+label {
+      position: relative;
+      padding-left: 28px;
+      cursor: pointer;
+      line-height: 20px;
+      display: inline-block;
+      color: #666;
+    }
+
+    [type="radio"]:checked+label:before,
+    [type="radio"]:not(:checked)+label:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 18px;
+      height: 18px;
+      border: 1px solid #ddd;
+      border-radius: 100%;
+      background: #fff;
+    }
+
+    [type="radio"]:checked+label:after,
+    [type="radio"]:not(:checked)+label:after {
+      content: '';
+      width: 12px;
+      height: 12px;
+      background: #0a4d68;
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      border-radius: 100%;
+      -webkit-transition: all 0.2s ease;
+      transition: all 0.2s ease;
+    }
+
+    [type="radio"]:not(:checked)+label:after {
+      opacity: 0;
+      -webkit-transform: scale(0);
+      transform: scale(0);
+    }
+
+    [type="radio"]:checked+label:after {
+      opacity: 1;
+      -webkit-transform: scale(1);
+      transform: scale(1);
+    }
   </style>
 </head>
 
@@ -446,22 +535,52 @@
     <main class="main-content" style="margin: 20px 0px">
       <!-- Lesson -->
       <article class="lesson-content">
+        <div style="text-align: center;">
+          <h2 style="margin-bottom: 5px;">Quiz Results</h2>
+          <p style="margin-top: 0; margin-bottom: 5px;">Your Score: <strong>{{ $submission->score }} / {{ $submission->total_questions }}</strong></p>
+        </div>
+
+        @if(!empty($submission->wrong_questions))
+        <div class="content-block-gray" style="margin-bottom: 20px;">
+          <h2>Questions You Missed:</h2>
+          <ul>
+            @foreach($submission->wrong_questions as $wrongQuestion)
+            <li>{{ $wrongQuestion }}</li>
+            @endforeach
+          </ul>
+        </div>
+        @endif
+
+        @foreach($submission->answers as $key => $answer)
         <section class="content-block-green">
           <p>
-            <?= $data['lesson_content'] ?? ' Data is not found' ?>
+            <strong>Q. {{ ++$key }}:</strong> {{ $answer['question'] }}
+          </p>
+          <p>
+            Your Answer:
+            @if ($answer['is_correct'])
+            <span style="color: green; font-weight: bold;">{{ $answer['user_answer'] }}</span>
+            @else
+            <span style="color: red; font-weight: bold;">{{ $answer['user_answer'] }}</span>
+            @endif
+          </p>
+          <p>
+            Correct Answer:
+            <span style="color: green; font-weight: bold;">{{ $answer['correct_answer'] }}</span>
           </p>
         </section>
+
+        <section class="content-block-gray">
+          <h4>Explanation:</h4>
+          <p>{{ $answer['explanation'] }}</p>
         </section>
+        @endforeach
       </article>
 
       <!-- Tools -->
-      <aside class="lesson-tools">
+      <!-- <aside class="lesson-tools">
         <h3>Lesson Tools</h3>
         <div class="tools-grid">
-          <button class="tool-btn">
-            📑
-            Take Quiz
-          </button>
           <button class="tool-btn">
             🧠
             Key Takeaways
@@ -475,6 +594,46 @@
             Take Exam
           </button>
         </div>
+      </aside> -->
+
+      <aside class="lesson-tools">
+        <h3>Lesson Tools</h3>
+        <div class="tools-grid">
+          <button class="tool-btn" id="generate-flashcards-btn">
+            🧠
+            Key Takeaways
+          </button>
+          <button class="tool-btn" id="download-flashcards-btn" disabled>
+            📔
+            Download Flash Cards
+          </button>
+        </div>
+        <div id="flashcard-status" style="margin-top: 10px; text-align: center;"></div>
+
+        <!-- Toggle button for exam difficulties -->
+        <button class="tool-btn" id="toggle-exam-btn" style="margin-top: 20px; font-weight: bold;">
+          📝 Take an Exam
+        </button>
+        <!-- The content to be toggled -->
+        <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
+          <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
+            <span style="font-size: 2em;">😀</span>
+            Easy
+          </a>
+          <a href="{{ route('exam.start', ['difficulty' => 'medium']) }}" class="tool-btn" style="text-decoration: none;">
+            <span style="font-size: 2em;">😌</span>
+            Medium
+          </a>
+          <a href="{{ route('exam.start', ['difficulty' => 'hard']) }}" class="tool-btn" style="text-decoration: none;">
+            <span style="font-size: 2em;">💪</span>
+            Hard
+          </a>
+          <a href="{{ route('exam.start', ['difficulty' => 'expert']) }}" class="tool-btn" style="text-decoration: none;">
+            <span style="font-size: 2em;">🤯</span>
+            Expert
+          </a>
+        </div>
+
       </aside>
     </main>
   </div>
@@ -482,6 +641,98 @@
   <!-- Bottom Navigation -->
   @include('includes.bottom-navigation')
 
+
+  <script>
+    const accordions = document.querySelectorAll(".accordion");
+    accordions.forEach(acc => {
+      acc.addEventListener("click", function() {
+        this.classList.toggle("active");
+        const panel = this.nextElementSibling;
+        if (panel.style.display === "block") {
+          panel.style.display = "none";
+        } else {
+          panel.style.display = "block";
+        }
+      });
+    });
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const generateBtn = document.getElementById('generate-flashcards-btn');
+      const downloadBtn = document.getElementById('download-flashcards-btn');
+      const statusDiv = document.getElementById('flashcard-status');
+      let downloadUrl = null;
+
+      if (generateBtn) {
+        generateBtn.addEventListener('click', async () => {
+          generateBtn.disabled = true;
+          downloadBtn.disabled = true;
+          statusDiv.textContent = 'Generating flashcards...';
+
+          const topicName = "{{ $submission->topic_name }}";
+          const wrongQuestions = @json($submission->wrong_questions);
+
+          try {
+            const response = await fetch('https://nha-tutor.onrender.com/flashcards', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+              },
+              body: JSON.stringify({
+                topics: topicName,
+                context: wrongQuestions
+              })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              // Construct the full download URL
+              downloadUrl = `https://nha-tutor.onrender.com/flashcards/download?topics=${encodeURIComponent(topicName)}`;
+              downloadBtn.disabled = false;
+              statusDiv.textContent = 'Flashcards are ready to download!';
+            } else {
+              statusDiv.textContent = `Error: ${data.message || 'Failed to generate flashcards.'}`;
+            }
+          } catch (error) {
+            statusDiv.textContent = 'An error occurred. Please try again.';
+            console.error('Error generating flashcards:', error);
+          } finally {
+            generateBtn.disabled = false;
+          }
+        });
+      }
+
+      if (downloadBtn) {
+        downloadBtn.addEventListener('click', () => {
+          if (downloadUrl) {
+            window.open(downloadUrl, '_blank');
+          } else {
+            statusDiv.textContent = 'Please generate the flashcards first.';
+          }
+        });
+      }
+    });
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggleExamBtn = document.getElementById('toggle-exam-btn');
+      const examDifficulties = document.getElementById('exam-difficulties');
+
+      if (toggleExamBtn) {
+        toggleExamBtn.addEventListener('click', () => {
+          if (examDifficulties.style.display === 'none') {
+            examDifficulties.style.display = 'grid';
+          } else {
+            examDifficulties.style.display = 'none';
+          }
+        });
+      }
+    });
+  </script>
 </body>
 
 </html>

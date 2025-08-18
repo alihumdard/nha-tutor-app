@@ -11,7 +11,7 @@ class LessonController extends Controller
     {
 
         // API endpoint
-        $apiUrl = 'https://f0d3ddb6a101.ngrok-free.app/view-lesson';
+        $apiUrl = 'https://nha-tutor.onrender.com/view-lesson';
 
         // Send request to API
         $response = Http::post($apiUrl, [

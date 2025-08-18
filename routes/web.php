@@ -6,6 +6,8 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\QuizController;
+use App\Http\Controllers\ExamController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Artisan;
@@ -14,8 +16,8 @@ use App\Http\Controllers\LessonController;
 
 
 Route::get('/run-commands', function (Request $request) {
-  
-  Artisan::call('optimize:clear');
+
+    Artisan::call('optimize:clear');
     $optimizeClear = Artisan::output();
 
     Artisan::call('optimize');
@@ -33,7 +35,7 @@ Route::get('/run-commands', function (Request $request) {
     Artisan::call('storage:link');
     $storageLink = Artisan::output();
 
-        return response()->json([
+    return response()->json([
         'message' => 'Selected commands executed successfully.',
         'results' => [
             'optimize:clear' => $optimizeClear,
@@ -44,7 +46,6 @@ Route::get('/run-commands', function (Request $request) {
             'storage:link'   => $storageLink,
         ]
     ]);
-
 });
 
 Route::get('/', function () {
@@ -84,8 +85,17 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('subscribed')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-        Route::get('/quiz/{less_name?}', [PageController::class, 'quiz'])->name('quiz');
         Route::get('/terms-and-conditions', [PageController::class, 'terms'])->name('terms');
+        //quiz 
+        Route::get('/quizzes', [QuizController::class, 'all_quizzes'])->name('quizzes');
+        Route::get('/modules', [QuizController::class, 'all_modules'])->name('modules');
+        Route::get('/quiz/{less_name}', [QuizController::class, 'showQuiz'])->name('quiz');
+        Route::post('/quiz/submit', [QuizController::class, 'submitQuiz'])->name('quiz.submit');
+        Route::get('/quiz/results/{submission_id}', [QuizController::class, 'showResults'])->name('quiz.results');
+        //exam routes
+        Route::get('/exam/start', [ExamController::class, 'startExam'])->name('exam.start');
+        Route::get('/exam/difficulty', [ExamController::class, 'showExamDifficulty'])->name('exam.difficulty');
+        Route::post('/exam/submit', [ExamController::class, 'submitExam'])->name('exam.submit');
     });
 
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
@@ -99,5 +109,4 @@ Route::middleware('auth')->group(function () {
     Route::post('/subscribe/cancel', [PaymentController::class, 'cancelSubscription'])->name('subscribe.cancel');
     Route::get('/subscribe/{priceId}', [PaymentController::class, 'subscribe'])->name('subscribe');
     Route::get('/lession/{less_name}', [LessonController::class, 'sendTopic'])->name('send.topic');
-    
 });

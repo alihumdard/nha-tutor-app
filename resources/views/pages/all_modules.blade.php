@@ -604,60 +604,9 @@
     <main class="main-content">
       <div class="container mx-auto">
         <!-- Dashboard Cards -->
-        <div class="dashboard-cards flex flex-col md:flex-row justify-between gap-6 p-4">
-          <!-- Progress Card -->
-          <div class="card w-full md:w-1/3 bg-white rounded-lg shadow-md p-4">
-            <div class="card-content">
-              <div class="progress-container">
-                <div class="progress-bar"></div>
-                <h1 class="progress-title text-xl font-semibold mt-4">
-                  Progress
-                </h1>
-              </div>
-            </div>
-          </div>
-
-          <!-- Learning Plan (center image as a card) -->
-          <div
-            class=" w-full md:w-1/3  p-4 flex justify-center items-center">
-            <img
-              src="assets/images/p4.png"
-              alt="Learning Plan"
-              class="learning-plan-image w-full h-auto max-h-[300px] object-contain" />
-          </div>
-
-          <!-- Exam Card -->
-          <div class="card w-full md:w-1/3 bg-white rounded-lg shadow-md p-4">
-            <div class="card-content text-center">
-              <h1 class="exam-title text-xl font-semibold my-10">Exam</h1>
-              <button id="toggle-exam-btn" class="exam-button bg-[#1fac8d] text-white px-5 py-2 rounded-md text-lg font-semibold">
-                Start
-              </button>
-              <!-- The content to be toggled -->
-              <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
-                <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
-                  <span style="font-size: 2em;">😀</span>
-                  Easy
-                </a>
-                <a href="{{ route('exam.start', ['difficulty' => 'medium']) }}" class="tool-btn" style="text-decoration: none;">
-                  <span style="font-size: 2em;">😌</span>
-                  Medium
-                </a>
-                <a href="{{ route('exam.start', ['difficulty' => 'hard']) }}" class="tool-btn" style="text-decoration: none;">
-                  <span style="font-size: 2em;">💪</span>
-                  Hard
-                </a>
-                <a href="{{ route('exam.start', ['difficulty' => 'expert']) }}" class="tool-btn" style="text-decoration: none;">
-                  <span style="font-size: 2em;">🤯</span>
-                  Expert
-                </a>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
+      
         <h2 style=" text-align: center; padding-top: 25px; font-size: x-large; font-weight: 500;">
+          Here is All Modules <br>
           Make the Most of your study time
         </h2>
 

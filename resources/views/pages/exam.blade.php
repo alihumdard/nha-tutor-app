@@ -173,6 +173,40 @@
       gap: 1rem;
       font-size: 0.95rem;
       word-wrap: break-word;
+      margin-bottom: 40px;
+    }
+
+    .accordion {
+      background-color: #ecfdf5;
+      /* green */
+      color: black;
+      cursor: pointer;
+      padding: 12px;
+      border-radius: 5px;
+      user-select: none;
+    }
+
+    .accordion p {
+      margin: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .arrow {
+      transition: transform 0.3s;
+    }
+
+    .accordion.active .arrow {
+      transform: rotate(90deg);
+      /* arrow rotate on open */
+    }
+
+    .panel {
+      padding: 10px 15px;
+      display: none;
+      background-color: #f1f1f1;
+      border-radius: 0 0 5px 5px;
     }
 
     /* Content Blocks */
@@ -412,6 +446,61 @@
         padding-bottom: 50px;
       }
     }
+
+    [type="radio"]:checked,
+    [type="radio"]:not(:checked) {
+      position: absolute;
+      left: -9999px;
+    }
+
+    [type="radio"]:checked+label,
+    [type="radio"]:not(:checked)+label {
+      position: relative;
+      padding-left: 28px;
+      cursor: pointer;
+      line-height: 20px;
+      display: inline-block;
+      color: #666;
+    }
+
+    [type="radio"]:checked+label:before,
+    [type="radio"]:not(:checked)+label:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 18px;
+      height: 18px;
+      border: 1px solid #ddd;
+      border-radius: 100%;
+      background: #fff;
+    }
+
+    [type="radio"]:checked+label:after,
+    [type="radio"]:not(:checked)+label:after {
+      content: '';
+      width: 12px;
+      height: 12px;
+      background: #0a4d68;
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      border-radius: 100%;
+      -webkit-transition: all 0.2s ease;
+      transition: all 0.2s ease;
+    }
+
+    [type="radio"]:not(:checked)+label:after {
+      opacity: 0;
+      -webkit-transform: scale(0);
+      transform: scale(0);
+    }
+
+    [type="radio"]:checked+label:after {
+      opacity: 1;
+      -webkit-transform: scale(1);
+      transform: scale(1);
+    }
   </style>
 </head>
 
@@ -444,36 +533,50 @@
 
     <!-- Content -->
     <main class="main-content" style="margin: 20px 0px">
-      <!-- Lesson -->
       <article class="lesson-content">
-        <section class="content-block-green">
-          <p>
-            <?= $data['lesson_content'] ?? ' Data is not found' ?>
-          </p>
-        </section>
-        </section>
+        <div style="text-align: center; margin-bottom: 20px;">
+          <h1>Exam - {{ ucfirst($difficulty) }}</h1>
+        </div>
+
+        <form method="POST" action="{{ route('exam.submit') }}">
+          @csrf
+          <input type="hidden" name="difficulty" value="{{ $difficulty }}">
+          <input type="hidden" name="submission_id" value="{{ $submission_id }}">
+
+          <article class="lesson-content">
+            @foreach($data['questions'] as $key => $question)
+            <section class="content-block-green">
+              <p>
+                <strong>Q. {{ ++$key }}:</strong> {{ $question['question'] }}
+              </p>
+            </section>
+
+            <section class="content-block-gray">
+              @foreach($question['options'] as $option)
+              <div style="margin-bottom: 5px;">
+                <input type="radio" id="question_{{ $key }}_{{ Str::slug($option) }}" value="{{ $option }}" name="answers[{{ $key }}]" required>
+                <label for="question_{{ $key }}_{{ Str::slug($option) }}">{{ $option }}</label>
+              </div>
+              @endforeach
+            </section>
+            @endforeach
+          </article>
+
+          <div style="display:flex; justify-content:right; text-align: center; margin-top: 20px;">
+            <button type="submit" class="tool-btn"> ✔ Submit Exam </button>
+          </div>
+        </form>
       </article>
 
       <!-- Tools -->
       <aside class="lesson-tools">
         <h3>Lesson Tools</h3>
         <div class="tools-grid">
-          <button class="tool-btn">
+          <!-- <button class="tool-btn">
             📑
             Take Quiz
-          </button>
-          <button class="tool-btn">
-            🧠
-            Key Takeaways
-          </button>
-          <button class="tool-btn">
-            📔
-            Download Flash Cards
-          </button>
-          <button class="tool-btn">
-            🌡
-            Take Exam
-          </button>
+          </button> -->
+
         </div>
       </aside>
     </main>
@@ -481,7 +584,38 @@
 
   <!-- Bottom Navigation -->
   @include('includes.bottom-navigation')
+  
+  <script>
+    const accordions = document.querySelectorAll(".accordion");
+    accordions.forEach(acc => {
+      acc.addEventListener("click", function() {
+        this.classList.toggle("active");
+        const panel = this.nextElementSibling;
+        if (panel.style.display === "block") {
+          panel.style.display = "none";
+        } else {
+          panel.style.display = "block";
+        }
+      });
+    });
+  </script>
 
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggleExamBtn = document.getElementById('toggle-exam-btn');
+      const examDifficulties = document.getElementById('exam-difficulties');
+
+      if (toggleExamBtn) {
+        toggleExamBtn.addEventListener('click', () => {
+          if (examDifficulties.style.display === 'none') {
+            examDifficulties.style.display = 'grid';
+          } else {
+            examDifficulties.style.display = 'none';
+          }
+        });
+      }
+    });
+  </script>
 </body>
 
 </html>

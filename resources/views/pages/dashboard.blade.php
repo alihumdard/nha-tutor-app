@@ -621,7 +621,7 @@
           <div
             class=" w-full md:w-1/3  p-4 flex justify-center items-center">
             <img
-              src="assets/images/p4.png"
+              src="/assets/images/p4.png"
               alt="Learning Plan"
               class="learning-plan-image w-full h-auto max-h-[300px] object-contain" />
           </div>

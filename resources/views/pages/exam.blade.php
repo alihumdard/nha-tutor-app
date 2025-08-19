@@ -505,6 +505,8 @@
 </head>
 
 <body>
+  @include('pages.preloader')
+
   <div class="container">
     <!-- Header -->
     <header class="header-bar">

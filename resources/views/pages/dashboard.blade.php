@@ -552,6 +552,8 @@
 </head>
 
 <body class="font-sans">
+  @include('pages.preloader')
+
   <header
     style="
         display: flex;

@@ -546,7 +546,7 @@
           <h2>Questions You Missed:</h2>
           <ul>
             @foreach($submission->wrong_questions as $wrongQuestion)
-            <li>{{ $wrongQuestion }}</li>
+            <li>{{ $wrongQuestion['question'] }}</li>
             @endforeach
           </ul>
         </div>
@@ -691,7 +691,7 @@
 
             if (response.ok) {
               // Construct the full download URL
-              downloadUrl = `https://nha-tutor.onrender.com/flashcards/download?topics=${encodeURIComponent(topicName)}`;
+              downloadUrl = data.download_content;
               downloadBtn.disabled = false;
               statusDiv.textContent = 'Flashcards are ready to download!';
             } else {

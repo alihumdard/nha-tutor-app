@@ -70,8 +70,12 @@ class QuizController extends Controller
                 $score++;
                 $isCorrect = true;
             } else {
-                $wrongQuestions[] = $question['question'];
+                $wrongQuestions[] = [
+                    "question" => $question['question'],
+                    "answer"   => $question['explanation'],
+                ];
             }
+
 
             $quizDetails[] = [
                 'question' => $question['question'],

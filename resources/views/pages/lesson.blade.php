@@ -459,22 +459,33 @@
       <aside class="lesson-tools">
         <h3>Lesson Tools</h3>
         <div class="tools-grid">
-          <button class="tool-btn">
-            📑
-            Take Quiz
+          <a style="text-decoration: none;" href="{{ route('quiz', ['less_name' => $topic_name]) }}" class="tool-btn">
+            📑 Take Quiz
+          </a>
+          <!-- Toggle button for exam difficulties -->
+          <button class="tool-btn" id="toggle-exam-btn" style=" font-weight: bold;">
+            📝 Take an Exam
           </button>
-          <button class="tool-btn">
-            🧠
-            Key Takeaways
-          </button>
-          <button class="tool-btn">
-            📔
-            Download Flash Cards
-          </button>
-          <button class="tool-btn">
-            🌡
-            Take Exam
-          </button>
+          <!-- The content to be toggled -->
+          <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
+            <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
+              <span style="font-size: 2em;">😀</span>
+              Easy
+            </a>
+            <a href="{{ route('exam.start', ['difficulty' => 'medium']) }}" class="tool-btn" style="text-decoration: none;">
+              <span style="font-size: 2em;">😌</span>
+              Medium
+            </a>
+            <a href="{{ route('exam.start', ['difficulty' => 'hard']) }}" class="tool-btn" style="text-decoration: none;">
+              <span style="font-size: 2em;">💪</span>
+              Hard
+            </a>
+            <a href="{{ route('exam.start', ['difficulty' => 'expert']) }}" class="tool-btn" style="text-decoration: none;">
+              <span style="font-size: 2em;">🤯</span>
+              Expert
+            </a>
+          </div>
+
         </div>
       </aside>
     </main>
@@ -482,7 +493,22 @@
 
   <!-- Bottom Navigation -->
   @include('includes.bottom-navigation')
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggleExamBtn = document.getElementById('toggle-exam-btn');
+      const examDifficulties = document.getElementById('exam-difficulties');
 
+      if (toggleExamBtn) {
+        toggleExamBtn.addEventListener('click', () => {
+          if (examDifficulties.style.display === 'none') {
+            examDifficulties.style.display = 'grid';
+          } else {
+            examDifficulties.style.display = 'none';
+          }
+        });
+      }
+    });
+  </script>
 </body>
 
 </html>

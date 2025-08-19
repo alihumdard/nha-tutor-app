@@ -19,6 +19,6 @@ class LessonController extends Controller
         ]);
 
         $result =  $response->json();
-        return view('pages.lesson', ['data' => $result]);
+        return view('pages.lesson', ['data' => $result, 'topic_name' => $topic_name]);
     }
 }

@@ -552,6 +552,7 @@
 </head>
 
 <body class="font-sans">
+  @include('pages.preloader')
   <header
     style="
         display: flex;
@@ -604,7 +605,7 @@
     <main class="main-content">
       <div class="container mx-auto">
         <!-- Dashboard Cards -->
-      
+
         <h2 style=" text-align: center; padding-top: 25px; font-size: x-large; font-weight: 500;">
           Here is All Modules <br>
           Make the Most of your study time

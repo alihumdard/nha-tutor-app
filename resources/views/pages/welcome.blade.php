@@ -233,6 +233,8 @@
 </head>
 
 <body>
+  @include('pages.preloader')
+
     <header>
         <div class="brand">NHA Tutor Pro</div>
         <nav>

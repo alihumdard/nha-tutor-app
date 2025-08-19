@@ -138,7 +138,7 @@
           </div>
       </div>
       <div class="loading-text">
-          Please wait Loading
+          Wait,Generating content
           <div class="dot"></div>
           <div class="dot"></div>
           <div class="dot"></div>

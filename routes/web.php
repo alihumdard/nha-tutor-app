@@ -96,12 +96,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/exam/start', [ExamController::class, 'startExam'])->name('exam.start');
         Route::get('/exam/difficulty', [ExamController::class, 'showExamDifficulty'])->name('exam.difficulty');
         Route::post('/exam/submit', [ExamController::class, 'submitExam'])->name('exam.submit');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+         Route::get('/profile', [DashboardController::class, 'showProfile'])->name('profile.show');
+        Route::post('/profile', [DashboardController::class, 'updateProfile'])->name('profile.update');
+        Route::post('/profile/password', [DashboardController::class, 'updatePassword'])->name('profile.password.update');
     });
 
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('dashboard');
         Route::get('/manage/homepage', [CrmController::class, 'edit'])->name('crm.edit');
         Route::post('/manage/homepage', [CrmController::class, 'update'])->name('crm.update');
+         Route::get('/users', [CrmController::class, 'index'])->name('users.index');
     });
 
     Route::get('/subscribe/success', [PaymentController::class, 'success'])->name('subscribe.success');

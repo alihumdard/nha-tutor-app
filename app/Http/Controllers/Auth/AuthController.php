@@ -25,7 +25,7 @@ class AuthController extends Controller
         return view('pages.auth.login');
     }
 
-   public function login(Request $request)
+  public function login(Request $request)
 {
     $credentials = $request->validate([
         'email' => ['required', 'email'],
@@ -41,6 +41,9 @@ class AuthController extends Controller
     }
 
     if (Auth::attempt($credentials)) {
+        // This line logs out all other active sessions for the user.
+        Auth::logoutOtherDevices($request->password);
+
         $request->session()->regenerate();
         $user = Auth::user();
         if ($user->role === 'admin') {

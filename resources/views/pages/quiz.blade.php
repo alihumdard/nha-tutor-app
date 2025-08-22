@@ -601,7 +601,7 @@
   <!-- Bottom Navigation -->
   @include('includes.bottom-navigation')
 
-
+@include('includes.security-scripts')
   <script>
     const accordions = document.querySelectorAll(".accordion");
     accordions.forEach(acc => {

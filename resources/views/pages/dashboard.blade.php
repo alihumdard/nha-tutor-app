@@ -7,6 +7,7 @@
   <title>NHA Tutor Pro</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     /* Base Styles */
     body {
@@ -548,57 +549,151 @@
       stroke-width: 2;
       fill: none;
     }
+    
+    .mobile-hidden-nav {
+      display: flex;
+      align-items: center;
+    }
+    .mobile-hidden-nav form button {
+        background-color: transparent;
+        color: gray;
+        border: none;
+        font-weight: 400;
+    }
+    .mobile-hidden-nav a {
+        background-color: transparent;
+        color: gray;
+        border: none;
+        font-weight: 400;
+    }
+
+    /* Universal header styles */
+    .header-nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 12px 24px;
+        background-color: #f9fafb;
+    }
+    .header-brand {
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: #1f2937;
+    }
+    .user-menu-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background-color: #f97316;
+        color: white;
+        font-weight: 600;
+        border-radius: 9999px; /* Tailwind's rounded-full */
+        transition: background-color 0.2s;
+    }
+    .user-menu-button:hover {
+        background-color: #ea580c;
+    }
+    .user-menu-dropdown {
+        position: absolute;
+        right: 0;
+        margin-top: 8px;
+        width: 192px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e5e7eb;
+        z-index: 10;
+        overflow: hidden;
+    }
+    .user-menu-dropdown a {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 8px 16px;
+        font-size: 0.875rem;
+        color: #374151;
+        text-decoration: none;
+    }
+    .user-menu-dropdown a:hover {
+        background-color: #f3f4f6;
+    }
+    .logout-btn {
+        padding: 8px 16px;
+        font-size: 0.875rem;
+        color: #374151;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        text-align: left;
+        display: block;
+    }
+    .logout-btn:hover {
+        background-color: #f3f4f6;
+    }
+    @media (max-width: 640px) {
+        .mobile-hidden-nav {
+            display: none;
+        }
+    }
   </style>
 </head>
 
 <body class="font-sans">
   @include('pages.preloader')
 
-  <header style="
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 12px 24px;
-        background-color: #f9fafb;
-      ">
-    @auth
-    @if(auth()->user()->subscribed('default'))
-    <form method="POST" action="{{ route('subscribe.cancel') }}">
-      @csrf
-      <button type="submit"
-        style="font-size: 20px; border: none; cursor: pointer; font-weight: 400; color: gray; background-color: transparent;">
-        Unsubscribe
-      </button>
-    </form>
-    @else
-    <a href="{{ route('home') }}"
-      style="font-size: 20px; border: none; cursor: pointer; font-weight: 400; color: gray; text-decoration: none;">
-      View Plans
-    </a>
-    @endif
-    @else
-    <div style="width: 120px;"></div>
-    @endauth
-    <div class="brand" style="font-size: 1.6rem; font-weight: 600; color: #1f2937">
-      NHA Tutor Pro
+  <header class="header-nav-container">
+    <div class="mobile-hidden-nav">
+        @auth
+            @if(auth()->user()->subscribed('default'))
+                <form method="POST" action="{{ route('subscribe.cancel') }}">
+                    @csrf
+                    <button type="submit">Unsubscribe</button>
+                </form>
+            @else
+                <a href="{{ route('home') }}">View Plans</a>
+            @endif
+        @else
+            <div style="width: 120px;"></div>
+        @endauth
     </div>
-    <nav>
-      <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button type="submit" style="
-                padding: 8px 16px;
-                font-size: 20px;
-                border: none;
-                cursor: pointer;
-                font-weight: 500;
-                background-color: transparent; /* Makes the button look like a link */
-            ">
-          Log out
-        </button>
-      </form>
-    </nav>
-  </header>
+    <div class="header-brand">NHA Tutor Pro</div>
+    <div class="relative">
+        @auth
+            <button id="user-menu-button" class="user-menu-button">
+                @if(Auth::user()->user_pic)
+                    <img src="{{ Storage::url(Auth::user()->user_pic) }}" alt="Profile" class="w-full h-full object-cover">
+                @else
+                    <i class="fas fa-user"></i>
+                @endif
+            </button>
 
+            <div id="user-menu" class="user-menu-dropdown hidden">
+                <div class="px-4 py-3 border-b">
+                    <p class="text-sm font-semibold text-gray-800">Hello, {{ Auth::user()->name }}</p>
+                </div>
+                <div class="py-1">
+                    <a href="{{ route('profile.show') }}">Profile</a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="logout-btn">
+                            Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        @else
+            <a href="{{ route('login') }}" class="user-menu-button">
+                <i class="fas fa-user"></i>
+            </a>
+        @endauth
+    </div>
+</header>
+  
+  <!-- The rest of your dashboard content -->
   <div class="min-h-screen w-full flex flex-col">
     <!-- Main Content -->
     <main class="main-content">
@@ -636,22 +731,22 @@
                 style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
                 <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn"
                   style="text-decoration: none;">
-                  <span style="font-size: 2em;">😀</span>
+                  <span style="font-size: 2em;">&#128512;</span>
                   Easy
                 </a>
                 <a href="{{ route('exam.start', ['difficulty' => 'medium']) }}" class="tool-btn"
                   style="text-decoration: none;">
-                  <span style="font-size: 2em;">😌</span>
+                  <span style="font-size: 2em;">&#128524;</span>
                   Medium
                 </a>
                 <a href="{{ route('exam.start', ['difficulty' => 'hard']) }}" class="tool-btn"
                   style="text-decoration: none;">
-                  <span style="font-size: 2em;">💪</span>
+                  <span style="font-size: 2em;">&#128170;</span>
                   Hard
                 </a>
                 <a href="{{ route('exam.start', ['difficulty' => 'expert']) }}" class="tool-btn"
                   style="text-decoration: none;">
-                  <span style="font-size: 2em;">🤯</span>
+                  <span style="font-size: 2em;">&#129299;</span>
                   Expert
                 </a>
               </div>
@@ -1898,7 +1993,7 @@
                   </div>
                 </div>
 
-                <div class="module-card">
+                <div class="module-card" style="display: none">
                   <div class="flex-grow">
                     <a href="{{ route('send.topic',['less_name' => 'Rehabilitation and Restorative Programs']) }}"
                       class="send-topic" data-topic="Rehabilitation and Restorative Programs">Rehabilitation and
@@ -1909,7 +2004,6 @@
                   </div>
                 </div>
 
-                <!-- Hidden modules -->
                 <div class="module-card" style="display: none">
                   <div class="flex-grow">
                     <a href="{{ route('send.topic',['less_name' => 'Care Recipient Assessment and Interdisciplinary Care Planning']) }}"
@@ -2548,7 +2642,7 @@
                     <a href="{{ route('send.topic',['less_name' => ' Disaster and Emergency Planning, Preparedness, Response, and Recovery']) }}"
                       class="send-topic"
                       data-topic=" Disaster and Emergency Planning, Preparedness, Response,and Recovery">
-                      Disaster and Emergency Planning, Preparedness, Response, and Recovery</a>
+                      Disaster and Emergency Planning, Preparedness, and Recovery</a>
 
                   </div>
                   <div class="mt-auto text-center">
@@ -2740,6 +2834,7 @@
     </main>
   </div>
 
+  @include('includes.security-scripts')
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       // Initialize pagination
@@ -2819,7 +2914,59 @@
       initPagination(showMoreCoreBtn, coreModules, coreVisible);
       initPagination(showMoreLosBtn, losModules, losVisible);
     }
+  </script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userMenu = document.getElementById('user-menu');
+        const logoutButton = document.getElementById('logout-button');
 
+        // Toggle dropdown menu
+        if (userMenuButton && userMenu) {
+            userMenuButton.addEventListener('click', function(event) {
+                event.stopPropagation();
+                userMenu.classList.toggle('hidden');
+            });
+        }
+
+        // Close dropdown if clicked outside
+        document.addEventListener('click', function(event) {
+            if (userMenu && !userMenu.classList.contains('hidden') &&
+                !userMenu.contains(event.target) &&
+                (!userMenuButton || !userMenuButton.contains(event.target))) {
+                userMenu.classList.add('hidden');
+            }
+        });
+
+        // Handle AJAX logout
+        if (logoutButton) {
+            logoutButton.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                fetch("{{ route('logout') }}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json',
+                    },
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = '/login';
+                    } else {
+                        alert('Logout failed. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred during logout.');
+                });
+            });
+        }
+    });
+  </script>
+  <script>
     document.addEventListener('DOMContentLoaded', function() {
       const toggleExamBtn = document.getElementById('toggle-exam-btn');
       const examDifficulties = document.getElementById('exam-difficulties');

@@ -4,11 +4,24 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\HomepageContent;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class CrmController extends Controller
 {
+
+    public function index()
+    {
+        $users = User::all();
+        // Manually add subscription status to each user object
+        $users = $users->map(function ($user) {
+            $user->subscribed = $user->subscribed('default');
+            return $user;
+        });
+        return view('pages.admin.users', compact('users'));
+    }
+
     public function edit()
     {
         $content = HomepageContent::firstOrCreate([], [

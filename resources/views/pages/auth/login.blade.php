@@ -15,7 +15,7 @@
 </head>
 
 <body class="bg min-h-screen flex items-center justify-center font-sans">
-  @include('pages.preloader')
+ 
 
     <div class="w-full max-w-md p-8 bg-white/80 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-200">
         <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Login</h2>

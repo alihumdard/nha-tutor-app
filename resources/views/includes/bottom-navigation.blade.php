@@ -71,6 +71,12 @@
 
 
            @if(auth()->user()->role === 'admin')
+            <a href="{{ route('admin.users.index') }}" class="nav-link group">
+                <div class="icon-wrapper">
+                    <i class="fas fa-users-cog"></i>
+                </div>
+                <span class="label">Users</span>
+            </a>
            <a href="{{ route('admin.crm.edit') }}" class="nav-link group">
                <div class="icon-wrapper">
                    <svg class="icon blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">

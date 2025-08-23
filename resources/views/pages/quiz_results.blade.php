@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>NHA Tutor Pro - Module 2</title>
+  <title>NHA Tutor Pro - Quiz Results</title>
   <style>
     * {
       box-sizing: border-box;
@@ -128,7 +128,6 @@
       display: flex;
       gap: 0.5rem;
       flex-wrap: wrap;
-      /* justify-content: center; */
     }
 
     .nav-buttons button {
@@ -178,7 +177,6 @@
 
     .accordion {
       background-color: #ecfdf5;
-      /* green */
       color: black;
       cursor: pointer;
       padding: 12px;
@@ -199,7 +197,6 @@
 
     .accordion.active .arrow {
       transform: rotate(90deg);
-      /* arrow rotate on open */
     }
 
     .panel {
@@ -507,14 +504,12 @@
 <body>
   @include('pages.preloader')
   <div class="container">
-    <!-- Header -->
     <header class="header-bar">
       <h1>NHA Tutor Pro</h1>
-      <h3>Module 2 – Resident Rights</h3>
+      <h3>Quiz Results</h3>
       <a href="/">Log Out</a>
     </header>
 
-    <!-- Progress -->
     <section class="progress-bar-container">
       <div class="progress-bar-flex">
         <div style="display: flex">
@@ -532,9 +527,7 @@
       </div>
     </section>
 
-    <!-- Content -->
     <main class="main-content" style="margin: 20px 0px">
-      <!-- Lesson -->
       <article class="lesson-content">
         <div style="text-align: center;">
           <h2 style="margin-bottom: 5px;">Quiz Results</h2>
@@ -578,25 +571,6 @@
         @endforeach
       </article>
 
-      <!-- Tools -->
-      <!-- <aside class="lesson-tools">
-        <h3>Lesson Tools</h3>
-        <div class="tools-grid">
-          <button class="tool-btn">
-            🧠
-            Key Takeaways
-          </button>
-          <button class="tool-btn">
-            📔
-            Download Flash Cards
-          </button>
-          <button class="tool-btn">
-            🌡
-            Take Exam
-          </button>
-        </div>
-      </aside> -->
-
       <aside class="lesson-tools">
         <h3>Lesson Tools</h3>
         <div class="tools-grid">
@@ -611,11 +585,9 @@
         </div>
         <div id="flashcard-status" style="margin-top: 10px; text-align: center;"></div>
 
-        <!-- Toggle button for exam difficulties -->
         <button class="tool-btn" id="toggle-exam-btn" style="margin-top: 20px; font-weight: bold;">
           📝 Take an Exam
         </button>
-        <!-- The content to be toggled -->
         <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
           <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
             <span style="font-size: 2em;">😀</span>
@@ -639,24 +611,7 @@
     </main>
   </div>
 
-  <!-- Bottom Navigation -->
   @include('includes.bottom-navigation')
-
-
-  <script>
-    const accordions = document.querySelectorAll(".accordion");
-    accordions.forEach(acc => {
-      acc.addEventListener("click", function() {
-        this.classList.toggle("active");
-        const panel = this.nextElementSibling;
-        if (panel.style.display === "block") {
-          panel.style.display = "none";
-        } else {
-          panel.style.display = "block";
-        }
-      });
-    });
-  </script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -672,7 +627,9 @@
           statusDiv.textContent = 'Generating flashcards...';
 
           const topicName = "{{ $submission->topic_name }}";
+          
           const wrongQuestions = @json($submission->wrong_questions);
+          const contextForApi = wrongQuestions.map(item => item.explanation);
 
           try {
             const response = await fetch('https://nha-tutor.onrender.com/flashcards', {
@@ -683,14 +640,13 @@
               },
               body: JSON.stringify({
                 topics: topicName,
-                context: wrongQuestions
+                context: contextForApi
               })
             });
 
             const data = await response.json();
 
             if (response.ok) {
-              // Construct the full download URL
               downloadUrl = data.download_content;
               downloadBtn.disabled = false;
               statusDiv.textContent = 'Flashcards are ready to download!';

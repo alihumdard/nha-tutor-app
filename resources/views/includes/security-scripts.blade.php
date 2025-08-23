@@ -22,6 +22,18 @@
         visibility: visible;
         opacity: 1;
     }
+    
+    /* New styles for the screenshot-blocking overlay */
+    #screenshot-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: #000; /* Black overlay */
+        z-index: 999999;
+        display: none; /* Hidden by default */
+    }
 
     .modal-content {
         background-color: #fff;
@@ -46,6 +58,8 @@
     }
 </style>
 
+<div id="screenshot-overlay"></div>
+
 <div id="security-modal">
     <div class="modal-content">
         <div class="modal-icon">
@@ -61,6 +75,8 @@
     document.addEventListener('DOMContentLoaded', function () {
         const modal = document.getElementById('security-modal');
         const modalMessage = document.getElementById('security-message');
+        const screenshotOverlay = document.getElementById('screenshot-overlay');
+        let snipping = false;
 
         function showWarning(message) {
             if (modal && modalMessage) {
@@ -84,10 +100,10 @@
         // --- Screenshot Attempt Detection ---
         document.addEventListener('keyup', (e) => {
             if (e.key === 'PrintScreen') {
-                document.body.style.visibility = 'hidden';
+                screenshotOverlay.style.display = 'block';
                 showWarning('Screenshots are not allowed.');
                 setTimeout(() => {
-                    document.body.style.visibility = 'visible';
+                    screenshotOverlay.style.display = 'none';
                 }, 3000);
             }
         });
@@ -98,19 +114,30 @@
         document.addEventListener('keydown', e => {
             // Check for Win+Shift+S (Windows Snipping Tool) and Cmd+Shift+S
             if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 's') {
-                e.preventDefault();
+                snipping = false;
+                screenshotOverlay.style.display = 'block';
                 showWarning('Taking screenshots is not allowed.');
             }
 
             // Developer Tools shortcuts
-            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key.toLowerCase() === 'i')) || (e.ctrlKey && (e.key.toLowerCase() === 'u'))) {
                 e.preventDefault();
             }
 
             // Prevent Copying
-            if (e.ctrlKey && e.key.toLowerCase() === 'c') {
+            if (e.ctrlKey && (e.key.toLowerCase() === 'c')) {
                 e.preventDefault();
                 showWarning('Copying content is not allowed.');
+            }
+        });
+
+        // --- Use Blur Event to Detect Snipping Tool ---
+        window.addEventListener('blur', () => {
+            if (snipping) {
+                setTimeout(() => {
+                    screenshotOverlay.style.display = 'none';
+                    snipping = false;
+                }, 1000);
             }
         });
     });

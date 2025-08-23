@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Module;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\QuizSubmission;
@@ -19,8 +20,11 @@ class QuizController extends Controller
         return view('pages.all_modules');
     }
 
-    public function showQuiz($topic_name)
+    public function showQuiz($slug)
     {
+        $module = Module::where('slug', $slug)->firstOrFail();
+        $topic_name = $module->title;
+        
         $result = [];
         if ($topic_name) {
             $apiUrl = 'https://nha-tutor.onrender.com/take-quiz';
@@ -33,18 +37,15 @@ class QuizController extends Controller
         $submission = QuizSubmission::create([
             'user_id' => Auth::id(),
             'topic_name' => $topic_name,
-            'score' => 0, // Initial score is 0
+            'score' => 0,
             'total_questions' => count($result['questions']),
-            'answers' => $result['questions'], // Store all question data here
+            'answers' => $result['questions'],
             'wrong_questions' => [],
         ]);
 
         return view('pages.quiz', ['data' => $result, 'topic_name' => $topic_name, 'submission_id' => $submission->id]);
     }
 
-    /**
-     * Process the quiz submission, calculate the score, and save to the database.
-     */
     public function submitQuiz(Request $request)
     {
         $submissionId = $request->input('submission_id');
@@ -59,10 +60,8 @@ class QuizController extends Controller
         $quizDetails = [];
         $wrongQuestions = [];
 
-        // Loop through the questions stored in the database record to check user answers
         foreach ($submission->answers as $key => $question) {
             $questionIndex = $key + 1;
-
             $userSelectedAnswer = $userAnswers[$questionIndex] ?? null;
             $isCorrect = false;
 
@@ -72,10 +71,9 @@ class QuizController extends Controller
             } else {
                 $wrongQuestions[] = [
                     "question" => $question['question'],
-                    "answer"   => $question['explanation'],
+                    "explanation"   => $question['explanation'],
                 ];
             }
-
 
             $quizDetails[] = [
                 'question' => $question['question'],

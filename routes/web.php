@@ -89,7 +89,7 @@ Route::middleware('auth')->group(function () {
         //quiz 
         Route::get('/quizzes', [QuizController::class, 'all_quizzes'])->name('quizzes');
         Route::get('/modules', [QuizController::class, 'all_modules'])->name('modules');
-        Route::get('/quiz/{less_name}', [QuizController::class, 'showQuiz'])->name('quiz');
+        Route::get('/quiz/{slug}', [QuizController::class, 'showQuiz'])->name('quiz');
         Route::post('/quiz/submit', [QuizController::class, 'submitQuiz'])->name('quiz.submit');
         Route::get('/quiz/results/{submission_id}', [QuizController::class, 'showResults'])->name('quiz.results');
         //exam routes
@@ -98,6 +98,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/exam/submit', [ExamController::class, 'submitExam'])->name('exam.submit');
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
          Route::get('/profile', [DashboardController::class, 'showProfile'])->name('profile.show');
+         Route::get('/profile/edit', [DashboardController::class, 'editProfile'])->name('profile.edit');
         Route::post('/profile', [DashboardController::class, 'updateProfile'])->name('profile.update');
         Route::post('/profile/password', [DashboardController::class, 'updatePassword'])->name('profile.password.update');
     });
@@ -113,5 +114,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/subscribe/swap/{priceId}', [PaymentController::class, 'swapPlan'])->name('subscribe.swap');
     Route::post('/subscribe/cancel', [PaymentController::class, 'cancelSubscription'])->name('subscribe.cancel');
     Route::get('/subscribe/{priceId}', [PaymentController::class, 'subscribe'])->name('subscribe');
-    Route::get('/lession/{less_name}', [LessonController::class, 'sendTopic'])->name('send.topic');
+    Route::get('/lesson/{slug}', [LessonController::class, 'sendTopic'])->name('send.topic');
 });

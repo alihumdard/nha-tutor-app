@@ -131,7 +131,7 @@
       /* justify-content: center; */
     }
 
-    .nav-buttons button {
+    .nav-buttons button, .nav-buttons a {
       background: none;
       border: none;
       color: #2563eb;
@@ -140,9 +140,10 @@
       font-size: 0.875rem;
       padding: 0.25rem 0.5rem;
       transition: color 0.2s ease;
+      text-decoration: none;
     }
 
-    .nav-buttons button:hover {
+    .nav-buttons button:hover, .nav-buttons a:hover {
       color: #1e40af;
     }
 
@@ -418,14 +419,12 @@
 <body>
   @include('pages.preloader')
   <div class="container">
-    <!-- Header -->
     <header class="header-bar">
       <h1>NHA Tutor Pro</h1>
-      <h3>Module 2 – Resident Rights</h3>
+      <h3>{{ $module->title }}</h3>
       <a href="/">Log Out</a>
     </header>
 
-    <!-- Progress -->
     <section class="progress-bar-container">
       <div class="progress-bar-flex">
         <div style="display: flex">
@@ -436,16 +435,22 @@
         </div>
         <span class="divider">|</span>
         <nav class="nav-buttons">
-          <button>Previous</button>
+          @if($previousModule)
+              <a href="{{ route('send.topic', ['slug' => $previousModule->slug]) }}">Previous</a>
+          @else
+              <button disabled style="color: #9ca3af; cursor: not-allowed;">Previous</button>
+          @endif
           <span class="divider">|</span>
-          <button>Next</button>
+          @if($nextModule)
+              <a href="{{ route('send.topic', ['slug' => $nextModule->slug]) }}">Next</a>
+          @else
+              <button disabled style="color: #9ca3af; cursor: not-allowed;">Next</button>
+          @endif
         </nav>
       </div>
     </section>
 
-    <!-- Content -->
     <main class="main-content" style="margin: 20px 0px">
-      <!-- Lesson -->
       <article class="lesson-content">
         <section class="content-block-green">
           <p>
@@ -455,18 +460,15 @@
         </section>
       </article>
 
-      <!-- Tools -->
       <aside class="lesson-tools">
         <h3>Lesson Tools</h3>
         <div class="tools-grid">
-          <a style="text-decoration: none;" href="{{ route('quiz', ['less_name' => $topic_name]) }}" class="tool-btn">
+          <a style="text-decoration: none;" href="{{ route('quiz', ['slug' => $module->slug]) }}" class="tool-btn">
             📑 Take Quiz
           </a>
-          <!-- Toggle button for exam difficulties -->
           <button class="tool-btn" id="toggle-exam-btn" style=" font-weight: bold;">
             📝 Take an Exam
           </button>
-          <!-- The content to be toggled -->
           <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
             <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
               <span style="font-size: 2em;">😀</span>
@@ -491,7 +493,6 @@
     </main>
   </div>
 
-  <!-- Bottom Navigation -->
   @include('includes.bottom-navigation')
   <script>
     document.addEventListener('DOMContentLoaded', function() {

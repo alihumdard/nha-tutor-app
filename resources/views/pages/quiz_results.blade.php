@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>NHA Tutor Pro - Module 2</title>
+  <title>NHA Tutor Pro - Quiz Results</title>
   <style>
     * {
       box-sizing: border-box;
@@ -128,7 +128,6 @@
       display: flex;
       gap: 0.5rem;
       flex-wrap: wrap;
-      /* justify-content: center; */
     }
 
     .nav-buttons button {
@@ -178,7 +177,6 @@
 
     .accordion {
       background-color: #ecfdf5;
-      /* green */
       color: black;
       cursor: pointer;
       padding: 12px;
@@ -199,7 +197,6 @@
 
     .accordion.active .arrow {
       transform: rotate(90deg);
-      /* arrow rotate on open */
     }
 
     .panel {
@@ -509,7 +506,7 @@
   <div class="container">
     <header class="header-bar">
       <h1>NHA Tutor Pro</h1>
-      <h3>Module 2 – Resident Rights</h3>
+      <h3>Quiz Results</h3>
       <a href="/">Log Out</a>
     </header>
 
@@ -616,22 +613,6 @@
 
   @include('includes.bottom-navigation')
 
-
-  <script>
-    const accordions = document.querySelectorAll(".accordion");
-    accordions.forEach(acc => {
-      acc.addEventListener("click", function() {
-        this.classList.toggle("active");
-        const panel = this.nextElementSibling;
-        if (panel.style.display === "block") {
-          panel.style.display = "none";
-        } else {
-          panel.style.display = "block";
-        }
-      });
-    });
-  </script>
-
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const generateBtn = document.getElementById('generate-flashcards-btn');
@@ -646,7 +627,9 @@
           statusDiv.textContent = 'Generating flashcards...';
 
           const topicName = "{{ $submission->topic_name }}";
+          
           const wrongQuestions = @json($submission->wrong_questions);
+          const contextForApi = wrongQuestions.map(item => item.explanation);
 
           try {
             const response = await fetch('https://nha-tutor.onrender.com/flashcards', {
@@ -657,14 +640,13 @@
               },
               body: JSON.stringify({
                 topics: topicName,
-                context: wrongQuestions
+                context: contextForApi
               })
             });
 
             const data = await response.json();
 
             if (response.ok) {
-              // Construct the full download URL
               downloadUrl = data.download_content;
               downloadBtn.disabled = false;
               statusDiv.textContent = 'Flashcards are ready to download!';

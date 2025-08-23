@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Module;
+use App\Models\QuizSubmission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -10,23 +12,64 @@ use Illuminate\Support\Facades\Storage;
 
 class DashboardController extends Controller
 {
-   public function index(Request $request)
-{
-    $user = Auth::user();
+    public function index(Request $request)
+    {
+        $user = Auth::user();
 
-    if (!$user) {
-        return redirect()->route('login')->with('error', 'You must be logged in to access the dashboard.');
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'You must be logged in to access the dashboard.');
+        }
+
+        $allModules = Module::all();
+        $completedQuizzes = QuizSubmission::where('user_id', $user->id)
+            ->where('topic_name', '!=', 'Exam')
+            ->pluck('topic_name')
+            ->unique();
+
+        $modules = $allModules->map(function ($module) use ($completedQuizzes) {
+            $module->completed = $completedQuizzes->contains($module->title);
+            return $module;
+        });
+
+        $coreModules = $modules->where('category', 'core');
+        $losModules = $modules->where('category', 'los');
+
+        $totalModules = $allModules->count();
+        $completedCount = $completedQuizzes->count();
+        $progressPercentage = ($totalModules > 0) ? round(($completedCount / $totalModules) * 100) : 0;
+
+        return view('pages.dashboard', [
+            'user' => $user,
+            'coreModules' => $coreModules,
+            'losModules' => $losModules,
+            'progressPercentage' => $progressPercentage,
+        ]);
     }
-
-    return view('pages.dashboard', [
-        'user' => $user
-    ]);
-}
 
 
     public function adminDashboard()
     {
-        return view('pages.dashboard');
+        $user = Auth::user();
+
+        $allModules = Module::all();
+        // For admins, we can show a generic or empty progress
+        $completedQuizzes = collect();
+
+        $modules = $allModules->map(function ($module) {
+            $module->completed = false; // Admins don't have personal progress
+            return $module;
+        });
+
+        $coreModules = $modules->where('category', 'core');
+        $losModules = $modules->where('category', 'los');
+        $progressPercentage = 0; // Admins don't have personal progress
+
+        return view('pages.dashboard', [
+            'user' => $user,
+            'coreModules' => $coreModules,
+            'losModules' => $losModules,
+            'progressPercentage' => $progressPercentage,
+        ]);
     }
 
     public function showProfile()
@@ -65,18 +108,14 @@ class DashboardController extends Controller
         $user->zip_code = $request->zip_code;
         $user->com_name = $request->com_name;
 
-        // Handle profile picture upload
         if ($request->hasFile('user_pic')) {
-            // Delete old picture if it exists
             if ($user->user_pic) {
                 Storage::delete($user->user_pic);
             }
             $user->user_pic = $request->file('user_pic')->store('profile_pictures', 'public');
         }
 
-        // Handle company picture upload
         if ($request->hasFile('com_pic')) {
-            // Delete old picture if it exists
             if ($user->com_pic) {
                 Storage::delete($user->com_pic);
             }

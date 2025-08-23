@@ -668,6 +668,7 @@
                 </div>
                 <div class="py-1">
                     <a href="{{ route('profile.show') }}">Profile</a>
+                    <a href="{{ route('activity.index') }}">Activity</a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="logout-btn">

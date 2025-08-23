@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\Admin\CrmController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
@@ -101,6 +102,7 @@ Route::middleware('auth')->group(function () {
          Route::get('/profile/edit', [DashboardController::class, 'editProfile'])->name('profile.edit');
         Route::post('/profile', [DashboardController::class, 'updateProfile'])->name('profile.update');
         Route::post('/profile/password', [DashboardController::class, 'updatePassword'])->name('profile.password.update');
+        Route::get('/activity', [ActivityController::class, 'index'])->name('activity.index');
     });
 
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {

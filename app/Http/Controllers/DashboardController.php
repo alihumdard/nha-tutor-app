@@ -52,17 +52,16 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         $allModules = Module::all();
-        // For admins, we can show a generic or empty progress
         $completedQuizzes = collect();
 
         $modules = $allModules->map(function ($module) {
-            $module->completed = false; // Admins don't have personal progress
+            $module->completed = false; 
             return $module;
         });
 
         $coreModules = $modules->where('category', 'core');
         $losModules = $modules->where('category', 'los');
-        $progressPercentage = 0; // Admins don't have personal progress
+        $progressPercentage = 0;
 
         return view('pages.dashboard', [
             'user' => $user,
@@ -99,14 +98,7 @@ class DashboardController extends Controller
             'com_pic' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ]);
 
-        $user->name = $request->name;
-        $user->phone = $request->phone;
-        $user->address = $request->address;
-        $user->country = $request->country;
-        $user->city = $request->city;
-        $user->state = $request->state;
-        $user->zip_code = $request->zip_code;
-        $user->com_name = $request->com_name;
+        $user->fill($request->except('user_pic', 'com_pic'));
 
         if ($request->hasFile('user_pic')) {
             if ($user->user_pic) {
@@ -123,6 +115,9 @@ class DashboardController extends Controller
         }
         
         $user->save();
+
+        // *** ADD THIS LINE ***
+        $user->activities()->create(['description' => 'Updated your profile information.']);
 
         return back()->with('status', 'Profile updated successfully!');
     }
@@ -142,6 +137,9 @@ class DashboardController extends Controller
 
         $user->password = Hash::make($request->password);
         $user->save();
+
+        // *** ADD THIS LINE ***
+        $user->activities()->create(['description' => 'Changed your password.']);
 
         return back()->with('status', 'Password updated successfully!');
     }

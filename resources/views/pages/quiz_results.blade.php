@@ -510,7 +510,7 @@
       <a href="/">Log Out</a>
     </header>
 
-    <section class="progress-bar-container">
+    <!-- <section class="progress-bar-container">
       <div class="progress-bar-flex">
         <div style="display: flex">
           <div class="progress-label">Your Progress:</div>
@@ -525,7 +525,7 @@
           <button>Next</button>
         </nav>
       </div>
-    </section>
+    </section> -->
 
     <main class="main-content" style="margin: 20px 0px">
       <article class="lesson-content">

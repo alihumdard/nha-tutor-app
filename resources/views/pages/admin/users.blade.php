@@ -104,6 +104,10 @@
             transform: scale(0.95);
             transition: transform 0.3s ease-out;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            
+            /* *** THIS IS THE FIX *** */
+            max-height: 90vh; /* Set a maximum height */
+            overflow-y: auto; /* Add a scrollbar only when needed */
         }
 
         .modal.show .modal-content {

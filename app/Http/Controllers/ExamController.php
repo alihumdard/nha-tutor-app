@@ -84,7 +84,10 @@ class ExamController extends Controller
                 $score++;
                 $isCorrect = true;
             } else {
-                $wrongQuestions[] = $question['question'];
+                $wrongQuestions[] = [
+                    'question' => $question['question'],
+                    'explanation' => $question['explanation'],
+                ];
             }
 
             $quizDetails[] = [

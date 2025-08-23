@@ -98,6 +98,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/exam/submit', [ExamController::class, 'submitExam'])->name('exam.submit');
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
          Route::get('/profile', [DashboardController::class, 'showProfile'])->name('profile.show');
+         Route::get('/profile/edit', [DashboardController::class, 'editProfile'])->name('profile.edit');
         Route::post('/profile', [DashboardController::class, 'updateProfile'])->name('profile.update');
         Route::post('/profile/password', [DashboardController::class, 'updatePassword'])->name('profile.password.update');
     });

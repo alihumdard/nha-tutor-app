@@ -507,14 +507,12 @@
 <body>
   @include('pages.preloader')
   <div class="container">
-    <!-- Header -->
     <header class="header-bar">
       <h1>NHA Tutor Pro</h1>
       <h3>Module 2 – Resident Rights</h3>
       <a href="/">Log Out</a>
     </header>
 
-    <!-- Progress -->
     <section class="progress-bar-container">
       <div class="progress-bar-flex">
         <div style="display: flex">
@@ -532,9 +530,7 @@
       </div>
     </section>
 
-    <!-- Content -->
     <main class="main-content" style="margin: 20px 0px">
-      <!-- Lesson -->
       <article class="lesson-content">
         <div style="text-align: center;">
           <h2 style="margin-bottom: 5px;">Quiz Results</h2>
@@ -578,25 +574,6 @@
         @endforeach
       </article>
 
-      <!-- Tools -->
-      <!-- <aside class="lesson-tools">
-        <h3>Lesson Tools</h3>
-        <div class="tools-grid">
-          <button class="tool-btn">
-            🧠
-            Key Takeaways
-          </button>
-          <button class="tool-btn">
-            📔
-            Download Flash Cards
-          </button>
-          <button class="tool-btn">
-            🌡
-            Take Exam
-          </button>
-        </div>
-      </aside> -->
-
       <aside class="lesson-tools">
         <h3>Lesson Tools</h3>
         <div class="tools-grid">
@@ -611,11 +588,9 @@
         </div>
         <div id="flashcard-status" style="margin-top: 10px; text-align: center;"></div>
 
-        <!-- Toggle button for exam difficulties -->
         <button class="tool-btn" id="toggle-exam-btn" style="margin-top: 20px; font-weight: bold;">
           📝 Take an Exam
         </button>
-        <!-- The content to be toggled -->
         <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
           <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
             <span style="font-size: 2em;">😀</span>
@@ -639,7 +614,6 @@
     </main>
   </div>
 
-  <!-- Bottom Navigation -->
   @include('includes.bottom-navigation')
 
 

@@ -33,6 +33,11 @@ class DashboardController extends Controller
     {
         return view('pages.profile');
     }
+    
+    public function editProfile()
+    {
+        return view('pages.edit-profile');
+    }
 
     public function updateProfile(Request $request)
     {

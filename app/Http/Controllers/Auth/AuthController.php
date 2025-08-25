@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendOtpMail;
+use App\Models\Notification;
 use Carbon\Carbon;
 use Exception;
 use Laravel\Socialite\Facades\Socialite;
@@ -41,7 +42,6 @@ class AuthController extends Controller
     }
 
     if (Auth::attempt($credentials)) {
-        // This line logs out all other active sessions for the user.
         Auth::logoutOtherDevices($request->password);
 
         $request->session()->regenerate();
@@ -86,6 +86,12 @@ class AuthController extends Controller
             'status' => '2',
             'otp' => $otp,
             'reset_pswd_time' => Carbon::now(),
+        ]);
+
+        Notification::create([
+            'user_id' => $user->id,
+            'title' => 'New User Registration',
+            'message' => 'A new user has registered: ' . $user->name,
         ]);
 
         Mail::to($user->email)->send(new SendOtpMail($otp));

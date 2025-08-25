@@ -90,7 +90,6 @@
 </head>
 
 <body class="bg-gray-50 font-sans">
-    @include('pages.preloader')
 
     <div class="profile-container min-h-screen">
         <div class="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">

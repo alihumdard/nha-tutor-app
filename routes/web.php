@@ -14,7 +14,7 @@ use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\LessonController;
-
+use App\Http\Controllers\NotificationController;
 
 Route::get('/run-commands', function (Request $request) {
 
@@ -110,6 +110,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/manage/homepage', [CrmController::class, 'edit'])->name('crm.edit');
         Route::post('/manage/homepage', [CrmController::class, 'update'])->name('crm.update');
          Route::get('/users', [CrmController::class, 'index'])->name('users.index');
+         Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+        Route::get('/notifications/{notification}', [NotificationController::class, 'show'])->name('notifications.show');
     });
 
     Route::get('/subscribe/success', [PaymentController::class, 'success'])->name('subscribe.success');

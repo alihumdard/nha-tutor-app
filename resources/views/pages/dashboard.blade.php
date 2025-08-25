@@ -9,7 +9,6 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    /* Base Styles */
     body {
       background-color: #f9fafb;
       font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
@@ -17,14 +16,12 @@
       padding: 0px 190px;
     }
 
-    /* Header */
     .header-container {
       width: 82%;
       margin-left: auto;
       margin-right: auto;
     }
 
-    /* Main Content */
     .main-content {
       flex-grow: 1;
     }
@@ -36,7 +33,6 @@
       padding: 2rem 1rem;
     }
 
-    /* Cards */
     .dashboard-cards {
       display: grid;
       grid-template-columns: 1fr;
@@ -62,7 +58,6 @@
       padding: 1.5rem;
     }
 
-    /* Progress Bar */
     .progress-container {
       margin-top: 1.5rem;
       display: flex;
@@ -98,13 +93,11 @@
       padding-top: 1.5rem;
     }
 
-    /* Learning Plan */
     .learning-plan-image {
       width: 10rem;
       height: 10rem;
     }
 
-    /* Exam Card */
     .exam-title {
       font-size: 1.5rem;
       font-weight: bold;
@@ -132,7 +125,6 @@
       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
 
-    /* Modules Section */
     .modules-section {
       width: 100%;
       padding: 2rem 0;
@@ -312,7 +304,6 @@
       margin-left: 0.25rem;
     }
 
-    /* Responsive Styles */
     @media (max-width: 1190px) {
       body {
         padding: 0px 20px;
@@ -379,7 +370,6 @@
       }
     }
 
-    /* Navigation Container */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -425,7 +415,6 @@
       display: block;
     }
 
-    /* Hover colors */
     .nav-link:hover .blue {
       color: #1e3a8a;
     }
@@ -446,7 +435,6 @@
       color: #c2410c;
     }
 
-    /* Icon default colors */
     .blue {
       color: #2563eb;
     }
@@ -467,8 +455,6 @@
       color: #f97316;
     }
 
-
-    /* Responsive Gaps */
     @media (max-width: 540px) {
       body {
         padding: 0px 10px;
@@ -558,7 +544,6 @@
         font-weight: 400;
     }
 
-    /* Universal header styles */
     .header-nav-container {
         display: flex;
         justify-content: space-between;
@@ -581,7 +566,7 @@
         background-color: #f97316;
         color: white;
         font-weight: 600;
-        border-radius: 9999px; /* Tailwind's rounded-full */
+        border-radius: 9999px;
         transition: background-color 0.2s;
     }
     .user-menu-button:hover {
@@ -652,29 +637,56 @@
         @endauth
     </div>
     <div class="header-brand">NHA Tutor Pro</div>
-    <div class="relative">
+    <div class="relative flex items-center space-x-4">
         @auth
-            <button id="user-menu-button" class="user-menu-button">
-                @if(Auth::user()->user_pic)
-                    <img src="{{ Storage::url(Auth::user()->user_pic) }}" alt="Profile" class="w-full h-full object-cover">
-                @else
-                    <i class="fas fa-user"></i>
-                @endif
-            </button>
-
-            <div id="user-menu" class="user-menu-dropdown hidden">
-                <div class="px-4 py-3 border-b">
-                    <p class="text-sm font-semibold text-gray-800">Hello, {{ Auth::user()->name }}</p>
+            @if(Auth::user()->role === 'admin')
+            <div class="relative">
+                <button id="notification-menu-button" class="user-menu-button bg-blue-500 hover:bg-blue-600">
+                    <i class="fas fa-bell"></i>
+                    @if($unreadNotifications->count() > 0)
+                        <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white"></span>
+                    @endif
+                </button>
+                <div id="notification-menu" class="user-menu-dropdown hidden" style="width: 320px;">
+                    <div class="px-4 py-3 border-b flex justify-between items-center">
+                        <p class="text-sm font-semibold text-gray-800">Notifications</p>
+                        <a href="{{ route('admin.notifications.index') }}" class="text-xs text-blue-500 hover:underline">View All</a>
+                    </div>
+                    <div class="py-1">
+                        @forelse($unreadNotifications as $notification)
+                            <a href="{{ route('admin.notifications.show', $notification) }}" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <p class="font-semibold">{{ $notification->title }}</p>
+                                <p class="text-xs text-gray-500">{{ $notification->message }}</p>
+                            </a>
+                        @empty
+                            <p class="text-center text-sm text-gray-500 py-4">No unread notifications.</p>
+                        @endforelse
+                    </div>
                 </div>
-                <div class="py-1">
-                    <a href="{{ route('profile.show') }}">Profile</a>
-                    <a href="{{ route('activity.index') }}">Activity</a>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="logout-btn">
-                            Logout
-                        </button>
-                    </form>
+            </div>
+            @endif
+            <div class="relative">
+                <button id="user-menu-button" class="user-menu-button">
+                    @if(Auth::user()->user_pic)
+                        <img src="{{ Storage::url(Auth::user()->user_pic) }}" alt="Profile" class="w-full h-full object-cover">
+                    @else
+                        <i class="fas fa-user"></i>
+                    @endif
+                </button>
+                <div id="user-menu" class="user-menu-dropdown hidden">
+                    <div class="px-4 py-3 border-b">
+                        <p class="text-sm font-semibold text-gray-800">Hello, {{ Auth::user()->name }}</p>
+                    </div>
+                    <div class="py-1">
+                        <a href="{{ route('profile.show') }}">Profile</a>
+                        <a href="{{ route('activity.index') }}">Activity</a>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="logout-btn">
+                                Logout
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         @else
@@ -821,7 +833,6 @@
   @include('includes.security-scripts')
   <script>
     document.addEventListener("DOMContentLoaded", function() {
-      // Initialize pagination
       const showMoreCoreBtn = document.getElementById("showMoreCoreBtn");
       const coreModulesElements = document.querySelectorAll(
         "#coreModulesContainer .module-card"
@@ -837,33 +848,28 @@
       initPagination(showMoreCoreBtn, coreModulesElements, coreVisible);
       initPagination(showMoreLosBtn, losModulesElements, losVisible);
 
-      // Responsive adjustments
       handleResponsive();
       window.addEventListener("resize", handleResponsive);
     });
 
     function initPagination(button, modules, visibleCount) {
-      // Hide modules beyond initial count
       modules.forEach((module, index) => {
         if (index >= visibleCount) {
           module.style.display = "none";
         }
       });
 
-      // Hide button if less than visibleCount modules
       if (modules.length <= visibleCount) {
         button.style.display = "none";
       }
 
       button.addEventListener("click", function() {
-        // Show next batch of modules
         const nextBatch = visibleCount + 6;
         for (let i = visibleCount; i < nextBatch && i < modules.length; i++) {
           modules[i].style.display = "flex";
         }
         visibleCount = nextBatch;
 
-        // Hide button if all modules shown
         if (visibleCount >= modules.length) {
           button.style.display = "none";
         }
@@ -894,7 +900,6 @@
         losVisible = 9;
       }
 
-      // Reinitialize pagination with new visible counts
       initPagination(showMoreCoreBtn, coreModules, coreVisible);
       initPagination(showMoreLosBtn, losModules, losVisible);
     }
@@ -904,50 +909,33 @@
     document.addEventListener('DOMContentLoaded', function() {
         const userMenuButton = document.getElementById('user-menu-button');
         const userMenu = document.getElementById('user-menu');
-        const logoutButton = document.getElementById('logout-button');
+        const notificationMenuButton = document.getElementById('notification-menu-button');
+        const notificationMenu = document.getElementById('notification-menu');
 
-        // Toggle dropdown menu
         if (userMenuButton && userMenu) {
             userMenuButton.addEventListener('click', function(event) {
                 event.stopPropagation();
                 userMenu.classList.toggle('hidden');
+                if (notificationMenu) notificationMenu.classList.add('hidden');
             });
         }
 
-        // Close dropdown if clicked outside
+        if (notificationMenuButton && notificationMenu) {
+            notificationMenuButton.addEventListener('click', function(event) {
+                event.stopPropagation();
+                notificationMenu.classList.toggle('hidden');
+                if (userMenu) userMenu.classList.add('hidden');
+            });
+        }
+
         document.addEventListener('click', function(event) {
-            if (userMenu && !userMenu.classList.contains('hidden') &&
-                !userMenu.contains(event.target) &&
-                (!userMenuButton || !userMenuButton.contains(event.target))) {
+            if (userMenu && !userMenu.classList.contains('hidden') && !userMenu.contains(event.target) && !userMenuButton.contains(event.target)) {
                 userMenu.classList.add('hidden');
             }
+            if (notificationMenu && !notificationMenu.classList.contains('hidden') && !notificationMenu.contains(event.target) && !notificationMenuButton.contains(event.target)) {
+                notificationMenu.classList.add('hidden');
+            }
         });
-
-        // Handle AJAX logout
-        if (logoutButton) {
-            logoutButton.addEventListener('click', function(event) {
-                event.preventDefault();
-
-                fetch("{{ route('logout') }}", {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'Accept': 'application/json',
-                    },
-                })
-                .then(response => {
-                    if (response.ok) {
-                        window.location.href = '/login';
-                    } else {
-                        alert('Logout failed. Please try again.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred during logout.');
-                });
-            });
-        }
     });
   </script>
   <script>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,6 +13,12 @@ class PaymentController extends Controller
         if ($request->user()->subscribed('default')) {
             return redirect()->route('home')->with('error', 'You are already subscribed to a plan.');
         }
+
+        Notification::create([
+            'user_id' => $request->user()->id,
+            'title' => 'New Subscription',
+            'message' => $request->user()->name . ' has subscribed to a new plan.',
+        ]);
 
         return $request->user()
             ->newSubscription('default', $priceId)
@@ -38,6 +45,13 @@ class PaymentController extends Controller
     public function cancelSubscription(Request $request)
     {
         $request->user()->subscription('default')->cancelNow();
+
+        Notification::create([
+            'user_id' => $request->user()->id,
+            'title' => 'Subscription Canceled',
+            'message' => $request->user()->name . ' has canceled their subscription.',
+        ]);
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

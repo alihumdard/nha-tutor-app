@@ -168,11 +168,6 @@
               });
           });
 
-          document.querySelectorAll("form").forEach(function(form) {
-              form.addEventListener("submit", function() {
-                  showPreloader();
-              });
-          });
       });
 
       // ✅ AJAX handling (works in SPA sections or Livewire etc.)

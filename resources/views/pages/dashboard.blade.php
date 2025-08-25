@@ -719,34 +719,33 @@
 
           <div class="card w-full md:w-1/3 bg-white rounded-lg shadow-md p-4">
             <div class="card-content text-center">
-              <h1 class="exam-title text-xl font-semibold my-10">Exam</h1>
-              <button id="toggle-exam-btn"
-                class="exam-button bg-[#1fac8d] text-white px-5 py-2 rounded-md text-lg font-semibold">
-                Start
-              </button>
-              <div id="exam-difficulties" class="tools-grid"
-                style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
-                <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn"
-                  style="text-decoration: none;">
-                  <span style="font-size: 2em;">&#128512;</span>
-                  Easy
-                </a>
-                <a href="{{ route('exam.start', ['difficulty' => 'medium']) }}" class="tool-btn"
-                  style="text-decoration: none;">
-                  <span style="font-size: 2em;">&#128524;</span>
-                  Medium
-                </a>
-                <a href="{{ route('exam.start', ['difficulty' => 'hard']) }}" class="tool-btn"
-                  style="text-decoration: none;">
-                  <span style="font-size: 2em;">&#128170;</span>
-                  Hard
-                </a>
-                <a href="{{ route('exam.start', ['difficulty' => 'expert']) }}" class="tool-btn"
-                  style="text-decoration: none;">
-                  <span style="font-size: 2em;">&#129299;</span>
-                  Expert
-                </a>
-              </div>
+                <h1 class="exam-title text-xl font-semibold my-10">Exam</h1>
+                @php
+                    $planName = Auth::user()->getPlanName();
+                @endphp
+                @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
+                    <button id="toggle-exam-btn" class="exam-button bg-[#1fac8d] text-white px-5 py-2 rounded-md text-lg font-semibold">
+                        Start
+                    </button>
+                    <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
+                        <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
+                            <span style="font-size: 2em;">&#128512;</span> Easy
+                        </a>
+                        <a href="{{ route('exam.start', ['difficulty' => 'medium']) }}" class="tool-btn" style="text-decoration: none;">
+                            <span style="font-size: 2em;">&#128524;</span> Medium
+                        </a>
+                        <a href="{{ route('exam.start', ['difficulty' => 'hard']) }}" class="tool-btn" style="text-decoration: none;">
+                            <span style="font-size: 2em;">&#128170;</span> Hard
+                        </a>
+                        <a href="{{ route('exam.start', ['difficulty' => 'expert']) }}" class="tool-btn" style="text-decoration: none;">
+                            <span style="font-size: 2em;">&#129299;</span> Expert
+                        </a>
+                    </div>
+                @else
+                    <button class="exam-button bg-gray-400 text-white px-5 py-2 rounded-md text-lg font-semibold cursor-not-allowed" disabled>
+                        Upgrade to Access Exams
+                    </button>
+                @endif
             </div>
           </div>
         </div>

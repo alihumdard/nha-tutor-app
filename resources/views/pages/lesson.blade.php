@@ -28,7 +28,6 @@
       margin: 0 auto;
     }
 
-    /* Header */
     .header-bar {
       background: #0a4d68;
       padding: 1rem;
@@ -77,7 +76,6 @@
       }
     }
 
-    /* Progress Bar */
     .progress-bar-container {
       background: #f3f4f6;
       border-bottom: 1px solid #e5e7eb;
@@ -128,7 +126,6 @@
       display: flex;
       gap: 0.5rem;
       flex-wrap: wrap;
-      /* justify-content: center; */
     }
 
     .nav-buttons button, .nav-buttons a {
@@ -147,7 +144,6 @@
       color: #1e40af;
     }
 
-    /* Main Layout */
     .main-content {
       display: flex;
       flex-direction: column;
@@ -162,7 +158,6 @@
       }
     }
 
-    /* Lesson Content */
     .lesson-content {
       flex: 1 1 60%;
       background: white;
@@ -176,7 +171,6 @@
       word-wrap: break-word;
     }
 
-    /* Content Blocks */
     .content-block-green {
       background: #ecfdf5;
       padding: .2rem 1rem;
@@ -194,7 +188,6 @@
       color: #374151;
     }
 
-    /* Sidebar Tools */
     .lesson-tools {
       flex: 1 1 35%;
       background: #f9fafb;
@@ -277,7 +270,6 @@
       font-family: Arial, sans-serif;
     }
 
-    /* Navigation Container */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -323,7 +315,6 @@
       display: block;
     }
 
-    /* Hover colors */
     .nav-link:hover .blue {
       color: #1e3a8a;
     }
@@ -344,7 +335,6 @@
       color: #c2410c;
     }
 
-    /* Icon default colors */
     .blue {
       color: #2563eb;
     }
@@ -365,7 +355,6 @@
       color: #f97316;
     }
 
-    /* Responsive Gaps */
     @media (min-width: 340px) {
       .nav-items {
         gap: 1.4rem;
@@ -463,31 +452,31 @@
       <aside class="lesson-tools">
         <h3>Lesson Tools</h3>
         <div class="tools-grid">
-          <a style="text-decoration: none;" href="{{ route('quiz', ['slug' => $module->slug]) }}" class="tool-btn">
-            📑 Take Quiz
-          </a>
-          <button class="tool-btn" id="toggle-exam-btn" style=" font-weight: bold;">
-            📝 Take an Exam
-          </button>
-          <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
-            <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
-              <span style="font-size: 2em;">😀</span>
-              Easy
+            <a style="text-decoration: none;" href="{{ route('quiz', ['slug' => $module->slug]) }}" class="tool-btn">
+                &#128221; Take Quiz
             </a>
-            <a href="{{ route('exam.start', ['difficulty' => 'medium']) }}" class="tool-btn" style="text-decoration: none;">
-              <span style="font-size: 2em;">😌</span>
-              Medium
-            </a>
-            <a href="{{ route('exam.start', ['difficulty' => 'hard']) }}" class="tool-btn" style="text-decoration: none;">
-              <span style="font-size: 2em;">💪</span>
-              Hard
-            </a>
-            <a href="{{ route('exam.start', ['difficulty' => 'expert']) }}" class="tool-btn" style="text-decoration: none;">
-              <span style="font-size: 2em;">🤯</span>
-              Expert
-            </a>
-          </div>
-
+            @php
+                $planName = Auth::user()->getPlanName();
+            @endphp
+            @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
+                <button class="tool-btn" id="toggle-exam-btn" style=" font-weight: bold;">
+                    &#128170; Take an Exam
+                </button>
+                <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
+                    <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
+                        <span style="font-size: 2em;">&#128512;</span> Easy
+                    </a>
+                    <a href="{{ route('exam.start', ['difficulty' => 'medium']) }}" class="tool-btn" style="text-decoration: none;">
+                        <span style="font-size: 2em;">&#128524;</span> Medium
+                    </a>
+                    <a href="{{ route('exam.start', ['difficulty' => 'hard']) }}" class="tool-btn" style="text-decoration: none;">
+                        <span style="font-size: 2em;">&#128170;</span> Hard
+                    </a>
+                    <a href="{{ route('exam.start', ['difficulty' => 'expert']) }}" class="tool-btn" style="text-decoration: none;">
+                        <span style="font-size: 2em;">&#129299;</span> Expert
+                    </a>
+                </div>
+            @endif
         </div>
       </aside>
     </main>

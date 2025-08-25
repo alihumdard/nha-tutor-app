@@ -51,4 +51,27 @@ class User extends Authenticatable
     {
         return $this->hasMany(Activity::class);
     }
+
+    public function getPlanName()
+    {
+        if ($this->role === 'admin') {
+            return 'Admin';
+        }
+
+        if (!$this->subscribed('default')) {
+            return null;
+        }
+
+        $content = HomepageContent::first();
+        $plans = $content ? $content->plans : [];
+        $userPlanStripeId = $this->subscription('default')->stripe_price;
+
+        $planMap = [
+            isset($plans[0]['stripe_price_id']) ? $plans[0]['stripe_price_id'] : null => 'Half In',
+            isset($plans[1]['stripe_price_id']) ? $plans[1]['stripe_price_id'] : null => 'All In',
+            isset($plans[2]['stripe_price_id']) ? $plans[2]['stripe_price_id'] : null => 'All or Nothing',
+        ];
+
+        return $planMap[$userPlanStripeId] ?? 'Unknown Plan';
+    }
 }

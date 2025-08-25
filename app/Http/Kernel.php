@@ -43,6 +43,7 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
         'subscribed' => \App\Http\Middleware\CheckSubscription::class,
+        'plan.access' => \App\Http\Middleware\CheckPlanAccess::class,
 
     ];
 }

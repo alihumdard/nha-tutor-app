@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Module;
+use App\Models\Notification;
 use App\Models\QuizSubmission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,12 +38,15 @@ class DashboardController extends Controller
         $totalModules = $allModules->count();
         $completedCount = $completedQuizzes->count();
         $progressPercentage = ($totalModules > 0) ? round(($completedCount / $totalModules) * 100) : 0;
+        
+        $unreadNotifications = Notification::where('read', false)->latest()->get();
 
         return view('pages.dashboard', [
             'user' => $user,
             'coreModules' => $coreModules,
             'losModules' => $losModules,
             'progressPercentage' => $progressPercentage,
+            'unreadNotifications' => $unreadNotifications,
         ]);
     }
 
@@ -62,12 +66,15 @@ class DashboardController extends Controller
         $coreModules = $modules->where('category', 'core');
         $losModules = $modules->where('category', 'los');
         $progressPercentage = 0;
+        
+        $unreadNotifications = Notification::where('read', false)->latest()->get();
 
         return view('pages.dashboard', [
             'user' => $user,
             'coreModules' => $coreModules,
             'losModules' => $losModules,
             'progressPercentage' => $progressPercentage,
+            'unreadNotifications' => $unreadNotifications,
         ]);
     }
 
@@ -116,7 +123,6 @@ class DashboardController extends Controller
         
         $user->save();
 
-        // *** ADD THIS LINE ***
         $user->activities()->create(['description' => 'Updated your profile information.']);
 
         return back()->with('status', 'Profile updated successfully!');
@@ -138,7 +144,6 @@ class DashboardController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
 
-        // *** ADD THIS LINE ***
         $user->activities()->create(['description' => 'Changed your password.']);
 
         return back()->with('status', 'Password updated successfully!');

@@ -94,9 +94,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/quiz/submit', [QuizController::class, 'submitQuiz'])->name('quiz.submit');
         Route::get('/quiz/results/{submission_id}', [QuizController::class, 'showResults'])->name('quiz.results');
         //exam routes
-        Route::get('/exam/start', [ExamController::class, 'startExam'])->name('exam.start');
-        Route::get('/exam/difficulty', [ExamController::class, 'showExamDifficulty'])->name('exam.difficulty');
-        Route::post('/exam/submit', [ExamController::class, 'submitExam'])->name('exam.submit');
+        Route::middleware('plan.access:All In,All or Nothing')->group(function () {
+            Route::get('/exam/start', [ExamController::class, 'startExam'])->name('exam.start');
+            Route::get('/exam/difficulty', [ExamController::class, 'showExamDifficulty'])->name('exam.difficulty');
+            Route::post('/exam/submit', [ExamController::class, 'submitExam'])->name('exam.submit');
+        });
+
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
          Route::get('/profile', [DashboardController::class, 'showProfile'])->name('profile.show');
          Route::get('/profile/edit', [DashboardController::class, 'editProfile'])->name('profile.edit');

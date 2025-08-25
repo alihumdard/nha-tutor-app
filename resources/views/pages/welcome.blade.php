@@ -83,6 +83,7 @@
             justify-content: center;
             margin-bottom: 60px;
             padding: 0 12px;
+            align-items: stretch;
         }
 
         .plan {
@@ -136,6 +137,7 @@
             font-size: 1.25rem;
             font-weight: 600;
             margin: 0 0 18px;
+            margin-top: auto;
         }
 
         .plan a,
@@ -147,7 +149,6 @@
             border-radius: var(--radius);
             cursor: pointer;
             font-size: 1rem;
-            margin-top: auto;
             text-decoration: none;
             text-align: center;
             display: block;
@@ -266,8 +267,13 @@
         <h2 class="section">{{ $content->plans_main_heading ?? 'Choose Your Plan' }}</h2>
         <div class="plan-grid">
             @if(!empty($content->plans))
-            @foreach($content->plans as $plan)
+            @foreach($content->plans as $index => $plan)
             @php
+            $planName = '';
+            if ($index === 0) $planName = 'Half In';
+            if ($index === 1) $planName = 'All In';
+            if ($index === 2) $planName = 'All or Nothing';
+
             $subscription = auth()->check() ? auth()->user()->subscription('default') : null;
             $isSubscribed = $subscription && $subscription->valid();
             $onGracePeriod = $subscription && $subscription->onGracePeriod();
@@ -283,7 +289,13 @@
                 <ul class="checklist">
                     @if(!empty($plan['details']))
                     @foreach($plan['details'] as $detail)
-                    <li>{{ $detail }}</li>
+                        <li>
+                            @if(($planName === 'Half In' || $planName === 'All In') && str_contains($detail, 'Answer Rationales'))
+                                {{ str_replace('Answer Rationales', 'Answer Explanations', $detail) }}
+                            @else
+                                {{ $detail }}
+                            @endif
+                        </li>
                     @endforeach
                     @endif
                 </ul>

@@ -13,8 +13,8 @@ class CrmController extends Controller
 
     public function index()
     {
-        $users = User::all();
-        // Manually add subscription status to each user object
+        $users = User::with('subscriptions')->get();
+        
         $users = $users->map(function ($user) {
             $user->subscribed = $user->subscribed('default');
             return $user;

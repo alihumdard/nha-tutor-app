@@ -71,7 +71,6 @@
             color: #312e81;
         }
 
-        /* --- MODAL STYLES --- */
         .modal {
             position: fixed;
             top: 0;
@@ -104,10 +103,8 @@
             transform: scale(0.95);
             transition: transform 0.3s ease-out;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            
-            /* *** THIS IS THE FIX *** */
-            max-height: 90vh; /* Set a maximum height */
-            overflow-y: auto; /* Add a scrollbar only when needed */
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal.show .modal-content {
@@ -283,7 +280,7 @@
         function showUserModal(user) {
             const modal = document.getElementById('userModal');
             const modalBody = document.getElementById('modal-body');
-            modalBody.innerHTML = ''; // Clear previous content
+            modalBody.innerHTML = '';
 
             const profilePicDiv = document.createElement('div');
             profilePicDiv.classList.add('profile-pic-container');
@@ -341,10 +338,10 @@
             }
             
             const subStatusDiv = document.createElement('div');
-            const subscriptionInfo = user.current_subscription;
-            
-            if (user.subscribed_status) {
-                const planName = subscriptionInfo.stripe_price;
+            const hasActiveSubscription = user.subscriptions && user.subscriptions.some(sub => sub.name === 'default' && sub.stripe_status === 'active');
+
+            if (hasActiveSubscription) {
+                const subscriptionInfo = user.subscriptions.find(sub => sub.name === 'default');
                 const status = subscriptionInfo.stripe_status;
                 const endsAt = subscriptionInfo.ends_at ? new Date(subscriptionInfo.ends_at).toLocaleDateString() : 'N/A';
                 
@@ -353,7 +350,7 @@
                     <p class="modal-plan-heading text-green-800">
                         <i class="fas fa-check-circle mr-2"></i> Subscription Details
                     </p>
-                    <p class="text-sm text-green-700 mt-2"><strong>Plan:</strong> ${planName}</p>
+                    <p class="text-sm text-green-700 mt-2"><strong>Plan:</strong> Premium Plan</p>
                     <p class="text-sm text-green-700"><strong>Status:</strong> ${status}</p>
                     <p class="text-sm text-green-700"><strong>Ends At:</strong> ${endsAt}</p>
                 `;

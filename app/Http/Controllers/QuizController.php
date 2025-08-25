@@ -12,12 +12,16 @@ class QuizController extends Controller
 {
     public function all_quizzes()
     {
-        return view('pages.all_quizzes');
+        $coreModules = Module::where('category', 'core')->get();
+        $losModules = Module::where('category', 'los')->get();
+        return view('pages.all_quizzes', compact('coreModules', 'losModules'));
     }
 
     public function all_modules()
     {
-        return view('pages.all_modules');
+        $coreModules = Module::where('category', 'core')->get();
+        $losModules = Module::where('category', 'los')->get();
+        return view('pages.all_modules', compact('coreModules', 'losModules'));
     }
 
     public function showQuiz($slug)

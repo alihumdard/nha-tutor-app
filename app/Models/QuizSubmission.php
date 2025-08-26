@@ -12,10 +12,11 @@ class QuizSubmission extends Model
     protected $fillable = [
         'user_id',
         'module_id',
-        'status', // Add this line
+        'status', 
         'topic_name',
         'score',
         'total_questions',
+        'generation_time',
         'answers',
         'wrong_questions',
     ];

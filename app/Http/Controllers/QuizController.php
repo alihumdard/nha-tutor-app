@@ -35,9 +35,9 @@ class QuizController extends Controller
         if ($existingSubmission) {
             return redirect()->route('dashboard')->with('error', 'You have already completed the quiz for this module.');
         }
-        
+
         $topic_name = $module->title;
-        
+
         $result = [];
         if ($topic_name) {
             $apiUrl = 'https://nha-tutor.onrender.com/take-quiz';
@@ -84,12 +84,17 @@ class QuizController extends Controller
             if ($isCorrect) {
                 $score++;
             } else {
-                $wrongQuestions['questions'][] = [
+
+                $wrongQuestions[] = [
                     "question" => $question['question'],
-                    "options" => $question['options'],
-                    "answer" => $question['answer'],
                     "explanation"   => $question['explanation'],
                 ];
+                // $wrongQuestions['questions'][] = [
+                //     "question" => $question['question'],
+                //     "options" => $question['options'],
+                //     "answer" => $question['answer'],
+                //     "explanation"   => $question['explanation'],
+                // ];
             }
 
             $quizDetails[] = [
@@ -100,11 +105,11 @@ class QuizController extends Controller
                 'is_correct' => $isCorrect,
             ];
         }
-        
-        $wrongQuestions += [
-            "generation_time" => $submission->generation_time,
-            "question_count" => $submission->total_questions,
-        ];
+
+        // $wrongQuestions += [
+        //     "generation_time" => $submission->generation_time,
+        //     "question_count" => $submission->total_questions,
+        // ];
 
         $submission->update([
             'status' => 'completed', // Update status on submission

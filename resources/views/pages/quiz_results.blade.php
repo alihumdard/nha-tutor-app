@@ -606,6 +606,7 @@
   </div>
 
   @include('includes.bottom-navigation')
+   @include('includes.security-scripts')
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -613,7 +614,7 @@
       const downloadBtn = document.getElementById('download-flashcards-btn');
       const statusDiv = document.getElementById('flashcard-status');
       let downloadUrl = null;
-      
+
       if (generateBtn) {
         generateBtn.addEventListener('click', async () => {
           generateBtn.disabled = true;
@@ -622,7 +623,7 @@
 
           const topicName = "{{ $submission->topic_name }}";
 
-          // Wrong questions context
+          // *** THIS IS THE FIX ***
           const wrongQuestions = @json($submission->wrong_questions);
           const contextForApi = wrongQuestions.map(item => item.explanation);
 
@@ -630,7 +631,8 @@
             const response = await fetch('https://nha-tutor.onrender.com/flashcards', {
               method: 'POST',
               headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
               },
               body: JSON.stringify({
                 topics: topicName,
@@ -638,10 +640,7 @@
               })
             });
 
-            console.log('Response status:', response.status);
-
             const data = await response.json();
-            console.log('Response data:', data);
 
             if (response.ok) {
               downloadUrl = data.download_content;
@@ -651,13 +650,14 @@
               statusDiv.textContent = `Error: ${data.message || 'Failed to generate flashcards.'}`;
             }
           } catch (error) {
-            statusDiv.textContent = 'An error occurred. Please check console for details.';
+            statusDiv.textContent = 'An error occurred. Please try again.';
             console.error('Error generating flashcards:', error);
           } finally {
             generateBtn.disabled = false;
           }
         });
       }
+
       if (downloadBtn) {
         downloadBtn.addEventListener('click', () => {
           if (downloadUrl) {

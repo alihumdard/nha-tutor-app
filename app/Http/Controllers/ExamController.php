@@ -58,7 +58,7 @@ class ExamController extends Controller
     /**
      * Process the exam submission, calculate the score, and save to the database.
      */
-    public function submitExam(Request $request)
+   public function submitExam(Request $request)
     {
         $submissionId = $request->input('submission_id');
         $submission = QuizSubmission::find($submissionId);
@@ -77,8 +77,10 @@ class ExamController extends Controller
 
             $userSelectedAnswer = $userAnswers[$questionIndex] ?? null;
             $isCorrect = false;
-            $correctAnswerKey = trim($question['answer'], "'");
-            $correctAnswerText = $question['options'][$correctAnswerKey];
+
+            // *** THIS IS THE FIX ***
+            // The API for exams provides the correct answer text directly.
+            $correctAnswerText = $question['correct_answer'];
 
             if ($userSelectedAnswer == $correctAnswerText) {
                 $score++;

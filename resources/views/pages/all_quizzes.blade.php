@@ -600,7 +600,7 @@
                     <a href="{{ route('send.topic', ['slug' => $module->slug]) }}">{{ $module->title }}</a>
                   </div>
                   <div class="mt-auto text-center">
-                    <a href="{{ route('quiz', ['slug' => $module->slug]) }}">Quiz</a>
+                    <a href="{{ route('quiz', ['module' => $module->id]) }}">Quiz</a>
                   </div>
                 </div>
                 @endforeach
@@ -628,7 +628,7 @@
                     <a href="{{ route('send.topic', ['slug' => $module->slug]) }}">{{ $module->title }}</a>
                   </div>
                   <div class="mt-auto text-center">
-                    <a href="{{ route('quiz', ['slug' => $module->slug]) }}">Quiz</a>
+                    <a href="{{ route('quiz', ['module' => $module->id]) }}">Quiz</a>
                   </div>
                 </div>
                 @endforeach
@@ -650,7 +650,7 @@
       </div>
     </main>
   </div>
-
+ @include('includes.security-scripts')
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       function setupPagination(containerId, buttonId, initialVisible) {

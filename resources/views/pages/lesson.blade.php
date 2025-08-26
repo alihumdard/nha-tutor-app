@@ -419,7 +419,7 @@
         <div style="display: flex">
           <div class="progress-label">Your Progress:</div>
           <div class="progress-value" style="padding-left: 10px">
-            12% Complete
+            {{ $progressPercentage }}% Complete
           </div>
         </div>
         <span class="divider">|</span>
@@ -452,7 +452,7 @@
       <aside class="lesson-tools">
         <h3>Lesson Tools</h3>
         <div class="tools-grid">
-            <a style="text-decoration: none;" href="{{ route('quiz', ['slug' => $module->slug]) }}" class="tool-btn">
+            <a style="text-decoration: none;" href="{{ route('quiz', ['module' => $module->id]) }}" class="tool-btn">
                 &#128221; Take Quiz
             </a>
             @php
@@ -483,6 +483,7 @@
   </div>
 
   @include('includes.bottom-navigation')
+   @include('includes.security-scripts')
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const toggleExamBtn = document.getElementById('toggle-exam-btn');

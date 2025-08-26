@@ -32,6 +32,7 @@
         </div>
         @endif
     </div>
+ @include('includes.security-scripts')
 
 <script>
     const resendBtn = document.getElementById('resend-otp-btn');
@@ -79,3 +80,4 @@
 </script>
 </body>
 </html>
+

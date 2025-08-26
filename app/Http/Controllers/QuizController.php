@@ -24,9 +24,18 @@ class QuizController extends Controller
         return view('pages.all_modules', compact('coreModules', 'losModules'));
     }
 
-    public function showQuiz($slug)
+   public function showQuiz(Module $module)
     {
-        $module = Module::where('slug', $slug)->firstOrFail();
+        // Check if the user has already completed a quiz for this module
+        $existingSubmission = QuizSubmission::where('user_id', Auth::id())
+            ->where('module_id', $module->id)
+            ->where('status', 'completed')
+            ->first();
+
+        if ($existingSubmission) {
+            return redirect()->route('dashboard')->with('error', 'You have already completed the quiz for this module.');
+        }
+        
         $topic_name = $module->title;
         
         $result = [];
@@ -40,6 +49,8 @@ class QuizController extends Controller
 
         $submission = QuizSubmission::create([
             'user_id' => Auth::id(),
+            'module_id' => $module->id,
+            'status' => 'pending',
             'topic_name' => $topic_name,
             'score' => 0,
             'total_questions' => count($result['questions']),
@@ -50,6 +61,7 @@ class QuizController extends Controller
         return view('pages.quiz', ['data' => $result, 'topic_name' => $topic_name, 'submission_id' => $submission->id]);
     }
 
+
     public function submitQuiz(Request $request)
     {
         $submissionId = $request->input('submission_id');
@@ -59,7 +71,6 @@ class QuizController extends Controller
         }
 
         $userAnswers = $request->input('answers');
-
         $score = 0;
         $quizDetails = [];
         $wrongQuestions = [];
@@ -67,11 +78,10 @@ class QuizController extends Controller
         foreach ($submission->answers as $key => $question) {
             $questionIndex = $key + 1;
             $userSelectedAnswer = $userAnswers[$questionIndex] ?? null;
-            $isCorrect = false;
+            $isCorrect = ($userSelectedAnswer == $question['options'][$question['answer']]);
 
-            if ($userSelectedAnswer == $question['options'][$question['answer']]) {
+            if ($isCorrect) {
                 $score++;
-                $isCorrect = true;
             } else {
                 $wrongQuestions[] = [
                     "question" => $question['question'],
@@ -89,6 +99,7 @@ class QuizController extends Controller
         }
 
         $submission->update([
+            'status' => 'completed', // Update status on submission
             'score' => $score,
             'answers' => $quizDetails,
             'wrong_questions' => $wrongQuestions,

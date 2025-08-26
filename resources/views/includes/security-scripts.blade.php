@@ -1,4 +1,11 @@
 <style>
+    /* Add this style to prevent text selection */
+    body {
+        -webkit-user-select: none; /* Safari */
+        -ms-user-select: none; /* IE 10+ */
+        user-select: none; /* Standard syntax */
+    }
+
     /* Styles for the "Action Blocked" Modal */
     #security-modal {
         position: fixed;
@@ -114,18 +121,19 @@
         document.addEventListener('keydown', e => {
             // Check for Win+Shift+S (Windows Snipping Tool) and Cmd+Shift+S
             if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 's') {
-                snipping = false;
+                snipping = true;
                 screenshotOverlay.style.display = 'block';
                 showWarning('Taking screenshots is not allowed.');
             }
 
             // Developer Tools shortcuts
-            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key.toLowerCase() === 'i')) || (e.ctrlKey && (e.key.toLowerCase() === 'u'))) {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key.toLowerCase() === 'i' || e.key.toLowerCase() === 'j' || e.key.toLowerCase() === 'c')) || (e.ctrlKey && e.key.toLowerCase() === 'u')) {
                 e.preventDefault();
+                showWarning('Developer tools are disabled.');
             }
 
-            // Prevent Copying
-            if (e.ctrlKey && (e.key.toLowerCase() === 'c')) {
+            // Prevent Copying (Ctrl+C)
+            if (e.ctrlKey && e.key.toLowerCase() === 'c') {
                 e.preventDefault();
                 showWarning('Copying content is not allowed.');
             }

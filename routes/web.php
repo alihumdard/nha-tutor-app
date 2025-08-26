@@ -90,7 +90,7 @@ Route::middleware('auth')->group(function () {
         //quiz 
         Route::get('/quizzes', [QuizController::class, 'all_quizzes'])->name('quizzes');
         Route::get('/modules', [QuizController::class, 'all_modules'])->name('modules');
-        Route::get('/quiz/{slug}', [QuizController::class, 'showQuiz'])->name('quiz');
+        Route::get('/quiz/{module}', [QuizController::class, 'showQuiz'])->name('quiz');
         Route::post('/quiz/submit', [QuizController::class, 'submitQuiz'])->name('quiz.submit');
         Route::get('/quiz/results/{submission_id}', [QuizController::class, 'showResults'])->name('quiz.results');
         //exam routes
@@ -109,7 +109,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/manage/homepage', [CrmController::class, 'edit'])->name('crm.edit');
         Route::post('/manage/homepage', [CrmController::class, 'update'])->name('crm.update');
          Route::get('/users', [CrmController::class, 'index'])->name('users.index');

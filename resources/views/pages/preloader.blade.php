@@ -1,4 +1,4 @@
-  <style>
+<style>
       body {
           margin: 0;
           padding: 0;
@@ -128,7 +128,6 @@
       }
   </style>
 
-  <!-- Loader -->
   <div id="preloader">
       <div class="robot-head">
           <div class="antenna"></div>
@@ -144,52 +143,59 @@
           <div class="dot"></div>
       </div>
   </div>
-  <script>
-      function showPreloader() {
-          document.getElementById("preloader").style.display = "flex";
-      }
+<script>
+    function showPreloader() {
+        document.getElementById("preloader").style.display = "flex";
+    }
 
-      function hidePreloader() {
-          document.getElementById("preloader").style.display = "none";
-      }
+    function hidePreloader() {
+        document.getElementById("preloader").style.display = "none";
+    }
 
-      // ✅ Hide preloader as soon as page fully loads
-      window.addEventListener("load", function() {
-          hidePreloader();
-          document.getElementById("content")?.style?.setProperty("display", "block");
-      });
+    // ** THIS IS THE FIX **
+    // This uses a more reliable way to detect a page refresh and prevent the preloader from showing.
+    (function () {
+        const navigationEntries = performance.getEntriesByType("navigation");
+        if (navigationEntries.length > 0 && navigationEntries[0].type === 'reload') {
+            hidePreloader();
+        }
+    })();
 
-      document.addEventListener("DOMContentLoaded", function() {
-          document.querySelectorAll("a").forEach(function(link) {
-              link.addEventListener("click", function(e) {
-                  // Skip external, new tab, or anchors
-                  if (link.target === "_blank" || link.href.includes("#") || link.href.startsWith("javascript:")) return;
-                  showPreloader();
-              });
-          });
+    // ✅ Hide preloader as soon as page fully loads
+    window.addEventListener("load", function() {
+        hidePreloader();
+    });
 
-      });
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll("a:not(.nav-link)").forEach(function(link) {
+            link.addEventListener("click", function(e) {
+                // Skip external, new tab, or anchors
+                if (link.target === "_blank" || link.href.includes("#") || link.href.startsWith("javascript:")) return;
+                showPreloader();
+            });
+        });
+    });
 
-      // ✅ AJAX handling (works in SPA sections or Livewire etc.)
-      if (window.jQuery) {
-          $(document).ajaxStart(showPreloader);
-          $(document).ajaxStop(hidePreloader);
-      }
+    // ✅ AJAX handling (works in SPA sections or Livewire etc.)
+    if (window.jQuery) {
+        $(document).ajaxStart(showPreloader);
+        $(document).ajaxStop(hidePreloader);
+    }
 
-      // ✅ Intercept fetch
-      const originalFetch = window.fetch;
-      window.fetch = function() {
-          showPreloader();
-          return originalFetch.apply(this, arguments)
-              .finally(() => hidePreloader());
-      };
+    // ✅ Intercept fetch
+    const originalFetch = window.fetch;
+    window.fetch = function() {
+        showPreloader();
+        return originalFetch.apply(this, arguments)
+            .finally(() => hidePreloader());
+    };
 
-      // ✅ Intercept vanilla XHR
-      (function(open) {
-          XMLHttpRequest.prototype.open = function() {
-              this.addEventListener("loadstart", showPreloader);
-              this.addEventListener("loadend", hidePreloader);
-              open.apply(this, arguments);
-          };
-      })(XMLHttpRequest.prototype.open);
-  </script>
+    // ✅ Intercept vanilla XHR
+    (function(open) {
+        XMLHttpRequest.prototype.open = function() {
+            this.addEventListener("loadstart", showPreloader);
+            this.addEventListener("loadend", hidePreloader);
+            open.apply(this, arguments);
+        };
+    })(XMLHttpRequest.prototype.open);
+</script>

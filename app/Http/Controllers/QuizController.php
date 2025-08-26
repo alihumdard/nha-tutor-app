@@ -24,7 +24,7 @@ class QuizController extends Controller
         return view('pages.all_modules', compact('coreModules', 'losModules'));
     }
 
-   public function showQuiz(Module $module)
+    public function showQuiz(Module $module)
     {
         // Check if the user has already completed a quiz for this module
         $existingSubmission = QuizSubmission::where('user_id', Auth::id())
@@ -53,8 +53,9 @@ class QuizController extends Controller
             'status' => 'pending',
             'topic_name' => $topic_name,
             'score' => 0,
-            'total_questions' => count($result['questions']),
+            'total_questions' => $result['question_count'],
             'answers' => $result['questions'],
+            'generation_time' => $result['generation_time'],
             'wrong_questions' => [],
         ]);
 
@@ -83,8 +84,10 @@ class QuizController extends Controller
             if ($isCorrect) {
                 $score++;
             } else {
-                $wrongQuestions[] = [
+                $wrongQuestions['questions'][] = [
                     "question" => $question['question'],
+                    "options" => $question['options'],
+                    "answer" => $question['answer'],
                     "explanation"   => $question['explanation'],
                 ];
             }
@@ -97,6 +100,11 @@ class QuizController extends Controller
                 'is_correct' => $isCorrect,
             ];
         }
+        
+        $wrongQuestions += [
+            "generation_time" => $submission->generation_time,
+            "question_count" => $submission->total_questions,
+        ];
 
         $submission->update([
             'status' => 'completed', // Update status on submission

@@ -512,12 +512,11 @@
           <h2 style="margin-bottom: 5px;">Quiz Results</h2>
           <p style="margin-top: 0; margin-bottom: 5px;">Your Score: <strong>{{ $submission->score }} / {{ $submission->total_questions }}</strong></p>
         </div>
-
-        @if(!empty($submission->wrong_questions))
+        @if(!empty($submission->wrong_questions['questions']))
         <div class="content-block-gray" style="margin-bottom: 20px;">
           <h2>Questions You Missed:</h2>
           <ul>
-            @foreach($submission->wrong_questions as $wrongQuestion)
+            @foreach($submission->wrong_questions['questions'] as $wrongQuestion)
             <li>{{ $wrongQuestion['question'] }}</li>
             @endforeach
           </ul>
@@ -607,7 +606,6 @@
   </div>
 
   @include('includes.bottom-navigation')
- @include('includes.security-scripts')
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -615,7 +613,7 @@
       const downloadBtn = document.getElementById('download-flashcards-btn');
       const statusDiv = document.getElementById('flashcard-status');
       let downloadUrl = null;
-
+      
       if (generateBtn) {
         generateBtn.addEventListener('click', async () => {
           generateBtn.disabled = true;
@@ -624,7 +622,7 @@
 
           const topicName = "{{ $submission->topic_name }}";
 
-          // *** THIS IS THE FIX ***
+          // Wrong questions context
           const wrongQuestions = @json($submission->wrong_questions);
           const contextForApi = wrongQuestions.map(item => item.explanation);
 
@@ -632,8 +630,7 @@
             const response = await fetch('https://nha-tutor.onrender.com/flashcards', {
               method: 'POST',
               headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                'Content-Type': 'application/json'
               },
               body: JSON.stringify({
                 topics: topicName,
@@ -641,7 +638,10 @@
               })
             });
 
+            console.log('Response status:', response.status);
+
             const data = await response.json();
+            console.log('Response data:', data);
 
             if (response.ok) {
               downloadUrl = data.download_content;
@@ -651,14 +651,13 @@
               statusDiv.textContent = `Error: ${data.message || 'Failed to generate flashcards.'}`;
             }
           } catch (error) {
-            statusDiv.textContent = 'An error occurred. Please try again.';
+            statusDiv.textContent = 'An error occurred. Please check console for details.';
             console.error('Error generating flashcards:', error);
           } finally {
             generateBtn.disabled = false;
           }
         });
       }
-
       if (downloadBtn) {
         downloadBtn.addEventListener('click', () => {
           if (downloadUrl) {

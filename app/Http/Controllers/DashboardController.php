@@ -22,13 +22,17 @@ class DashboardController extends Controller
         }
 
         $allModules = Module::all();
+        
+        // ** THIS IS THE FIX **
+        // This logic now applies to all users, including admins.
         $completedQuizzes = QuizSubmission::where('user_id', $user->id)
+            ->where('status', 'completed')
             ->where('topic_name', '!=', 'Exam')
-            ->pluck('topic_name')
+            ->pluck('module_id')
             ->unique();
 
         $modules = $allModules->map(function ($module) use ($completedQuizzes) {
-            $module->completed = $completedQuizzes->contains($module->title);
+            $module->completed = $completedQuizzes->contains($module->id);
             return $module;
         });
 
@@ -41,33 +45,10 @@ class DashboardController extends Controller
         
         $unreadNotifications = Notification::where('read', false)->latest()->get();
 
-        return view('pages.dashboard', [
-            'user' => $user,
-            'coreModules' => $coreModules,
-            'losModules' => $losModules,
-            'progressPercentage' => $progressPercentage,
-            'unreadNotifications' => $unreadNotifications,
-        ]);
-    }
-
-
-    public function adminDashboard()
-    {
-        $user = Auth::user();
-
-        $allModules = Module::all();
-        $completedQuizzes = collect();
-
-        $modules = $allModules->map(function ($module) {
-            $module->completed = false; 
-            return $module;
-        });
-
-        $coreModules = $modules->where('category', 'core');
-        $losModules = $modules->where('category', 'los');
-        $progressPercentage = 0;
-        
-        $unreadNotifications = Notification::where('read', false)->latest()->get();
+        $latestSubmission = QuizSubmission::where('user_id', $user->id)
+            ->where('status', 'completed')
+            ->latest()
+            ->first();
 
         return view('pages.dashboard', [
             'user' => $user,
@@ -75,6 +56,7 @@ class DashboardController extends Controller
             'losModules' => $losModules,
             'progressPercentage' => $progressPercentage,
             'unreadNotifications' => $unreadNotifications,
+            'latestSubmission' => $latestSubmission,
         ]);
     }
 

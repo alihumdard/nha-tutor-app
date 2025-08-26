@@ -262,10 +262,10 @@
       transition: all 0.3s ease;
       text-decoration: none;
     }
-    
+
     .tool-btn:disabled {
-        background-color: #d1d5db;
-        cursor: not-allowed;
+      background-color: #d1d5db;
+      cursor: not-allowed;
     }
 
     .tool-btn svg {
@@ -553,60 +553,61 @@
       <aside class="lesson-tools">
         <h3>Lesson Tools</h3>
         @php
-            $planName = Auth::user()->getPlanName();
+        $planName = Auth::user()->getPlanName();
         @endphp
         <div class="tools-grid">
-            @if($planName === 'All or Nothing' || $planName === 'Admin')
-                <button class="tool-btn" id="generate-flashcards-btn">
-                    &#128196; Key Takeaways
-                </button>
-                <button class="tool-btn" id="download-flashcards-btn" disabled>
-                    &#128229; Download Flash Cards
-                </button>
-            @else
-                <button class="tool-btn" disabled>
-                    &#128196; Key Takeaways
-                </button>
-                <button class="tool-btn" disabled>
-                    &#128229; Download Flash Cards
-                </button>
-            @endif
+          @if($planName === 'All or Nothing' || $planName === 'Admin')
+          <button class="tool-btn" id="generate-flashcards-btn">
+            &#128196; Key Takeaways
+          </button>
+          <button class="tool-btn" id="download-flashcards-btn" disabled>
+            &#128229; Download Flash Cards
+          </button>
+          @else
+          <button class="tool-btn" disabled>
+            &#128196; Key Takeaways
+          </button>
+          <button class="tool-btn" disabled>
+            &#128229; Download Flash Cards
+          </button>
+          @endif
         </div>
         <div id="flashcard-status" style="margin-top: 10px; text-align: center;"></div>
 
         @if($planName === 'Half In')
-            <div style="margin-top: 20px; text-align: center; background-color: #f3f4f6; padding: 15px; border-radius: 8px;">
-                <p class="font-semibold text-gray-700">Upgrade to unlock more tools!</p>
-                <a href="{{ route('home') }}" class="tool-btn" style="margin-top: 10px; background-color: #22c55e; border-color: #16a34a;">
-                    Upgrade Plan
-                </a>
-            </div>
+        <div style="margin-top: 20px; text-align: center; background-color: #f3f4f6; padding: 15px; border-radius: 8px;">
+          <p class="font-semibold text-gray-700">Upgrade to unlock more tools!</p>
+          <a href="{{ route('home') }}" class="tool-btn" style="margin-top: 10px; background-color: #22c55e; border-color: #16a34a;">
+            Upgrade Plan
+          </a>
+        </div>
         @endif
 
         @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
-            <button class="tool-btn" id="toggle-exam-btn" style="margin-top: 20px; font-weight: bold;">
-                &#128170; Take an Exam
-            </button>
-            <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
-                <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
-                    <span style="font-size: 2em;">&#128512;</span> Easy
-                </a>
-                <a href="{{ route('exam.start', ['difficulty' => 'medium']) }}" class="tool-btn" style="text-decoration: none;">
-                    <span style="font-size: 2em;">&#128524;</span> Medium
-                </a>
-                <a href="{{ route('exam.start', ['difficulty' => 'hard']) }}" class="tool-btn" style="text-decoration: none;">
-                    <span style="font-size: 2em;">&#128170;</span> Hard
-                </a>
-                <a href="{{ route('exam.start', ['difficulty' => 'expert']) }}" class="tool-btn" style="text-decoration: none;">
-                    <span style="font-size: 2em;">&#129299;</span> Expert
-                </a>
-            </div>
+        <button class="tool-btn" id="toggle-exam-btn" style="margin-top: 20px; font-weight: bold;">
+          &#128170; Take an Exam
+        </button>
+        <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
+          <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
+            <span style="font-size: 2em;">&#128512;</span> Easy
+          </a>
+          <a href="{{ route('exam.start', ['difficulty' => 'medium']) }}" class="tool-btn" style="text-decoration: none;">
+            <span style="font-size: 2em;">&#128524;</span> Medium
+          </a>
+          <a href="{{ route('exam.start', ['difficulty' => 'hard']) }}" class="tool-btn" style="text-decoration: none;">
+            <span style="font-size: 2em;">&#128170;</span> Hard
+          </a>
+          <a href="{{ route('exam.start', ['difficulty' => 'expert']) }}" class="tool-btn" style="text-decoration: none;">
+            <span style="font-size: 2em;">&#129299;</span> Expert
+          </a>
+        </div>
         @endif
       </aside>
     </main>
   </div>
 
   @include('includes.bottom-navigation')
+ @include('includes.security-scripts')
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -622,7 +623,8 @@
           statusDiv.textContent = 'Generating flashcards...';
 
           const topicName = "{{ $submission->topic_name }}";
-          
+
+          // *** THIS IS THE FIX ***
           const wrongQuestions = @json($submission->wrong_questions);
           const contextForApi = wrongQuestions.map(item => item.explanation);
 

@@ -348,5 +348,6 @@
         </div>
     </footer>
 </body>
+ @include('includes.security-scripts')
 
 </html>

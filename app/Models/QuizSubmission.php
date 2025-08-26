@@ -9,13 +9,10 @@ class QuizSubmission extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'user_id',
+        'module_id',
+        'status', // Add this line
         'topic_name',
         'score',
         'total_questions',
@@ -23,19 +20,11 @@ class QuizSubmission extends Model
         'wrong_questions',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
     protected $casts = [
         'answers' => 'array',
-        'wrong_questions' => 'array', // Cast the new column to an array
+        'wrong_questions' => 'array',
     ];
 
-    /**
-     * Get the user that owns the quiz submission.
-     */
     public function user()
     {
         return $this->belongsTo(User::class)->nullable();

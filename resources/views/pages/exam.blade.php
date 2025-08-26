@@ -515,7 +515,7 @@
       <a href="/">Log Out</a>
     </header>
 
-    <!-- Progress -->
+    <!-- Progress
     <section class="progress-bar-container">
       <div class="progress-bar-flex">
         <div style="display: flex">
@@ -531,7 +531,7 @@
           <button>Next</button>
         </nav>
       </div>
-    </section>
+    </section> -->
 
     <!-- Content -->
     <main class="main-content" style="margin: 20px 0px">
@@ -586,7 +586,7 @@
 
   <!-- Bottom Navigation -->
   @include('includes.bottom-navigation')
-  
+   @include('includes.security-scripts')
   <script>
     const accordions = document.querySelectorAll(".accordion");
     accordions.forEach(acc => {

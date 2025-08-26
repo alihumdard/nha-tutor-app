@@ -23,3 +23,4 @@
     </div>
 </body>
 </html>
+ @include('includes.security-scripts')

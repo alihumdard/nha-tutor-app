@@ -668,7 +668,7 @@
             <div class="relative">
                 <button id="user-menu-button" class="user-menu-button">
                     @if(Auth::user()->user_pic)
-                        <img src="{{ Storage::url(Auth::user()->user_pic) }}" alt="Profile" class="w-full h-full object-cover">
+                        <img src="{{ Storage::url(Auth::user()->user_pic) }}" alt="Profile" class="w-full h-full object-cover rounded-full">
                     @else
                         <i class="fas fa-user"></i>
                     @endif

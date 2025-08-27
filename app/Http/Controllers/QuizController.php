@@ -87,7 +87,7 @@ class QuizController extends Controller
 
                 $wrongQuestions[] = [
                     "question" => $question['question'],
-                    "explanation"   => $question['explanation'],
+                    "answer"   => $question['explanation'],
                 ];
                 // $wrongQuestions['questions'][] = [
                 //     "question" => $question['question'],

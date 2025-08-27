@@ -498,7 +498,6 @@
 </head>
 
 <body>
-  @include('pages.preloader')
   <div class="container">
     <header class="header-bar">
       <h1>NHA Tutor Pro</h1>
@@ -556,7 +555,7 @@
         @endphp
         <div class="tools-grid">
           @if($planName === 'All or Nothing' || $planName === 'Admin')
-          <button class="tool-btn" id="generate-flashcards-btn">
+          <button class="tool-btn not-preloader" id="generate-flashcards-btn">
             &#128196; Key Takeaways
           </button>
           <button class="tool-btn" id="download-flashcards-btn" disabled>
@@ -606,7 +605,7 @@
   </div>
 
   @include('includes.bottom-navigation')
-   @include('includes.security-scripts')
+
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -625,7 +624,7 @@
 
           // *** THIS IS THE FIX ***
           const wrongQuestions = @json($submission->wrong_questions);
-          const contextForApi = wrongQuestions.map(item => item.explanation);
+          const contextForApi = wrongQuestions;
 
           try {
             const response = await fetch('https://nha-tutor.onrender.com/flashcards', {
@@ -686,6 +685,76 @@
       }
     });
   </script>
+
+
+  <!-- Preloader -->
+  <div id="preloader" style="
+    display:none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(255,255,255,0.8);
+    z-index: 9999;
+    text-align: center;
+    padding-top: 20%;
+">
+    <div class="spinner" style="
+        border: 6px solid #f3f3f3;
+        border-top: 6px solid #3498db;
+        border-radius: 50%;
+        width: 60px; height: 60px;
+        animation: spin 1s linear infinite;
+        margin: auto;
+    "></div>
+    <p style="margin-top: 15px; font-weight: bold; color: #333;">
+      Generating flashcards, please wait...
+    </p>
+  </div>
+
+  <style>
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+
+  <script>
+    const preloader = document.getElementById('preloader');
+    const generateBtn = document.getElementById('generateBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const statusDiv = document.getElementById('statusDiv');
+
+    if (generateBtn) {
+      generateBtn.addEventListener('click', async () => {
+        generateBtn.disabled = true;
+        downloadBtn.disabled = true;
+        statusDiv.textContent = 'Generating flashcards...';
+
+        // Show preloader
+        preloader.style.display = 'block';
+
+        try {
+          // Your API call or logic goes here
+          await new Promise(resolve => setTimeout(resolve, 2000)); // demo delay
+
+          statusDiv.textContent = 'Flashcards generated successfully!';
+          downloadBtn.disabled = false;
+        } catch (error) {
+          statusDiv.textContent = 'Error generating flashcards!';
+        } finally {
+          // Hide preloader
+          preloader.style.display = 'none';
+          generateBtn.disabled = false;
+        }
+      });
+    }
+  </script>
+
 </body>
 
 </html>

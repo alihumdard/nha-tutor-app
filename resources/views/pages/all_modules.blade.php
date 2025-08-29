@@ -597,10 +597,10 @@
                 @foreach($coreModules as $module)
                 <div class="module-card">
                   <div class="flex-grow">
-                    <a href="{{ route('send.topic', ['slug' => $module->slug]) }}">{{ $module->title }}</a>
+                    <a href="{{ route('send.topic', ['slug' => $module->slug]) }}" style="color: revert; text-decoration: revert;">{{ $module->title }}</a>
                   </div>
                   <div class="mt-auto text-center">
-                    <a href="{{ route('quiz', ['module' => $module->id]) }}">Quiz</a>
+                    <a href="{{ route('quiz', ['module' => $module->id]) }}" style="color: revert; text-decoration: revert;">Quiz</a>
                   </div>
                 </div>
                 @endforeach
@@ -625,10 +625,10 @@
                 @foreach($losModules as $module)
                 <div class="module-card">
                   <div class="flex-grow">
-                    <a href="{{ route('send.topic', ['slug' => $module->slug]) }}">{{ $module->title }}</a>
+                    <a href="{{ route('send.topic', ['slug' => $module->slug]) }}" style="color: revert; text-decoration: revert;">{{ $module->title }}</a>
                   </div>
                   <div class="mt-auto text-center">
-                    <a href="{{ route('quiz', ['module' => $module->id]) }}">Quiz</a>
+                    <a href="{{ route('quiz', ['module' => $module->id]) }}" style="color: revert; text-decoration: revert;">Quiz</a>
                   </div>
                 </div>
                 @endforeach

@@ -80,7 +80,7 @@ class ExamController extends Controller
 
             // *** THIS IS THE FIX ***
             // The API for exams provides the correct answer text directly.
-            $correctAnswerText = $question['correct_answer'];
+            $correctAnswerText = $question['answer'];
 
             if ($userSelectedAnswer == $correctAnswerText) {
                 $score++;

@@ -765,7 +765,7 @@
                 @foreach($coreModules as $module)
                 <div class="module-card">
                   <div class="flex-grow" style="cursor: pointer;">
-                    <a href="{{ route('send.topic', ['slug' => $module->slug]) }}" class="send-topic">
+                    <a href="{{ route('send.topic', ['slug' => $module->slug]) }}" class="send-topic" style="color: revert; text-decoration: revert;">
                         {{ $module->title }}
                         @if($module->completed)
                             <i class="fas fa-check-circle" style="color: #22c55e; margin-left: 8px;"></i>
@@ -773,7 +773,7 @@
                     </a>
                   </div>
                   <div class="mt-auto text-center">
-                    <a href="{{ route('quiz', ['module' => $module->id]) }}" class="">Quiz</a>
+                    <a href="{{ route('quiz', ['module' => $module->id]) }}" class="" style="color: revert; text-decoration: revert;">Quiz</a>
                   </div>
                 </div>
                 @endforeach
@@ -798,7 +798,7 @@
                 @foreach($losModules as $module)
                 <div class="module-card">
                   <div class="flex-grow">
-                    <a href="{{ route('send.topic', ['slug' => $module->slug]) }}" class="send-topic">
+                    <a href="{{ route('send.topic', ['slug' => $module->slug]) }}" class="send-topic" style="color: revert; text-decoration: revert;">
                         {{ $module->title }}
                         @if($module->completed)
                             <i class="fas fa-check-circle" style="color: #22c55e; margin-left: 8px;"></i>
@@ -806,7 +806,7 @@
                     </a>
                   </div>
                   <div class="mt-auto text-center">
-                    <a href="{{ route('quiz',['module' => $module->id]) }}">Quiz</a>
+                    <a href="{{ route('quiz',['module' => $module->id]) }}" style="color: revert; text-decoration: revert;">Quiz</a>
                   </div>
                 </div>
                 @endforeach
@@ -828,6 +828,7 @@
       </div>
     </main>
   </div>
+
 
   @include('includes.security-scripts')
   <script>

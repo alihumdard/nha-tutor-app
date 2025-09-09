@@ -540,11 +540,6 @@
             <span style="color: green; font-weight: bold;">{{ $answer['correct_answer'] }}</span>
           </p>
         </section>
-
-        <section class="content-block-gray">
-          <h4>Explanation:</h4>
-          <p>{{ $answer['explanation'] }}</p>
-        </section>
         @endforeach
       </article>
 
@@ -600,13 +595,13 @@
           </a>
         </div>
         @endif
+        <p>Intention of this Federal Guideline</p>
       </aside>
     </main>
   </div>
 
   @include('includes.bottom-navigation')
   @include('includes.security-scripts')
-
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const generateBtn = document.getElementById('generate-flashcards-btn');

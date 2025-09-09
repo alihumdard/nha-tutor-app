@@ -161,7 +161,7 @@
                             <label for="user_pic" class="form-label">Profile Picture</label>
                             <div class="image-uploader mx-auto" onclick="document.getElementById('user_pic').click()">
                                 <input type="file" id="user_pic" name="user_pic" accept="image/*" onchange="previewImage(event, 'user_pic_preview')">
-                                <img id="user_pic_preview" src="{{ Auth::user()->user_pic ? Storage::url(Auth::user()->user_pic) : '' }}" style="{{ Auth::user()->user_pic ? '' : 'display:none;' }}">
+                                <img id="user_pic_preview" src="{{ isset(Auth::user()->user_pic) ? asset('public/storage/' . Auth::user()->user_pic) : asset('https://via.placeholder.com/70') }}" style="{{ Auth::user()->user_pic ? '' : 'display:none;' }}">
                                 <i class="fas fa-camera image-uploader-icon"></i>
                             </div>
                             @error('user_pic')
@@ -173,7 +173,7 @@
                             <label for="com_pic" class="form-label">Company Picture</label>
                             <div class="image-uploader mx-auto" onclick="document.getElementById('com_pic').click()">
                                 <input type="file" id="com_pic" name="com_pic" accept="image/*" onchange="previewImage(event, 'com_pic_preview')">
-                                <img id="com_pic_preview" src="{{ Auth::user()->com_pic ? Storage::url(Auth::user()->com_pic) : '' }}" style="{{ Auth::user()->com_pic ? '' : 'display:none;' }}">
+                                <img id="com_pic_preview" src="{{ isset(Auth::user()->user_pic) ? asset('public/storage/' . Auth::user()->user_pic) : asset('https://via.placeholder.com/70') }}" style="{{ Auth::user()->com_pic ? '' : 'display:none;' }}">
                                 <i class="fas fa-camera image-uploader-icon"></i>
                             </div>
                             @error('com_pic')

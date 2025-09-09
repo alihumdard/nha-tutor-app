@@ -286,7 +286,7 @@
             profilePicDiv.classList.add('profile-pic-container');
             if (user.user_pic) {
                 const img = document.createElement('img');
-                img.src = `/storage/${user.user_pic}`;
+                img.src = `/public/storage/${user.user_pic}`;
                 profilePicDiv.appendChild(img);
             } else {
                 const icon = document.createElement('i');

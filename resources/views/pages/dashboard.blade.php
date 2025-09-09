@@ -668,7 +668,7 @@
             <div class="relative">
                 <button id="user-menu-button" class="user-menu-button">
                     @if(Auth::user()->user_pic)
-                        <img src="{{ Storage::url(Auth::user()->user_pic) }}" alt="Profile" class="w-full h-full object-cover rounded-full">
+                        <img src="{{ isset(Auth::user()->user_pic) ? asset('public/storage/' . Auth::user()->user_pic) : asset('https://via.placeholder.com/70') }}" alt="Profile" class="w-full h-full object-cover rounded-full">
                     @else
                         <i class="fas fa-user"></i>
                     @endif
@@ -713,7 +713,7 @@
           </div>
 
           <div class=" w-full md:w-1/3  p-4 flex justify-center items-center">
-            <img src="/assets/images/p4.png" alt="Learning Plan"
+            <img src="/public/assets/images/p4.png" alt="Learning Plan"
               class="learning-plan-image w-full h-auto max-h-[300px] object-contain" />
           </div>
 

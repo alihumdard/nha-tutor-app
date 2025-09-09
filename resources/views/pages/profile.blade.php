@@ -292,7 +292,7 @@
   <div class="container_faizan">
     <div class="left-card_faizan">
       <div class="profile-info_faizan">
-        <img src="{{ Auth::user()->user_pic ? Storage::url(Auth::user()->user_pic) : 'https://via.placeholder.com/70' }}" alt="Profile">
+        <img src="{{ isset(Auth::user()->user_pic) ? asset('public/storage/' . Auth::user()->user_pic) : asset('https://via.placeholder.com/70') }}" alt="Profile">
         <div class="profile-details_faizan">
           <h3>{{ Auth::user()->name }}</h3>
           <p class="verified_faizan"><i class="fa-solid fa-circle-check"></i> Verified Account</p>

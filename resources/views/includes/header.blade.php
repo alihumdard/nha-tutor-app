@@ -9,7 +9,7 @@
         @auth
             <button id="user-menu-button" class="flex items-center justify-center w-10 h-10 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-full transition duration-200 overflow-hidden">
                 @if(Auth::user()->user_pic)
-                    <img src="{{ Storage::url(Auth::user()->user_pic) }}" alt="Profile" class="w-full h-full object-cover">
+                    <img src="{{ isset(Auth::user()->user_pic) ? asset('public/storage/' . Auth::user()->user_pic) : asset('assets/images/p1.png') }}" alt="Profile" class="w-full h-full object-cover">
                 @else
                     <i class="fas fa-user text-sm sm:text-base"></i>
                 @endif

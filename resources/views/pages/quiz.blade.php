@@ -571,7 +571,7 @@
         <div class="tools-grid">
           <!-- Toggle button for exam difficulties -->
           <button class="tool-btn" id="toggle-exam-btn" style="margin-top: 20px; font-weight: bold;">
-            📝 Take an Exam
+            📝 Take Exam
           </button>
           <!-- The content to be toggled -->
           <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">

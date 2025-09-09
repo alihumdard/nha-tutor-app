@@ -624,7 +624,7 @@
               <div class="modules-grid" id="losModulesContainer">
                 @foreach($losModules as $module)
                 <div class="module-card">
-                  <div class="flex-grow"> 
+                  <div class="flex-grow">
                     <a href="{{ route('send.topic', ['slug' => $module->slug]) }}" style="color: revert; text-decoration: revert;">{{ $module->title }}</a>
                   </div>
                   <div class="mt-auto text-center">

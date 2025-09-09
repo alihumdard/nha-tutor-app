@@ -128,7 +128,8 @@
       flex-wrap: wrap;
     }
 
-    .nav-buttons button, .nav-buttons a {
+    .nav-buttons button,
+    .nav-buttons a {
       background: none;
       border: none;
       color: #2563eb;
@@ -140,7 +141,8 @@
       text-decoration: none;
     }
 
-    .nav-buttons button:hover, .nav-buttons a:hover {
+    .nav-buttons button:hover,
+    .nav-buttons a:hover {
       color: #1e40af;
     }
 
@@ -425,15 +427,15 @@
         <span class="divider">|</span>
         <nav class="nav-buttons">
           @if($previousModule)
-              <a href="{{ route('send.topic', ['slug' => $previousModule->slug]) }}">Previous</a>
+          <a href="{{ route('send.topic', ['slug' => $previousModule->slug]) }}">Previous</a>
           @else
-              <button disabled style="color: #9ca3af; cursor: not-allowed;">Previous</button>
+          <button disabled style="color: #9ca3af; cursor: not-allowed;">Previous</button>
           @endif
           <span class="divider">|</span>
           @if($nextModule)
-              <a href="{{ route('send.topic', ['slug' => $nextModule->slug]) }}">Next</a>
+          <a href="{{ route('send.topic', ['slug' => $nextModule->slug]) }}">Next</a>
           @else
-              <button disabled style="color: #9ca3af; cursor: not-allowed;">Next</button>
+          <button disabled style="color: #9ca3af; cursor: not-allowed;">Next</button>
           @endif
         </nav>
       </div>
@@ -452,38 +454,39 @@
       <aside class="lesson-tools">
         <h3>Lesson Tools</h3>
         <div class="tools-grid">
-            <a style="text-decoration: none;" href="{{ route('quiz', ['module' => $module->id]) }}" class="tool-btn">
-                &#128221; Take Quiz
+          <a style="text-decoration: none;" href="{{ route('quiz', ['module' => $module->id]) }}" class="tool-btn">
+            &#128221; Take Quiz
+          </a>
+          @php
+          $planName = Auth::user()->getPlanName();
+          @endphp
+          @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
+          <button class="tool-btn" id="toggle-exam-btn" style=" font-weight: bold;">
+            &#128170; Take Exam
+          </button>
+          <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
+            <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
+              <span style="font-size: 2em;">&#128512;</span> Easy
             </a>
-            @php
-                $planName = Auth::user()->getPlanName();
-            @endphp
-            @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
-                <button class="tool-btn" id="toggle-exam-btn" style=" font-weight: bold;">
-                    &#128170; Take an Exam
-                </button>
-                <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
-                    <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
-                        <span style="font-size: 2em;">&#128512;</span> Easy
-                    </a>
-                    <a href="{{ route('exam.start', ['difficulty' => 'medium']) }}" class="tool-btn" style="text-decoration: none;">
-                        <span style="font-size: 2em;">&#128524;</span> Medium
-                    </a>
-                    <a href="{{ route('exam.start', ['difficulty' => 'hard']) }}" class="tool-btn" style="text-decoration: none;">
-                        <span style="font-size: 2em;">&#128170;</span> Hard
-                    </a>
-                    <a href="{{ route('exam.start', ['difficulty' => 'expert']) }}" class="tool-btn" style="text-decoration: none;">
-                        <span style="font-size: 2em;">&#129299;</span> Expert
-                    </a>
-                </div>
-            @endif
+            <a href="{{ route('exam.start', ['difficulty' => 'medium']) }}" class="tool-btn" style="text-decoration: none;">
+              <span style="font-size: 2em;">&#128524;</span> Medium
+            </a>
+            <a href="{{ route('exam.start', ['difficulty' => 'hard']) }}" class="tool-btn" style="text-decoration: none;">
+              <span style="font-size: 2em;">&#128170;</span> Hard
+            </a>
+            <a href="{{ route('exam.start', ['difficulty' => 'expert']) }}" class="tool-btn" style="text-decoration: none;">
+              <span style="font-size: 2em;">&#129299;</span> Expert
+            </a>
+          </div>
+          @endif
+          <p>Intention of this Federal Guideline</p>
         </div>
       </aside>
     </main>
   </div>
 
   @include('includes.bottom-navigation')
-   @include('includes.security-scripts')
+  @include('includes.security-scripts')
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const toggleExamBtn = document.getElementById('toggle-exam-btn');

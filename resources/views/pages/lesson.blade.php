@@ -128,7 +128,8 @@
       flex-wrap: wrap;
     }
 
-    .nav-buttons button, .nav-buttons a {
+    .nav-buttons button,
+    .nav-buttons a {
       background: none;
       border: none;
       color: #2563eb;
@@ -140,7 +141,8 @@
       text-decoration: none;
     }
 
-    .nav-buttons button:hover, .nav-buttons a:hover {
+    .nav-buttons button:hover,
+    .nav-buttons a:hover {
       color: #1e40af;
     }
 
@@ -402,6 +404,135 @@
         padding-bottom: 50px;
       }
     }
+
+    /* Define a custom color palette for a modern look */
+    :root {
+      --primary-color: #0a4d68;
+      --secondary-color: #e2e8f0;
+      --text-color: #1a202c;
+      --bg-color: #f7fafc;
+    }
+
+    .chatbot-container {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 600px;
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+      background-color: white;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .chat-header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1.25rem;
+      text-align: center;
+      font-weight: 700;
+      border-top-left-radius: 1rem;
+      border-top-right-radius: 1rem;
+    }
+
+    .chat-messages {
+      flex-grow: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      scroll-behavior: smooth;
+    }
+
+    /* Custom scrollbar styles */
+    .chat-messages::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .chat-messages::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 10px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 0.75rem 1rem;
+      border-radius: 1rem;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .user-message {
+      background-color: var(--primary-color);
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 0.25rem;
+    }
+
+    .chatbot-message {
+      background-color: var(--secondary-color);
+      color: var(--text-color);
+      align-self: flex-start;
+      border-bottom-left-radius: 0.25rem;
+    }
+
+    .chat-input-container {
+      display: flex;
+      padding: 1rem;
+      border-top: 1px solid #e2e8f0;
+      background-color: white;
+    }
+
+    #user-input {
+      flex-grow: 1;
+      padding: 0.75rem;
+      border: 1px solid #cbd5e0;
+      border-radius: 9999px;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.2s ease-in-out;
+    }
+
+    #user-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(93, 93, 255, 0.2);
+    }
+
+    #send-button {
+      margin-left: 0.5rem;
+      padding: 0.75rem 1rem;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    }
+
+    #send-button:hover {
+      transform: translateY(-2px);
+      background-color: #4b4bbd;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      .chatbot-container {
+        height: 90vh;
+        width: 95%;
+        border-radius: 0.75rem;
+      }
+    }
   </style>
 </head>
 
@@ -425,15 +556,15 @@
         <span class="divider">|</span>
         <nav class="nav-buttons">
           @if($previousModule)
-              <a href="{{ route('send.topic', ['slug' => $previousModule->slug]) }}">Previous</a>
+          <a href="{{ route('send.topic', ['slug' => $previousModule->slug]) }}">Previous</a>
           @else
-              <button disabled style="color: #9ca3af; cursor: not-allowed;">Previous</button>
+          <button disabled style="color: #9ca3af; cursor: not-allowed;">Previous</button>
           @endif
           <span class="divider">|</span>
           @if($nextModule)
-              <a href="{{ route('send.topic', ['slug' => $nextModule->slug]) }}">Next</a>
+          <a href="{{ route('send.topic', ['slug' => $nextModule->slug]) }}">Next</a>
           @else
-              <button disabled style="color: #9ca3af; cursor: not-allowed;">Next</button>
+          <button disabled style="color: #9ca3af; cursor: not-allowed;">Next</button>
           @endif
         </nav>
       </div>
@@ -452,32 +583,51 @@
       <aside class="lesson-tools">
         <h3>Lesson Tools</h3>
         <div class="tools-grid">
-            <a style="text-decoration: none;" href="{{ route('quiz', ['module' => $module->id]) }}" class="tool-btn">
-                &#128221; Take Quiz
+          <a style="text-decoration: none;" href="{{ route('quiz', ['module' => $module->id]) }}" class="tool-btn">
+            &#128221; Take Quiz
+          </a>
+          @php
+          $planName = Auth::user()->getPlanName();
+          @endphp
+          @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
+          <button class="tool-btn" id="toggle-exam-btn" style=" font-weight: bold;">
+            &#128170; Take Exam
+          </button>
+          <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
+            <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
+              <span style="font-size: 2em;">&#128512;</span> Easy
             </a>
-            @php
-                $planName = Auth::user()->getPlanName();
-            @endphp
-            @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
-                <button class="tool-btn" id="toggle-exam-btn" style=" font-weight: bold;">
-                    &#128170; Take Exam
-                </button>
-                <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
-                    <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
-                        <span style="font-size: 2em;">&#128512;</span> Easy
-                    </a>
-                    <a href="{{ route('exam.start', ['difficulty' => 'medium']) }}" class="tool-btn" style="text-decoration: none;">
-                        <span style="font-size: 2em;">&#128524;</span> Medium
-                    </a>
-                    <a href="{{ route('exam.start', ['difficulty' => 'hard']) }}" class="tool-btn" style="text-decoration: none;">
-                        <span style="font-size: 2em;">&#128170;</span> Hard
-                    </a>
-                    <a href="{{ route('exam.start', ['difficulty' => 'expert']) }}" class="tool-btn" style="text-decoration: none;">
-                        <span style="font-size: 2em;">&#129299;</span> Expert
-                    </a>
-                </div>
-            @endif
-            <p>Intention of this Federal Guideline</p>
+            <a href="{{ route('exam.start', ['difficulty' => 'medium']) }}" class="tool-btn" style="text-decoration: none;">
+              <span style="font-size: 2em;">&#128524;</span> Medium
+            </a>
+            <a href="{{ route('exam.start', ['difficulty' => 'hard']) }}" class="tool-btn" style="text-decoration: none;">
+              <span style="font-size: 2em;">&#128170;</span> Hard
+            </a>
+            <a href="{{ route('exam.start', ['difficulty' => 'expert']) }}" class="tool-btn" style="text-decoration: none;">
+              <span style="font-size: 2em;">&#129299;</span> Expert
+            </a>
+          </div>
+          @endif
+          <p>Intention of this Federal Guideline</p>
+        </div>
+        <div class="chatbot-container">
+          <!-- Chatbot Header -->
+          <div class="chat-header">
+            Quiet Help
+          </div>
+
+          <!-- Messages -->
+          <div class="chat-messages" id="chat-messages">
+            <div class="message chatbot-message">
+              👋 Hello! how can i help you.
+            </div>
+          </div>
+
+          <!-- Input Box -->
+          <div class="chat-input-container">
+            <input type="text" id="user-input" placeholder="Type your message..." autofocus>
+            <button id="send-button">Send</button>
+          </div>
         </div>
 
       </aside>
@@ -485,7 +635,7 @@
   </div>
 
   @include('includes.bottom-navigation')
-   @include('includes.security-scripts')
+  @include('includes.security-scripts')
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const toggleExamBtn = document.getElementById('toggle-exam-btn');
@@ -500,6 +650,77 @@
           }
         });
       }
+    });
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const chatMessages = document.getElementById('chat-messages');
+      const userInput = document.getElementById('user-input');
+      const sendButton = document.getElementById('send-button');
+
+      // Pre-defined responses for the static chatbot
+      const responses = {
+        "hello": "Hi there! How can I assist you?",
+        "hi": "Hey! What's on your mind?",
+        "how are you": "I'm just a computer program, but I'm doing great! Thanks for asking.",
+        "what is your name": "I don't have a name. I'm just a static chatbot here to help you.",
+        "what are your hours": "Our office hours are Monday to Friday, from 9:00 AM to 5:00 PM.",
+        "where are you located": "We are located at 123 Main Street, Anytown, USA.",
+        "what services do you offer": "We offer a variety of services, including web design, mobile app development, and digital marketing.We offer a variety of services, including web design, mobile app development, and digital marketing.",
+        "thank you": "You're welcome! Let me know if you need anything else.",
+        "bye": "Goodbye! Have a great day."
+      };
+
+      // Function to add a message to the chat display
+      function addMessage(text, sender) {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+        if (sender === 'user') {
+          messageElement.classList.add('user-message');
+        } else {
+          messageElement.classList.add('chatbot-message');
+        }
+        messageElement.textContent = text;
+        chatMessages.appendChild(messageElement);
+        // Scroll to the bottom to show the latest message
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      // Function to get the chatbot's response
+      function getChatbotResponse(message) {
+        const normalizedMessage = message.toLowerCase().trim();
+        return responses[normalizedMessage] ||
+          "I'm sorry, I don't understand that. Please ask a question about our hours, location, or services.";
+      }
+
+      // Function to handle sending a message
+      function sendMessage() {
+        const message = userInput.value.trim();
+        if (message === "") {
+          return; // Do nothing if the message is empty
+        }
+
+        // Add the user's message to the chat
+        addMessage(message, 'user');
+        userInput.value = ""; // Clear the input field
+
+        // Simulate a slight delay before the chatbot responds
+        setTimeout(() => {
+          const botResponse = getChatbotResponse(message);
+          addMessage(botResponse, 'chatbot');
+        }, 750); // 750ms delay
+      }
+
+      // Event listener for the send button
+      sendButton.addEventListener('click', sendMessage);
+
+      // Event listener for the Enter key on the input field
+      userInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+          sendMessage();
+        }
+      });
     });
   </script>
 </body>

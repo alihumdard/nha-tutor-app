@@ -460,7 +460,7 @@
             @endphp
             @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
                 <button class="tool-btn" id="toggle-exam-btn" style=" font-weight: bold;">
-                    &#128170; Take an Exam
+                    &#128170; Take Exam
                 </button>
                 <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
                     <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
@@ -477,7 +477,9 @@
                     </a>
                 </div>
             @endif
+            <p>Intention of this Federal Guideline</p>
         </div>
+
       </aside>
     </main>
   </div>

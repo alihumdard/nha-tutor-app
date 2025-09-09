@@ -1,9 +1,12 @@
 <style>
     /* Add this style to prevent text selection */
     body {
-        -webkit-user-select: none; /* Safari */
-        -ms-user-select: none; /* IE 10+ */
-        user-select: none; /* Standard syntax */
+        -webkit-user-select: none;
+        /* Safari */
+        -ms-user-select: none;
+        /* IE 10+ */
+        user-select: none;
+        /* Standard syntax */
     }
 
     /* Styles for the "Action Blocked" Modal */
@@ -29,7 +32,7 @@
         visibility: visible;
         opacity: 1;
     }
-    
+
     /* New styles for the screenshot-blocking overlay */
     #screenshot-overlay {
         position: fixed;
@@ -37,9 +40,11 @@
         left: 0;
         width: 100vw;
         height: 100vh;
-        background-color: #000; /* Black overlay */
+        background-color: #000;
+        /* Black overlay */
         z-index: 999999;
-        display: none; /* Hidden by default */
+        display: none;
+        /* Hidden by default */
     }
 
     .modal-content {
@@ -54,13 +59,15 @@
 
     .modal-icon {
         font-size: 3rem;
-        color: #ef4444; /* Red color */
+        color: #ef4444;
+        /* Red color */
     }
 
     .modal-message {
         font-size: 1.25rem;
         font-weight: 600;
-        color: #b91c1c; /* Darker red */
+        color: #b91c1c;
+        /* Darker red */
         margin-top: 1rem;
     }
 </style>
@@ -79,7 +86,7 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const modal = document.getElementById('security-modal');
         const modalMessage = document.getElementById('security-message');
         const screenshotOverlay = document.getElementById('screenshot-overlay');
@@ -98,7 +105,7 @@
         // --- Prevent Browser-Based Screen Recording ---
         if (navigator.mediaDevices && 'getDisplayMedia' in navigator.mediaDevices) {
             const originalGetDisplayMedia = navigator.mediaDevices.getDisplayMedia.bind(navigator.mediaDevices);
-            navigator.mediaDevices.getDisplayMedia = async function () {
+            navigator.mediaDevices.getDisplayMedia = async function() {
                 showWarning('Screen recording is not permitted.');
                 throw new Error('Screen recording has been disabled on this page.');
             };
@@ -117,7 +124,7 @@
 
         // --- Other Security Measures ---
         document.addEventListener('contextmenu', e => e.preventDefault());
-        
+
         document.addEventListener('keydown', e => {
             // Check for Win+Shift+S (Windows Snipping Tool) and Cmd+Shift+S
             if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 's') {
@@ -148,5 +155,36 @@
                 }, 1000);
             }
         });
+    });
+</script>
+
+<script>
+    // Disable long-press (no "Save / Copy" menu on mobile)
+    document.addEventListener("contextmenu", e => e.preventDefault());
+
+    // Block multi-touch (like pinch-zoom tricks)
+    document.addEventListener("touchstart", e => {
+        if (e.touches.length > 1) {
+            e.preventDefault();
+        }
+    }, {
+        passive: false
+    });
+
+    // Blur or hide content when switching apps (screenshot tray, multitasking, etc.)
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+            document.body.style.filter = "blur(12px)"; // blur when hidden
+        } else {
+            document.body.style.filter = "none"; // restore when visible
+        }
+    });
+
+    // Extra: handle focus/blur events (mobile + desktop browsers)
+    window.addEventListener("blur", () => {
+        document.body.style.filter = "blur(12px)";
+    });
+    window.addEventListener("focus", () => {
+        document.body.style.filter = "none";
     });
 </script>

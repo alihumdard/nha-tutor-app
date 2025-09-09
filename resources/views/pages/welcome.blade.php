@@ -280,11 +280,11 @@
             $isCurrentPlan = $isSubscribed && $subscription->hasPrice($plan['stripe_price_id'] ?? null);
             $stripePriceId = $plan['stripe_price_id'] ?? null;
             @endphp
-            <div class="plan {{ $isCurrentPlan ? 'current-plan' : '' }}">
-                <img src="{{ isset($plan['image_path']) ? Storage::url($plan['image_path']) : 'assets/images/p1.png' }}"
-                    alt="{{ $plan['heading'] ?? '' }}"
-                    style="width: 100%; height: 150px; border-radius: 6px; object-fit: cover;" />
-                <h3>{{ $plan['heading'] ?? 'Plan Heading' }}</h3>
+            <div class="plan {{ $isCurrentPlan ? 'current-plan' : '' }}"><img src="{{ isset($plan['image_path']) ? asset('public/storage/' . $plan['image_path']) : asset('assets/images/p1.png') }}"
+     alt="{{ $plan['heading'] ?? '' }}"
+     style="width: 100%; height: 150px; border-radius: 6px; object-fit: cover;" />
+
+ <h3>{{ $plan['heading'] ?? 'Plan Heading' }}</h3>
                 <p class="subhead">{{ $plan['description'] ?? 'Plan Description' }}</p>
                 <ul class="checklist">
                     @if(!empty($plan['details']))
@@ -347,7 +347,9 @@
             @endif
         </div>
     </footer>
+
+    @include('includes.security-scripts')
 </body>
- @include('includes.security-scripts')
+
 
 </html>

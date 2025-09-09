@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>NHA Tutor Pro - Quiz Results</title>
+  <title>NHA Tutor Pro - Exam Results</title>
   <style>
     * {
       box-sizing: border-box;
@@ -501,14 +501,14 @@
   <div class="container">
     <header class="header-bar">
       <h1>NHA Tutor Pro</h1>
-      <h3>Quiz Results</h3>
+      <h3>Exam Results</h3>
       <a href="/">Log Out</a>
     </header>
 
     <main class="main-content" style="margin: 20px 0px">
       <article class="lesson-content">
         <div style="text-align: center;">
-          <h2 style="margin-bottom: 5px;">Quiz Results</h2>
+          <h2 style="margin-bottom: 5px;">Exam Results</h2>
           <p style="margin-top: 0; margin-bottom: 5px;">Your Score: <strong>{{ $submission->score }} / {{ $submission->total_questions }}</strong></p>
         </div>
         @if(!empty($submission->wrong_questions['questions']))
@@ -539,11 +539,6 @@
             Correct Answer:
             <span style="color: green; font-weight: bold;">{{ $answer['correct_answer'] }}</span>
           </p>
-        </section>
-
-        <section class="content-block-gray">
-          <h4>Explanation:</h4>
-          <p>{{ $answer['explanation'] }}</p>
         </section>
         @endforeach
       </article>
@@ -583,7 +578,7 @@
 
         @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
         <button class="tool-btn" id="toggle-exam-btn" style="margin-top: 20px; font-weight: bold;">
-          &#128170; Take an Exam
+          &#128170; Take Exam
         </button>
         <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
           <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
@@ -600,12 +595,13 @@
           </a>
         </div>
         @endif
+        <p>Intention of this Federal Guideline</p>
       </aside>
     </main>
   </div>
 
   @include('includes.bottom-navigation')
-
+@include('includes.security-scripts')
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {

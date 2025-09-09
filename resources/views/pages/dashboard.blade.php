@@ -668,7 +668,7 @@
             <div class="relative">
                 <button id="user-menu-button" class="user-menu-button">
                     @if(Auth::user()->user_pic)
-                        <img src="{{ Storage::url(Auth::user()->user_pic) }}" alt="Profile" class="w-full h-full object-cover rounded-full">
+                        <img src="{{ isset(Auth::user()->user_pic) ? asset('public/storage/' . Auth::user()->user_pic) : asset('https://via.placeholder.com/70') }}" alt="Profile" class="w-full h-full object-cover rounded-full">
                     @else
                         <i class="fas fa-user"></i>
                     @endif
@@ -713,7 +713,7 @@
           </div>
 
           <div class=" w-full md:w-1/3  p-4 flex justify-center items-center">
-            <img src="/assets/images/p4.png" alt="Learning Plan"
+            <img src="/public/assets/images/p4.png" alt="Learning Plan"
               class="learning-plan-image w-full h-auto max-h-[300px] object-contain" />
           </div>
 
@@ -765,7 +765,7 @@
                 @foreach($coreModules as $module)
                 <div class="module-card">
                   <div class="flex-grow" style="cursor: pointer;">
-                    <a href="{{ route('send.topic', ['slug' => $module->slug]) }}" class="send-topic">
+                    <a href="{{ route('send.topic', ['slug' => $module->slug]) }}" class="send-topic" style="color: revert; text-decoration: revert;">
                         {{ $module->title }}
                         @if($module->completed)
                             <i class="fas fa-check-circle" style="color: #22c55e; margin-left: 8px;"></i>
@@ -773,7 +773,7 @@
                     </a>
                   </div>
                   <div class="mt-auto text-center">
-                    <a href="{{ route('quiz', ['module' => $module->id]) }}" class="">Quiz</a>
+                    <a href="{{ route('quiz', ['module' => $module->id]) }}" class="" style="color: revert; text-decoration: revert;">Quiz</a>
                   </div>
                 </div>
                 @endforeach
@@ -798,7 +798,7 @@
                 @foreach($losModules as $module)
                 <div class="module-card">
                   <div class="flex-grow">
-                    <a href="{{ route('send.topic', ['slug' => $module->slug]) }}" class="send-topic">
+                    <a href="{{ route('send.topic', ['slug' => $module->slug]) }}" class="send-topic" style="color: revert; text-decoration: revert;">
                         {{ $module->title }}
                         @if($module->completed)
                             <i class="fas fa-check-circle" style="color: #22c55e; margin-left: 8px;"></i>
@@ -806,7 +806,7 @@
                     </a>
                   </div>
                   <div class="mt-auto text-center">
-                    <a href="{{ route('quiz',['module' => $module->id]) }}">Quiz</a>
+                    <a href="{{ route('quiz',['module' => $module->id]) }}" style="color: revert; text-decoration: revert;">Quiz</a>
                   </div>
                 </div>
                 @endforeach

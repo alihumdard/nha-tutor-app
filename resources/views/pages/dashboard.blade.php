@@ -829,6 +829,7 @@
     </main>
   </div>
 
+
   @include('includes.security-scripts')
   <script>
     document.addEventListener("DOMContentLoaded", function() {

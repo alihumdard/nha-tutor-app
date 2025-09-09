@@ -601,8 +601,7 @@
   </div>
 
   @include('includes.bottom-navigation')
-@include('includes.security-scripts')
-
+  @include('includes.security-scripts')
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const generateBtn = document.getElementById('generate-flashcards-btn');

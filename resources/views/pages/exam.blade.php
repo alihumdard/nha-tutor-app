@@ -537,12 +537,12 @@
     <main class="main-content" style="margin: 20px 0px">
       <article class="lesson-content">
         <div style="text-align: center; margin-bottom: 20px;">
-          <h1>Exam - {{ ucfirst($difficulty) }}</h1>
+          <h1>Exam</h1>
         </div>
 
         <form method="POST" action="{{ route('exam.submit') }}">
           @csrf
-          <input type="hidden" name="difficulty" value="{{ $difficulty }}">
+          <input type="hidden" name="difficulty" value="easy">
           <input type="hidden" name="submission_id" value="{{ $submission_id }}">
 
           <article class="lesson-content">

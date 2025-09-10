@@ -11,6 +11,8 @@ class HomepageContent extends Model
 
     protected $fillable = [
         'main_heading',
+        'prompet_type',
+        'prompet_content',
         'main_content',
         'plans_main_heading',
         'plans',

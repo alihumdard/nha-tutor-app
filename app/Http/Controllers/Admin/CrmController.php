@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\HomepageContent;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 class CrmController extends Controller
@@ -14,7 +15,7 @@ class CrmController extends Controller
     public function index()
     {
         $users = User::with('subscriptions')->get();
-        
+
         $users = $users->map(function ($user) {
             $user->subscribed = $user->subscribed('default');
             return $user;
@@ -31,10 +32,29 @@ class CrmController extends Controller
             'plans' => [],
             'why_choose_us_main_heading' => 'Why Choose Us?',
             'why_choose_us_items' => [],
+            'prompet_type' => null, // no type initially
+            'prompet_content' => null,
         ]);
+
+        // Call API only if prompet_type not set yet
+        if (!$content->prompet_type) {
+            $apiUrl = 'https://nha-tutor.onrender.com/prompt';
+            $response = Http::timeout(120)->get($apiUrl, [
+                'prompt_type' => 'system',
+            ]);
+
+            if ($response->successful()) {
+                $result = $response->json();
+                $content->update([
+                    'prompet_type' => $result['prompt_type'] ?? 'system',
+                    'prompet_content' => $result['prompt'] ?? '',
+                ]);
+            }
+        }
 
         return view('crm', compact('content'));
     }
+
 
     public function update(Request $request)
     {
@@ -48,9 +68,10 @@ class CrmController extends Controller
             'plans.*.description' => 'nullable|string',
             'plans.*.details' => 'nullable|array',
             'plans.*.price' => 'nullable|string',
-            'plans.*.stripe_price_id' => 'nullable|string', // Add this line
+            'plans.*.stripe_price_id' => 'nullable|string',
             'why_choose_us_main_heading' => 'nullable|string',
             'why_choose_us_items' => 'nullable|array',
+            'prompet_type' => 'nullable|in:system,lesson', // ✅ updated
         ]);
 
         $content = HomepageContent::first();
@@ -72,8 +93,26 @@ class CrmController extends Controller
                 $newPlan['description'] = $planData['description'];
                 $newPlan['details'] = isset($planData['details']) ? array_filter($planData['details']) : [];
                 $newPlan['price'] = $planData['price'];
-                $newPlan['stripe_price_id'] = $planData['stripe_price_id'] ?? null; // 2. ADD THIS LINE TO SAVE THE ID
+                $newPlan['stripe_price_id'] = $planData['stripe_price_id'] ?? null;
+
                 $newPlansData[] = $newPlan;
+            }
+        }
+
+        $newPromptType = $request->prompet_type;
+        $newPromptContent = $request->prompet_content;
+
+        // ✅ Decide when to call API
+        if ($content->prompet_type !== $newPromptType) {
+            // Only call API if type changed
+            $apiUrl = 'https://nha-tutor.onrender.com/prompt';
+            $response = Http::timeout(120)->get($apiUrl, [
+                'prompt_type' => $newPromptType,
+            ]);
+
+            if ($response->successful()) {
+                $result = $response->json();
+                $newPromptContent = $result['prompt'] ?? '';
             }
         }
 
@@ -84,12 +123,15 @@ class CrmController extends Controller
             'plans' => $newPlansData,
             'why_choose_us_main_heading' => $request->why_choose_us_main_heading,
             'why_choose_us_items' => isset($request->why_choose_us_items) ? array_filter($request->why_choose_us_items) : [],
+
+            // Prompts
+            'prompet_type' => $newPromptType,
+            'prompet_content' => $newPromptContent,
         ]);
 
-        // New code - sends a JSON response
         return response()->json([
             'success' => true,
-            'message' => 'Homepage content updated successfully!'
+            'message' => 'Homepage content updated successfully!',
         ]);
     }
 }

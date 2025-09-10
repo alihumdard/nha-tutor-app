@@ -404,6 +404,135 @@
         padding-bottom: 50px;
       }
     }
+
+    /* Define a custom color palette for a modern look */
+    :root {
+      --primary-color: #0a4d68;
+      --secondary-color: #e2e8f0;
+      --text-color: #1a202c;
+      --bg-color: #f7fafc;
+    }
+
+    .chatbot-container {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 600px;
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+      background-color: white;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .chat-header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1.25rem;
+      text-align: center;
+      font-weight: 700;
+      border-top-left-radius: 1rem;
+      border-top-right-radius: 1rem;
+    }
+
+    .chat-messages {
+      flex-grow: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      scroll-behavior: smooth;
+    }
+
+    /* Custom scrollbar styles */
+    .chat-messages::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .chat-messages::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 10px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 0.75rem 1rem;
+      border-radius: 1rem;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .user-message {
+      background-color: var(--primary-color);
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 0.25rem;
+    }
+
+    .chatbot-message {
+      background-color: var(--secondary-color);
+      color: var(--text-color);
+      align-self: flex-start;
+      border-bottom-left-radius: 0.25rem;
+    }
+
+    .chat-input-container {
+      display: flex;
+      padding: 1rem;
+      border-top: 1px solid #e2e8f0;
+      background-color: white;
+    }
+
+    #user-input {
+      flex-grow: 1;
+      padding: 0.75rem;
+      border: 1px solid #cbd5e0;
+      border-radius: 9999px;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.2s ease-in-out;
+    }
+
+    #user-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(93, 93, 255, 0.2);
+    }
+
+    #send-button {
+      margin-left: 0.5rem;
+      padding: 0.75rem 1rem;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    }
+
+    #send-button:hover {
+      transform: translateY(-2px);
+      background-color: #4b4bbd;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      .chatbot-container {
+        height: 90vh;
+        width: 95%;
+        border-radius: 0.75rem;
+      }
+    }
   </style>
 </head>
 
@@ -461,36 +590,42 @@
           $planName = Auth::user()->getPlanName();
           @endphp
           @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
-          <button class="tool-btn" id="toggle-exam-btn" style=" font-weight: bold;">
+          <a href="{{ route('exam.start')}}" class="tool-btn" style=" font-weight: bold;">
             &#128170; Take Exam
-          </button>
-          <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
-            <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
+          </a>
+          <div id="exam-difficulties" class="tools-grid d-none" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
+            <a class="tool-btn" style="text-decoration: none;">
               <span style="font-size: 2em;">&#128512;</span> Easy
             </a>
-            @php
-                $planName = Auth::user()->getPlanName();
-            @endphp
-            @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
-                <button class="tool-btn" id="toggle-exam-btn" style=" font-weight: bold;">
-                    &#128170; Take Exam
-                </button>
-                <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
-                    <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
-                        <span style="font-size: 2em;">&#128512;</span> Easy
-                    </a>
-                    <a href="{{ route('exam.start', ['difficulty' => 'medium']) }}" class="tool-btn" style="text-decoration: none;">
-                        <span style="font-size: 2em;">&#128524;</span> Medium
-                    </a>
-                    <a href="{{ route('exam.start', ['difficulty' => 'hard']) }}" class="tool-btn" style="text-decoration: none;">
-                        <span style="font-size: 2em;">&#128170;</span> Hard
-                    </a>
-                    <a href="{{ route('exam.start', ['difficulty' => 'expert']) }}" class="tool-btn" style="text-decoration: none;">
-                        <span style="font-size: 2em;">&#129299;</span> Expert
-                    </a>
-                </div>
-            @endif
-            <p>Intention of this Federal Guideline</p>
+            <a href="{{ route('exam.start', ['difficulty' => 'medium']) }}" class="tool-btn" style="text-decoration: none;">
+              <span style="font-size: 2em;">&#128524;</span> Medium
+            </a>
+            <a href="{{ route('exam.start', ['difficulty' => 'hard']) }}" class="tool-btn" style="text-decoration: none;">
+              <span style="font-size: 2em;">&#128170;</span> Hard
+            </a>
+            <a href="{{ route('exam.start', ['difficulty' => 'expert']) }}" class="tool-btn" style="text-decoration: none;">
+              <span style="font-size: 2em;">&#129299;</span> Expert
+            </a>
+          </div>
+          @endif
+          <p>Intention of this Federal Guideline</p>
+        </div>
+
+        <div class="chatbot-container">
+          <div class="chat-header">
+            Quiet Help
+          </div>
+
+          <div class="chat-messages" id="chat-messages">
+            <div class="message chatbot-message">
+              👋 Hello! how can i help you.
+            </div>
+          </div>
+
+          <div class="chat-input-container">
+            <input type="text" id="user-input" placeholder="Type your message..." autofocus>
+            <button id="send-button">Send</button>
+          </div>
         </div>
 
       </aside>
@@ -498,7 +633,7 @@
   </div>
 
   @include('includes.bottom-navigation')
-  @include('includes.security-scripts')
+
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const toggleExamBtn = document.getElementById('toggle-exam-btn');
@@ -515,6 +650,107 @@
       }
     });
   </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const chatMessages = document.getElementById('chat-messages');
+      const userInput = document.getElementById('user-input');
+      const sendButton = document.getElementById('send-button');
+
+      // Runtime chat context (all user questions in this session)
+      let context = "";
+      // Lesson content from backend
+      const lessonContent = (() => {
+        const raw = `<?= $data['lesson_content'] ?? '' ?>`;
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = raw;
+
+        // ✅ Convert to string, remove newlines/tabs, collapse spaces
+        return String(tempDiv.textContent || tempDiv.innerText || "")
+          .replace(/[\n\r\t]+/g, " ") // remove newlines and tabs
+          .replace(/\s+/g, " ") // collapse multiple spaces
+          .trim();
+      })();
+
+
+      // Function to add a message to the chat display
+      function addMessage(text, sender) {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+        if (sender === 'user') {
+          messageElement.classList.add('user-message');
+        } else {
+          messageElement.classList.add('chatbot-message');
+        }
+        messageElement.textContent = text;
+        chatMessages.appendChild(messageElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll
+      }
+
+      // Send message to API
+      async function sendToAPI(message) {
+        try {
+          const response = await fetch("https://nha-tutor.onrender.com/chatbot", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+            },
+            body: JSON.stringify({
+              lesson_content: lessonContent,
+              question: message,
+              context: context
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error("API error");
+          }
+
+          const data = await response.json();
+          return data.answer || "Sorry, I couldn’t find an answer.";
+        } catch (error) {
+          console.error("Chatbot API error:", error);
+          return "⚠️ Unable to connect to chatbot right now. Please try again later.";
+        }
+      }
+
+      // Handle sending message
+      async function sendMessage() {
+        const message = userInput.value.trim();
+        if (message === "") return;
+
+        // Add user message
+        addMessage(message, 'user');
+        userInput.value = "";
+
+        // Update context (append this question)
+        context += (context ? " | " : "") + message;
+
+        // Show "typing..." placeholder
+        const loadingMessage = document.createElement('div');
+        loadingMessage.classList.add('message', 'chatbot-message');
+        loadingMessage.textContent = "💭 Thinking...";
+        chatMessages.appendChild(loadingMessage);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Get API response
+        const botResponse = await sendToAPI(message);
+
+        // Replace "typing..." with real answer
+        loadingMessage.textContent = botResponse;
+      }
+
+      // Events
+      sendButton.addEventListener('click', sendMessage);
+      userInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+          sendMessage();
+        }
+      });
+    });
+  </script>
+
 </body>
 
 </html>

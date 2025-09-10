@@ -250,22 +250,6 @@
                 <textarea name="main_content" rows="4">{{ old('main_content', $content->main_content ?? '') }}</textarea>
             </div>
 
-            <div class="form-group">
-                <label for="prompet_type">Prompet Type</label>
-                <div class="select-wrapper">
-                    <select id="prompet_type" name="prompet_type" class="form-control">
-                        <option value="">-- Select Type --</option>
-                        <option value="system" {{ old('prompet_type', $content->prompet_type ?? '') == 'system' ? 'selected' : '' }}>System</option>
-                        <option value="lesson" {{ old('prompet_type', $content->prompet_type ?? '') == 'lesson' ? 'selected' : '' }}>Lesson</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="prompet_content">Prompet Content</label>
-                <textarea id="prompet_content" disabled="true" name="prompet_content" rows="4" class="form-control">{{ old('prompet_content', $content->prompet_content ?? '') }}</textarea>
-            </div>
-
             <h2>Plans Section</h2>
             <div class="form-group">
                 <label for="plans_main_heading">Plans Section Heading</label>
@@ -323,11 +307,38 @@
             </div>
             <button type="button" class="btn btn-success" onclick="addWhyChooseUsItem()">Add Item</button>
 
-            <div style="margin-top: 3rem;">
+            <div style="margin-top: 3rem; display: flex; justify-content: flex-end;">
                 <button type="submit" class="btn btn-primary">Save All Changes</button>
             </div>
         </form>
     </div>
+
+    <div class="container " style="margin-top: 3rem;">
+        <form id="crmForm" class="" action="{{ route('admin.propet.update') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="form-group ">
+                <label for="prompet_type">Prompet Type</label>
+                <div class="select-wrapper">
+                    <select id="prompet_type" name="prompet_type" class="form-control">
+                        <option value="">-- Select Type --</option>
+                        <option value="system" {{ old('prompet_type', $content->prompet_type ?? '') == 'system' ? 'selected' : '' }}>System</option>
+                        <option value="lesson" {{ old('prompet_type', $content->prompet_type ?? '') == 'lesson' ? 'selected' : '' }}>Lesson</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="prompet_content">Prompet Content</label>
+                <textarea id="prompet_content" name="prompet_content" rows="4" class="form-control">{{ old('prompet_content', $content->prompet_content ?? '') }}</textarea>
+            </div>
+            <div class="form-group">
+                <div style="margin-top: 3rem; display: flex; justify-content: flex-end;">
+                    <button type="submit" class="btn btn-primary">Update Prompet</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
 
     <script>
         document.getElementById('crmForm').addEventListener('submit', function(e) {
@@ -356,14 +367,6 @@
                             timer: 2000,
                             showConfirmButton: false
                         });
-
-                        // ✅ Update textarea with latest prompt from response
-                        if (data.prompt) {
-                            const textarea = document.querySelector('textarea[name="prompt"]');
-                            if (textarea) {
-                                textarea.value = data.prompt;
-                            }
-                        }
                     } else {
                         Swal.fire({
                             title: 'Error!',

@@ -186,19 +186,19 @@
 
 
     // ✅ Intercept fetch
-    const originalFetch = window.fetch;
-    window.fetch = function() {
-        showPreloader();
-        return originalFetch.apply(this, arguments)
-            .finally(() => hidePreloader());
-    };
+    // const originalFetch = window.fetch;
+    // window.fetch = function() {
+    //     showPreloader();
+    //     return originalFetch.apply(this, arguments)
+    //         .finally(() => hidePreloader());
+    // };
 
     // ✅ Intercept vanilla XHR
-    (function(open) {
-        XMLHttpRequest.prototype.open = function() {
-            this.addEventListener("loadstart", showPreloader);
-            this.addEventListener("loadend", hidePreloader);
-            open.apply(this, arguments);
-        };
-    })(XMLHttpRequest.prototype.open);
+    // (function(open) {
+    //     XMLHttpRequest.prototype.open = function() {
+    //         this.addEventListener("loadstart", showPreloader);
+    //         this.addEventListener("loadend", hidePreloader);
+    //         open.apply(this, arguments);
+    //     };
+    // })(XMLHttpRequest.prototype.open);
 </script>

@@ -71,7 +71,6 @@ class CrmController extends Controller
             'plans.*.stripe_price_id' => 'nullable|string',
             'why_choose_us_main_heading' => 'nullable|string',
             'why_choose_us_items' => 'nullable|array',
-            'prompet_type' => 'nullable|in:system,lesson', // ✅ updated
         ]);
 
         $content = HomepageContent::first();
@@ -99,22 +98,6 @@ class CrmController extends Controller
             }
         }
 
-        $newPromptType = $request->prompet_type;
-        $newPromptContent = $request->prompet_content;
-
-        // ✅ Decide when to call API
-        if ($content->prompet_type !== $newPromptType) {
-            // Only call API if type changed
-            $apiUrl = 'https://nha-tutor.onrender.com/prompt';
-            $response = Http::timeout(120)->get($apiUrl, [
-                'prompt_type' => $newPromptType,
-            ]);
-
-            if ($response->successful()) {
-                $result = $response->json();
-                $newPromptContent = $result['prompt'] ?? '';
-            }
-        }
 
         $content->update([
             'main_heading' => $request->main_heading,
@@ -123,15 +106,53 @@ class CrmController extends Controller
             'plans' => $newPlansData,
             'why_choose_us_main_heading' => $request->why_choose_us_main_heading,
             'why_choose_us_items' => isset($request->why_choose_us_items) ? array_filter($request->why_choose_us_items) : [],
-
-            // Prompts
-            'prompet_type' => $newPromptType,
-            'prompet_content' => $newPromptContent,
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Homepage content updated successfully!',
         ]);
+    }
+
+    public function propet_update(Request $request)
+    {
+        // Validate input
+        $request->validate([
+            'prompet_type' => 'nullable|in:system,lesson',
+            'prompet_content' => 'nullable|string',
+        ]);
+
+        // Get the first record
+        $content = HomepageContent::first();
+
+        $newPromptType = $request->prompet_type;
+        $newPromptContent = $request->prompet_content;
+
+        // Only call API if type or content is provided
+        if ($newPromptType && $newPromptContent) {
+            try {
+                $apiUrl = 'https://nha-tutor.onrender.com/prompt';
+                $response = Http::timeout(120)->put($apiUrl, [
+                    'prompt_type' => $newPromptType,
+                    'prompt' => $newPromptContent,
+                ]);
+
+                if ($response->successful()) {
+                    $result = $response->json();
+                    $newPromptContent = $result['prompt'] ?? $newPromptContent;
+                }
+            } catch (\Illuminate\Http\Client\RequestException $e) {
+                return redirect()->back()->with('error', 'Failed to update prompt via API. Please try again.');
+            }
+        }
+
+        // Update the database
+        $content->update([
+            'prompet_type' => $newPromptType,
+            'prompet_content' => $newPromptContent,
+        ]);
+
+        // Redirect back with success message
+        return redirect()->back()->with('success', 'Data updated successfully.');
     }
 }

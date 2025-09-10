@@ -569,12 +569,11 @@
       <aside class="lesson-tools">
         <h3>Lesson Tools</h3>
         <div class="tools-grid">
-          <!-- Toggle button for exam difficulties -->
-          <button class="tool-btn" id="toggle-exam-btn" style="margin-top: 20px; font-weight: bold;">
-            📝 Take Exam
-          </button>
+          <a href="{{ route('exam.start')}}" class="tool-btn"  style=" font-weight: bold;">
+            &#128170; Take Exam
+          </a>
           <!-- The content to be toggled -->
-          <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
+          <div id="exam-difficulties" class="tools-grid d-none" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
             <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
               <span style="font-size: 2em;">😀</span>
               Easy
@@ -601,7 +600,7 @@
   <!-- Bottom Navigation -->
   @include('includes.bottom-navigation')
 
-@include('includes.security-scripts')
+  @include('includes.security-scripts')
   <script>
     const accordions = document.querySelectorAll(".accordion");
     accordions.forEach(acc => {

@@ -590,11 +590,11 @@
           $planName = Auth::user()->getPlanName();
           @endphp
           @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
-          <button class="tool-btn" id="toggle-exam-btn" style=" font-weight: bold;">
+          <a href="{{ route('exam.start')}}" class="tool-btn" style=" font-weight: bold;">
             &#128170; Take Exam
-          </button>
-          <div id="exam-difficulties" class="tools-grid" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
-            <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
+          </a>
+          <div id="exam-difficulties" class="tools-grid d-none" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
+            <a class="tool-btn" style="text-decoration: none;">
               <span style="font-size: 2em;">&#128512;</span> Easy
             </a>
             <a href="{{ route('exam.start', ['difficulty' => 'medium']) }}" class="tool-btn" style="text-decoration: none;">
@@ -610,20 +610,18 @@
           @endif
           <p>Intention of this Federal Guideline</p>
         </div>
+
         <div class="chatbot-container">
-          <!-- Chatbot Header -->
           <div class="chat-header">
             Quiet Help
           </div>
 
-          <!-- Messages -->
           <div class="chat-messages" id="chat-messages">
             <div class="message chatbot-message">
               👋 Hello! how can i help you.
             </div>
           </div>
 
-          <!-- Input Box -->
           <div class="chat-input-container">
             <input type="text" id="user-input" placeholder="Type your message..." autofocus>
             <button id="send-button">Send</button>
@@ -635,7 +633,7 @@
   </div>
 
   @include('includes.bottom-navigation')
-  @include('includes.security-scripts')
+
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const toggleExamBtn = document.getElementById('toggle-exam-btn');
@@ -659,18 +657,21 @@
       const userInput = document.getElementById('user-input');
       const sendButton = document.getElementById('send-button');
 
-      // Pre-defined responses for the static chatbot
-      const responses = {
-        "hello": "Hi there! How can I assist you?",
-        "hi": "Hey! What's on your mind?",
-        "how are you": "I'm just a computer program, but I'm doing great! Thanks for asking.",
-        "what is your name": "I don't have a name. I'm just a static chatbot here to help you.",
-        "what are your hours": "Our office hours are Monday to Friday, from 9:00 AM to 5:00 PM.",
-        "where are you located": "We are located at 123 Main Street, Anytown, USA.",
-        "what services do you offer": "We offer a variety of services, including web design, mobile app development, and digital marketing.We offer a variety of services, including web design, mobile app development, and digital marketing.",
-        "thank you": "You're welcome! Let me know if you need anything else.",
-        "bye": "Goodbye! Have a great day."
-      };
+      // Runtime chat context (all user questions in this session)
+      let context = "";
+      // Lesson content from backend
+      const lessonContent = (() => {
+        const raw = `<?= $data['lesson_content'] ?? '' ?>`;
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = raw;
+
+        // ✅ Convert to string, remove newlines/tabs, collapse spaces
+        return String(tempDiv.textContent || tempDiv.innerText || "")
+          .replace(/[\n\r\t]+/g, " ") // remove newlines and tabs
+          .replace(/\s+/g, " ") // collapse multiple spaces
+          .trim();
+      })();
+
 
       // Function to add a message to the chat display
       function addMessage(text, sender) {
@@ -683,39 +684,65 @@
         }
         messageElement.textContent = text;
         chatMessages.appendChild(messageElement);
-        // Scroll to the bottom to show the latest message
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll
       }
 
-      // Function to get the chatbot's response
-      function getChatbotResponse(message) {
-        const normalizedMessage = message.toLowerCase().trim();
-        return responses[normalizedMessage] ||
-          "I'm sorry, I don't understand that. Please ask a question about our hours, location, or services.";
-      }
+      // Send message to API
+      async function sendToAPI(message) {
+        try {
+          const response = await fetch("https://nha-tutor.onrender.com/chatbot", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+            },
+            body: JSON.stringify({
+              lesson_content: lessonContent,
+              question: message,
+              context: context
+            }),
+          });
 
-      // Function to handle sending a message
-      function sendMessage() {
-        const message = userInput.value.trim();
-        if (message === "") {
-          return; // Do nothing if the message is empty
+          if (!response.ok) {
+            throw new Error("API error");
+          }
+
+          const data = await response.json();
+          return data.answer || "Sorry, I couldn’t find an answer.";
+        } catch (error) {
+          console.error("Chatbot API error:", error);
+          return "⚠️ Unable to connect to chatbot right now. Please try again later.";
         }
-
-        // Add the user's message to the chat
-        addMessage(message, 'user');
-        userInput.value = ""; // Clear the input field
-
-        // Simulate a slight delay before the chatbot responds
-        setTimeout(() => {
-          const botResponse = getChatbotResponse(message);
-          addMessage(botResponse, 'chatbot');
-        }, 750); // 750ms delay
       }
 
-      // Event listener for the send button
-      sendButton.addEventListener('click', sendMessage);
+      // Handle sending message
+      async function sendMessage() {
+        const message = userInput.value.trim();
+        if (message === "") return;
 
-      // Event listener for the Enter key on the input field
+        // Add user message
+        addMessage(message, 'user');
+        userInput.value = "";
+
+        // Update context (append this question)
+        context += (context ? " | " : "") + message;
+
+        // Show "typing..." placeholder
+        const loadingMessage = document.createElement('div');
+        loadingMessage.classList.add('message', 'chatbot-message');
+        loadingMessage.textContent = "💭 Thinking...";
+        chatMessages.appendChild(loadingMessage);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Get API response
+        const botResponse = await sendToAPI(message);
+
+        // Replace "typing..." with real answer
+        loadingMessage.textContent = botResponse;
+      }
+
+      // Events
+      sendButton.addEventListener('click', sendMessage);
       userInput.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
           sendMessage();
@@ -723,6 +750,7 @@
       });
     });
   </script>
+
 </body>
 
 </html>

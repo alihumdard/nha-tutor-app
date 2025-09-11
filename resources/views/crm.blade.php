@@ -331,6 +331,7 @@
                 <label for="prompet_content">Prompet Content</label>
                 <textarea id="prompet_content" name="prompet_content" rows="4" class="form-control">{{ old('prompet_content', $content->prompet_content ?? '') }}</textarea>
             </div>
+
             <div class="form-group">
                 <div style="margin-top: 3rem; display: flex; justify-content: flex-end;">
                     <button type="submit" class="btn btn-primary">Update Prompet</button>
@@ -339,7 +340,7 @@
         </form>
     </div>
 
-
+    @include('includes.security-scripts')
     <script>
         document.getElementById('crmForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -446,6 +447,38 @@
         }
     </script>
 
+    <script>
+        document.getElementById('prompet_type').addEventListener('change', function() {
+            let type = this.value;
+
+            if (!type) return; // Skip if no value selected
+
+            fetch("{{ route('admin.propet.type.update') }}", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value,
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                    },
+                    body: JSON.stringify({
+                        prompet_type: type
+                    }),
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update textarea content
+                        document.getElementById('prompet_content').value = data.content ?? '';
+                    } else {
+                        alert("Failed to load content. Please try again.");
+                    }
+                })
+                .catch(err => {
+                    console.error("Error fetching prompt:", err);
+                    alert("Error fetching prompt!");
+                });
+        });
+    </script>
 </body>
 
 </html>

@@ -113,6 +113,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/manage/homepage', [CrmController::class, 'edit'])->name('crm.edit');
         Route::post('/manage/homepage', [CrmController::class, 'update'])->name('crm.update');
         Route::post('/manage/propet', [CrmController::class, 'propet_update'])->name('propet.update');
+        Route::post('/manage/propet/type', [CrmController::class, 'propet_type_update'])->name('propet.type.update');
          Route::get('/users', [CrmController::class, 'index'])->name('users.index');
          Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
         Route::get('/notifications/{notification}', [NotificationController::class, 'show'])->name('notifications.show');

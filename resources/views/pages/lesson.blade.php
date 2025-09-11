@@ -633,7 +633,7 @@
   </div>
 
   @include('includes.bottom-navigation')
-
+  @include('includes.security-scripts')
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const toggleExamBtn = document.getElementById('toggle-exam-btn');

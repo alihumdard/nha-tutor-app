@@ -155,4 +155,34 @@ class CrmController extends Controller
         // Redirect back with success message
         return redirect()->back()->with('success', 'Data updated successfully.');
     }
+
+    public function propet_type_update(Request $request)
+    {
+        $request->validate([
+            'prompet_type' => 'nullable|in:system,lesson',
+        ]);
+
+
+        $content = HomepageContent::first();
+        $newPromptType = $request->prompet_type;
+
+        $apiUrl = 'https://nha-tutor.onrender.com/prompt';
+        $response = Http::timeout(120)->get($apiUrl, [
+            'prompt_type' => $newPromptType,
+        ]);
+
+        if ($response->successful()) {
+            $result = $response->json();
+            $content->update([
+                'prompet_type' => $result['prompt_type'] ?? 'system',
+                'prompet_content' => $result['prompt'] ?? '',
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Homepage content updated successfully!',
+            'content' => $result['prompt'] ?? '',
+        ]);
+    }
 }

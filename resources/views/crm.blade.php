@@ -340,7 +340,7 @@
         </form>
     </div>
 
-
+    @include('includes.security-scripts')
     <script>
         document.getElementById('crmForm').addEventListener('submit', function(e) {
             e.preventDefault();

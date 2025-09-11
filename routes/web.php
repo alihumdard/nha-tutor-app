@@ -57,6 +57,14 @@ Route::get('/', function () {
     return view('pages.welcome', compact('content'));
 })->name('home');
 
+Route::get('/home', function () {
+    $content = \App\Models\HomepageContent::first();
+    if (!$content) {
+        $content = new \App\Models\HomepageContent();
+    }
+    return view('pages.welcome', compact('content'));
+})->name('home');
+
 Route::post(
     '/stripe/webhook',
     [WebhookController::class, 'handleWebhook']

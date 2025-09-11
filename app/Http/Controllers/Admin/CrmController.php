@@ -116,44 +116,36 @@ class CrmController extends Controller
 
     public function propet_update(Request $request)
     {
-        // Validate input
         $request->validate([
-            'prompet_type' => 'nullable|in:system,lesson',
+            'prompet_type' => 'required|in:system,lesson',
             'prompet_content' => 'nullable|string',
         ]);
 
-        // Get the first record
         $content = HomepageContent::first();
 
-        $newPromptType = $request->prompet_type;
-        $newPromptContent = $request->prompet_content;
+        try {
+            $apiUrl = 'https://nha-tutor.onrender.com/prompt';
+            $response = Http::timeout(120)->put($apiUrl, [
+                'prompt_type' => $request->prompet_type,   // ✅ Correct field
+                'prompt'      => $request->prompet_content, // ✅ Correct field
+            ]);
 
-        // Only call API if type or content is provided
-        if ($newPromptType && $newPromptContent) {
-            try {
-                $apiUrl = 'https://nha-tutor.onrender.com/prompt';
-                $response = Http::timeout(120)->put($apiUrl, [
-                    'prompt_type' => $newPromptType,
-                    'prompt' => $newPromptContent,
+            if ($response->successful()) {
+                $result = $response->json();
+
+                // Update DB with API response values (safer)
+                $content->update([
+                    'prompet_type'    => $result['prompt_type'] ?? $request->prompet_type,
+                    'prompet_content' => $result['prompt'] ?? $request->prompet_content,
                 ]);
 
-                if ($response->successful()) {
-                    $result = $response->json();
-                    $newPromptContent = $result['prompt'] ?? $newPromptContent;
-                }
-            } catch (\Illuminate\Http\Client\RequestException $e) {
-                return redirect()->back()->with('error', 'Failed to update prompt via API. Please try again.');
+                return redirect()->back()->with('success', 'Data updated successfully.');
             }
+
+            return redirect()->back()->with('error', 'API request failed. Please try again.');
+        } catch (\Throwable $e) {
+            return redirect()->back()->with('error', 'Failed to update prompt via API. Please try again.');
         }
-
-        // Update the database
-        $content->update([
-            'prompet_type' => $newPromptType,
-            'prompet_content' => $newPromptContent,
-        ]);
-
-        // Redirect back with success message
-        return redirect()->back()->with('success', 'Data updated successfully.');
     }
 
     public function propet_type_update(Request $request)

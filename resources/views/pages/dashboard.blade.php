@@ -742,7 +742,7 @@
               $planName = Auth::user()->getPlanName();
               @endphp
               @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
-              <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="exam-button bg-[#1fac8d] text-white px-5 py-2 rounded-md text-xl font-semibold">
+              <a href="{{ route('exam.start') }}" class="exam-button bg-[#1fac8d] text-white px-5 py-2 rounded-md text-lg font-semibold">
                 Start Exam
               </a>
 
@@ -833,7 +833,6 @@
       </div>
     </main>
   </div>
-
 
   @include('includes.security-scripts')
   <script>

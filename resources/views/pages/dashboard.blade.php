@@ -737,7 +737,7 @@
 
           <div class="card w-full md:w-1/3 bg-white rounded-lg shadow-md p-4">
             <div class="card-content text-center">
-              <h1 class="exam-title text-xl font-semibold my-10">Exam</h1>
+              <h1 class="exam-title text-2xl font-semibold my-10">Exam</h1>
               @php
               $planName = Auth::user()->getPlanName();
               @endphp

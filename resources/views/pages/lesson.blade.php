@@ -590,7 +590,7 @@
           $planName = Auth::user()->getPlanName();
           @endphp
           @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
-          <a href="{{ route('exam.start')}}" class="tool-btn" style=" font-weight: bold;">
+          <a href="{{ route('exam.start')}}" class="tool-btn" style=" font-weight: bold; text-decoration: none;">
             &#128170; Take Exam
           </a>
           <div id="exam-difficulties" class="tools-grid d-none" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
@@ -613,8 +613,8 @@
 
         <div class="chatbot-container">
           <div class="chat-header">
-            Quiet Help
-          </div>
+  💬 Ask NHA Tutor Pro
+</div>
 
           <div class="chat-messages" id="chat-messages">
             <div class="message chatbot-message">

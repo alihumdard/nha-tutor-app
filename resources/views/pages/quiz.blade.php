@@ -471,7 +471,7 @@
       top: 0;
       width: 18px;
       height: 18px;
-      border: 1px solid #ddd;
+      border: 1px solid #999494ff;
       border-radius: 100%;
       background: #fff;
     }
@@ -551,7 +551,7 @@
             <section class="content-block-gray">
               @foreach($question['options'] as $option)
               <div style="margin-bottom: 5px;">
-                <input type="radio" id="question_{{ $key }}_{{ Str::slug($option) }}" value="{{ $option }}" name="answers[{{ $key }}]" required>
+                <input style="border: #4b5563 5px solid;" type="radio" id="question_{{ $key }}_{{ Str::slug($option) }}" value="{{ $option }}" name="answers[{{ $key }}]" required>
                 <label for="question_{{ $key }}_{{ Str::slug($option) }}">{{ $option }}</label>
               </div>
               @endforeach
@@ -569,7 +569,7 @@
       <aside class="lesson-tools">
         <h3>Lesson Tools</h3>
         <div class="tools-grid">
-          <a href="{{ route('exam.start')}}" class="tool-btn"  style=" font-weight: bold;">
+          <a href="{{ route('exam.start')}}" class="tool-btn"  style=" font-weight: bold; text-decoration: none;">
             &#128170; Take Exam
           </a>
           <!-- The content to be toggled -->
@@ -600,7 +600,7 @@
   <!-- Bottom Navigation -->
   @include('includes.bottom-navigation')
 
-  @include('includes.security-scripts')
+  <!-- @include('includes.security-scripts') -->
   <script>
     const accordions = document.querySelectorAll(".accordion");
     accordions.forEach(acc => {

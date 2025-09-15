@@ -471,7 +471,7 @@
       top: 0;
       width: 18px;
       height: 18px;
-      border: 1px solid #ddd;
+      border: 1px solid #999494ff;
       border-radius: 100%;
       background: #fff;
     }

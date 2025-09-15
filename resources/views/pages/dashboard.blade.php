@@ -737,13 +737,13 @@
 
           <div class="card w-full md:w-1/3 bg-white rounded-lg shadow-md p-4">
             <div class="card-content text-center">
-              <h1 class="exam-title text-xl font-semibold my-10">Exam</h1>
+              <h1 class="exam-title text-2xl font-semibold my-10">Exam</h1>
               @php
               $planName = Auth::user()->getPlanName();
               @endphp
               @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
-              <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="exam-button bg-[#1fac8d] text-white px-5 py-2 rounded-md text-lg font-semibold">
-                Start
+              <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="exam-button bg-[#1fac8d] text-white px-5 py-2 rounded-md text-xl font-semibold">
+                Start Exam
               </a>
 
               @else

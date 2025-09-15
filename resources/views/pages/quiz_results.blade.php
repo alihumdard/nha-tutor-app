@@ -544,7 +544,7 @@
       </article>
 
       <aside class="lesson-tools">
-        <h3>Lesson Tools</h3>
+        <h3>Untimed Exam</h3>
         @php
         $planName = Auth::user()->getPlanName();
         @endphp
@@ -577,7 +577,7 @@
         @endif
 
         @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
-        <a href="{{ route('exam.start')}}" class="tool-btn" style=" font-weight: bold;">
+        <a href="{{ route('exam.start')}}" class="tool-btn" style=" font-weight: bold; text-decoration: none;">
           &#128170; Take Exam
         </a>
         <div id="exam-difficulties" class="tools-grid d-none" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">

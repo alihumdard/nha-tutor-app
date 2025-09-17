@@ -133,3 +133,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/subscribe/{priceId}', [PaymentController::class, 'subscribe'])->name('subscribe');
     Route::get('/lesson/{slug}', [LessonController::class, 'sendTopic'])->name('send.topic');
 });
+
+Route::get('/terms_2', function () {
+    return view('pages.terms_2');
+})->name('terms_2'); 

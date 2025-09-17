@@ -71,6 +71,7 @@ class CrmController extends Controller
             'plans.*.stripe_price_id' => 'nullable|string',
             'why_choose_us_main_heading' => 'nullable|string',
             'why_choose_us_items' => 'nullable|array',
+            'terms_and_conditions' => 'nullable',
         ]);
 
         $content = HomepageContent::first();
@@ -101,6 +102,7 @@ class CrmController extends Controller
 
         $content->update([
             'main_heading' => $request->main_heading,
+            'terms_and_conditions' => $request->terms_and_conditions,
             'main_content' => $request->main_content,
             'plans_main_heading' => $request->plans_main_heading,
             'plans' => $newPlansData,

@@ -593,9 +593,11 @@
           <a href="{{ route('exam.start', ['difficulty' => 'expert']) }}" class="tool-btn" style="text-decoration: none;">
             <span style="font-size: 2em;">&#129299;</span> Expert
           </a>
+          <a href="#" class="tool-btn" style=" font-weight: bold;  text-decoration: none;">
+            Intention of this Federal Guideline
+          </a>
         </div>
         @endif
-        <p>Intention of this Federal Guideline</p>
       </aside>
     </main>
   </div>
@@ -618,7 +620,7 @@
           const topicName = "{{ $submission->topic_name }}";
 
           // *** THIS IS THE FIX ***
-          const wrongQuestions = @json($submission->wrong_questions);
+          const wrongQuestions = @json($submission - > wrong_questions);
           const contextForApi = wrongQuestions;
 
           try {

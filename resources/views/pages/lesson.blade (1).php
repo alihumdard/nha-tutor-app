@@ -591,7 +591,7 @@
                     $planName = Auth::user()->getPlanName();
                     @endphp
                     @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
-                    <a href="{{ route('exam.start')}}" class="tool-btn" style=" font-weight: bold;">
+                    <a href="https://the2023nhaexam.nhatutorpro.com/exam-selection.php" class="tool-btn" style=" font-weight: bold;">
                         &#128170; Take an Exam
                     </a>
                     <div id="exam-difficulties" class="tools-grid d-none"

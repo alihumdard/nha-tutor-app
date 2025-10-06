@@ -533,6 +533,81 @@
         border-radius: 0.75rem;
       }
     }
+
+    /* Styles for the Insight Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1001;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 100%;
+      max-width: 800px;
+      border-radius: 1rem;
+      position: relative;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-close {
+      color: #aaa;
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .modal-close:hover,
+    .modal-close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .modal-header {
+      font-size: 1.25rem;
+      font-weight: 600;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 15px;
+    }
+
+    .modal-body {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 4px solid #3498db;
+      width: 40px;
+      height: 40px;
+      animation: spin 2s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
   </style>
 </head>
 
@@ -590,7 +665,7 @@
           $planName = Auth::user()->getPlanName();
           @endphp
           @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
-          <a href="{{ route('exam.start')}}" class="tool-btn" style=" font-weight: bold; text-decoration: none;">
+          <a href="https://the2023nhaexam.nhatutorpro.com/exam-selection.php" class="tool-btn" style=" font-weight: bold; text-decoration: none;">
             &#128170; Take Exam
           </a>
           <div id="exam-difficulties" class="tools-grid d-none" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
@@ -607,14 +682,17 @@
               <span style="font-size: 2em;">&#129299;</span> Expert
             </a>
           </div>
+          <button id="get-insight-btn" class="tool-btn" style=" font-weight: bold; text-decoration: none;">
+            👋  Intention of this Federal Guideline
+          </button>
           @endif
-          <p>Intention of this Federal Guideline</p>
+
         </div>
 
         <div class="chatbot-container">
           <div class="chat-header">
-  💬 Ask NHA Tutor Pro
-</div>
+            💬 Ask NHA Tutor Pro
+          </div>
 
           <div class="chat-messages" id="chat-messages">
             <div class="message chatbot-message">
@@ -632,8 +710,16 @@
     </main>
   </div>
 
+  <div id="insight-modal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <div class="modal-header">Federal Guideline Insight</div>
+      <div class="modal-body" id="insight-modal-body">
+      </div>
+    </div>
+  </div>
+
   @include('includes.bottom-navigation')
-  @include('includes.security-scripts')
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const toggleExamBtn = document.getElementById('toggle-exam-btn');
@@ -746,6 +832,67 @@
       userInput.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
           sendMessage();
+        }
+      });
+    });
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('insight-modal');
+      const insightBtn = document.getElementById('get-insight-btn');
+      const closeBtn = document.querySelector('.modal-close');
+      const modalBody = document.getElementById('insight-modal-body');
+
+      const getLessonContent = () => {
+        const raw = `<?= $data['lesson_content'] ?? '' ?>`;
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = raw;
+        return String(tempDiv.textContent || tempDiv.innerText || "")
+          .replace(/[\n\r\t]+/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+      };
+
+      const getFederalInsight = async () => {
+        modal.style.display = 'block';
+        modalBody.innerHTML = '<div class="loader"></div>';
+
+        try {
+          const response = await fetch("https://nha-tutor.onrender.com/federal-regulation", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+            },
+            body: JSON.stringify({
+              lesson_content: getLessonContent()
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`API error: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+
+          // Put the API's response text into the modal body
+          modalBody.textContent = data.insight || "No insight was returned from the server.";
+
+        } catch (error) {
+          console.error("Federal Guideline API error:", error);
+          modalBody.textContent = "⚠️ An error occurred while fetching the guideline insight. Please try again later.";
+        }
+      };
+      insightBtn.addEventListener('click', getFederalInsight);
+
+      closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+
+      window.addEventListener('click', (event) => {
+        if (event.target == modal) {
+          modal.style.display = 'none';
         }
       });
     });

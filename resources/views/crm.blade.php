@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>Homepage Content Management</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/41.2.0/classic/ckeditor.js"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -229,11 +228,57 @@
             color: #6c757d;
             font-size: .875rem;
         }
+
+                .space-y-6 > * + * {
+            margin-top: 1.5rem;
+        }
+
+        .text-3xl { font-size: 1.875rem; }
+        .font-bold { font-weight: 700; }
+        .text-gray-800 { color: #2d3748; }
+        .text-center { text-align: center; }
+        .mb-8 { margin-bottom: 2rem; }
+        .text-gray-500 { color: #a0aec0; }
+        .mt-2 { margin-top: 0.5rem; }
+        .w-full { width: 100%; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+        .bg-gray-50 { background-color: #f9fafb; }
+        .border-gray-300 { border-color: #d2d6dc; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .focus\:ring-2:focus { box-shadow: 0 0 0 2px var(--tw-ring-color); }
+        .focus\:ring-blue-500:focus { --tw-ring-color: #3b82f6; }
+        .transition { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+        .file\:bg-blue-50::file-selector-button { background-color: #eff6ff; }
+        .file\:text-blue-700::file-selector-button { color: #1d4ed8; }
+        .hover\:file\:bg-blue-100:hover::file-selector-button { background-color: #dbeafe; }
+        .mt-8 { margin-top: 2rem; }
+        .bg-blue-600 { background-color: #2563eb; }
+        .hover\:bg-blue-700:hover { background-color: #1d4ed8; }
+        .active\:scale-95:active { transform: scale(.95); }
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .hidden { display: none; }
+        .animate-spin { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 
 <body>
     <div class="container">
+            @if(session('success'))
+            <div style="padding: 10px; margin-bottom: 15px; border: 1px solid green; background: #e6ffed; color: green; border-radius: 5px;">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div style="padding: 10px; margin-bottom: 15px; border: 1px solid red; background: #ffe6e6; color: red; border-radius: 5px;">
+                {{ session('error') }}
+            </div>
+        @endif
+        
         <div class="page-header">
             <h1>Manage Homepage Content</h1>
             <button type="button" class="btn btn-secondary" onclick="history.back()">Back</button>
@@ -307,178 +352,6 @@
                 @endforeach
             </div>
             <button type="button" class="btn btn-success" onclick="addWhyChooseUsItem()">Add Item</button>
-                        <!-- Terms Sections -->
-            <h2 style="margin-top: 2rem;">Terms and Conditions Section</h2>
-            <div class="content-card">
-                    <textarea name="terms_and_conditions" id="terms_and_conditions" rows="20" style="width: 100%; padding: 1rem; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 1rem; line-height: 1.5; color: #495057; background-color: #fff; background-clip: padding-box; transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;">
-                    {{ $content->terms_and_conditions ?? '' }}   
-                    <!-- Header Section -->
-                        <div class="header-section">
-                            <h1 class="main-heading">Terms and Conditions</h1>
-                        </div>
-
-                        <!-- Introduction -->
-                        <div class="intro-section">
-                            <p class="intro-text">
-                                Welcome to NHA Tutor Pro! These terms and conditions outline the
-                                rules and regulations for the use of our educational platform.
-                            </p>
-                            <p class="intro-text">
-                                By accessing this platform, we assume you accept these terms and
-                                conditions in full. Do not continue to use NHA Tutor Pro if you
-                                do not accept all of the terms and conditions stated on this
-                                page.
-                            </p>
-                        </div>
-
-                        <!-- Terms Sections -->
-                        <div class="terms-sections">
-                            <!-- Section 1 -->
-                            <div class="">
-                                <h2 class="term-heading">1. License to Use</h2>
-                                <div class="term-content">
-                                    <p>
-                                        Unless otherwise stated, NHA Tutor Pro and/or its licensors
-                                        own the intellectual property rights for all material on
-                                        this platform. All intellectual property rights are
-                                        reserved.
-                                    </p>
-                                    <p>
-                                        You may view and/or print pages from https://nhatutorpro.com
-                                        for your own personal use subject to restrictions set in
-                                        these terms and conditions.
-                                    </p>
-                                    <div class="notice-box blue-notice">
-                                        <strong>You must not:</strong>
-                                        <ul class="notice-list">
-                                            <li>Republish material from this platform</li>
-                                            <li>
-                                                Sell, rent or sub-license material from this platform
-                                            </li>
-                                            <li>
-                                                Reproduce, duplicate or copy material from this platform
-                                            </li>
-                                            <li>Redistribute content from NHA Tutor Pro</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Section 2 -->
-                            <div class="green-border">
-                                <h2 class="term-heading">2. User Responsibilities</h2>
-                                <div class="term-content">
-                                    <p>
-                                        As a user of our platform, you agree to use NHA Tutor Pro
-                                        only for lawful purposes and in a way that does not infringe
-                                        the rights of, restrict or inhibit anyone else's use and
-                                        enjoyment of the platform.
-                                    </p>
-                                    <div class="notice-box green-notice">
-                                        <strong>Prohibited activities include:</strong>
-                                        <ul class="notice-list">
-                                            <li>Harassing or causing distress to other users</li>
-                                            <li>
-                                                Uploading offensive, obscene or inappropriate content
-                                            </li>
-                                            <li>
-                                                Disrupting the normal flow of dialogue within our
-                                                platform
-                                            </li>
-                                            <li>
-                                                Attempting to gain unauthorized access to our systems
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Section 3 -->
-                            <div class="">
-                                <h2 class="term-heading">3. Account Security</h2>
-                                <div class="term-content">
-                                    <p>
-                                        You are responsible for maintaining the confidentiality of
-                                        your account and password and for restricting access to your
-                                        computer or device. You agree to accept responsibility for
-                                        all activities that occur under your account or password.
-                                    </p>
-                                    <p>
-                                        We reserve the right to refuse service, terminate accounts,
-                                        remove or edit content, or cancel orders at our sole
-                                        discretion.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <!-- Section 4 -->
-                            <div class="">
-                                <h2 class="term-heading">4. Content Liability</h2>
-                                <div class="term-content">
-                                    <p>
-                                        We shall not be held responsible for any content that
-                                        appears on your learning dashboard. You agree to protect and
-                                        defend us against all claims that may arise from your use of
-                                        our platform.
-                                    </p>
-                                    <p>
-                                        No link(s) should appear on any website that may be
-                                        interpreted as libelous, obscene or criminal, or which
-                                        infringes, otherwise violates, or advocates the infringement
-                                        or other violation of, any third party rights.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <!-- Section 5 -->
-                            <div class="">
-                                <h2 class="term-heading">5. Privacy Policy</h2>
-                                <div class="term-content">
-                                    <p>
-                                        Your privacy is important to us. Our Privacy Policy explains
-                                        how we collect, use, disclose, and safeguard your
-                                        information when you visit our platform.
-                                    </p>
-                                    <p>
-                                        Please review our Privacy Policy, which is incorporated into
-                                        these Terms and Conditions. If you do not agree with our
-                                        Privacy Policy, you must not use our platform.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <!-- Section 6 -->
-                            <div class="">
-                                <h2 class="term-heading">6. Changes to Terms</h2>
-                                <div class="term-content">
-                                    <p>
-                                        We reserve the right, at our sole discretion, to modify or
-                                        replace these Terms at any time. We will provide at least 30
-                                        days' notice prior to any new terms taking effect.
-                                    </p>
-                                    <p>
-                                        By continuing to access or use our platform after those
-                                        revisions become effective, you agree to be bound by the
-                                        revised terms. If you do not agree to the new terms, you
-                                        must stop using the platform.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Acceptance Section -->
-                        <div class="acceptance-section">
-                            <h3 class="acceptance-heading">Acceptance of Terms</h3>
-                            <p class="acceptance-text">
-                                By using NHA Tutor Pro, you signify your acceptance of these
-                                terms and conditions. If you do not agree to these terms, please
-                                do not use our platform. Your continued use of the platform
-                                following the posting of changes to these terms will be deemed
-                                your acceptance of those changes.
-                            </p>
-                        </div>
-                    </textarea>
-                </div>
 
             <div style="margin-top: 3rem; display: flex; justify-content: flex-end;">
                 <button type="submit" class="btn btn-primary">Save All Changes</button>
@@ -508,6 +381,46 @@
             <div class="form-group">
                 <div style="margin-top: 3rem; display: flex; justify-content: flex-end;">
                     <button type="submit" class="btn btn-primary">Update Prompet</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Lesson Upload Form Section -->
+    <div class="container" style="margin-top: 3rem;">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Upload New Lesson</h1>
+            <p class="text-gray-500 mt-2">Provide a title and a PDF file for the new lesson.</p>
+        </div>
+
+        <form id="uploadForm" novalidate>
+            <div class="space-y-6">
+                <div>
+                    <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Lesson Title</label>
+                    <input type="text" id="title" name="title" required class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="e.g., OSHA Rules and Regulations">
+                </div>
+                <div>
+                    <label for="lesson_type" class="block text-sm font-medium text-gray-700 mb-1">Lesson Type</label>
+                    <div class="select-wrapper">
+                        <select id="lesson_type" name="lesson_type" class="form-control">
+                            <option value="CORE" >CORE</option>
+                            <option value="LOS" >LOS</option>
+                        </select>
+                     </div>
+                </div>
+                <div>
+                    <label for="file" class="block text-sm font-medium text-gray-700 mb-1">Lesson File (PDF)</label>
+                    <input type="file" id="file" name="file" required accept="application/pdf" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition">
+                </div>
+            </div>
+            <div class="form-group">
+                <div style="margin-top: 3rem; display: flex; justify-content: flex-end;">
+                    <button type="submit" id="submitButton" class="btn btn-primary">
+                    <svg id="spinner"  style="height:15px; width:40px;" class="animate-spin mr-3  text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span id="buttonText">Upload Lesson</span>
+                    </button>
                 </div>
             </div>
         </form>
@@ -653,12 +566,95 @@
         });
     </script>
         <script>
-    ClassicEditor
-        .create(document.querySelector('#terms_and_conditions'))
-        .catch(error => {
-            console.error(error);
+        document.addEventListener('DOMContentLoaded', () => {
+            const uploadForm = document.getElementById('uploadForm');
+            
+            if (uploadForm) {
+                const submitButton = uploadForm.querySelector('#submitButton');
+                const spinner = uploadForm.querySelector('#spinner');
+                const buttonText = uploadForm.querySelector('#buttonText');
+                const titleInput = uploadForm.querySelector('#title');
+                const lesson_typeInput = uploadForm.querySelector('#lesson_type');
+                const fileInput = uploadForm.querySelector('#file');
+                
+                const apiUrl = 'https://nha-tutor.onrender.com/lessons/upload';
+
+                uploadForm.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+
+                    const title = titleInput.value.trim();
+                    const lesson_type = lesson_typeInput.value.trim();
+                    const file = fileInput.files[0];
+
+                    if (!title) {
+                        Swal.fire('Validation Error', 'Please enter a lesson title.', 'error');
+                        return;
+                    }
+                    if (!lesson_type) {
+                        Swal.fire('Validation Error', 'Please enter a lesson type.', 'error');
+                        return;
+                    }
+                    if (!file) {
+                        Swal.fire('Validation Error', 'Please select a file to upload.', 'error');
+                        return;
+                    }
+                    if (file.type !== 'application/pdf') {
+                        Swal.fire('Validation Error', 'Please select a valid PDF file.', 'error');
+                        return;
+                    }
+
+                    submitButton.disabled = true;
+                    spinner.classList.remove('hidden');
+                    buttonText.textContent = 'Uploading...';
+
+                    const formData = new FormData();
+                    formData.append('title', title);
+                    formData.append('lesson_type', lesson_type);
+                    formData.append('file', file);
+
+                    try {
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            body: formData,
+                        });
+
+                        const result = await response.json();
+
+                        if (!response.ok) {
+                            throw new Error(result.detail || 'An unknown server error occurred.');
+                        }
+                        
+                        // Based on your success criteria
+                        const successData = { success: true, message: `Lesson "${result.title}" uploaded successfully!` };
+                        if (successData.success) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: successData.message,
+                                icon: 'success',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                        }
+                        
+                        uploadForm.reset();
+
+                    } catch (error) {
+                        console.error('Upload failed:', error);
+                        Swal.fire({
+                            title: 'Upload Failed!',
+                            text: error.message,
+                            icon: 'error'
+                        });
+                    } finally {
+                        submitButton.disabled = false;
+                        spinner.classList.add('hidden');
+                        buttonText.textContent = 'Upload Lesson';
+                    }
+                });
+            }
         });
     </script>
+
 </body>
 
 </html>

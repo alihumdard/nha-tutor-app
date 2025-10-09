@@ -1,3 +1,4 @@
+@if(!auth()->check() || (auth()->check() && auth()->user()->role !== 'admin'))
 <style>
     /* Add this style to prevent text selection */
     body {
@@ -188,3 +189,4 @@
         document.body.style.filter = "none";
     });
 </script>
+@endif

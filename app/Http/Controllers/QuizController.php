@@ -27,14 +27,14 @@ class QuizController extends Controller
     public function showQuiz(Module $module)
     {
         // Check if the user has already completed a quiz for this module
-        $existingSubmission = QuizSubmission::where('user_id', Auth::id())
-            ->where('module_id', $module->id)
-            ->where('status', 'completed')
-            ->first();
+        // $existingSubmission = QuizSubmission::where('user_id', Auth::id())
+        //     ->where('module_id', $module->id)
+        //     ->where('status', 'completed')
+        //     ->first();
 
-        if ($existingSubmission) {
-            return redirect()->route('dashboard')->with('error', 'You have already completed the quiz for this module.');
-        }
+        // if ($existingSubmission) {
+        //     return redirect()->route('dashboard')->with('error', 'You have already completed the quiz for this module.');
+        // }
 
         $topic_name = $module->title;
 
@@ -43,9 +43,22 @@ class QuizController extends Controller
             $apiUrl = 'https://nha-tutor.onrender.com/take-quiz';
             $response = Http::timeout(120)->post($apiUrl, [
                 'topic' => $topic_name,
+                'lesson_type' => strtoupper($module->category),
             ]);
+
             $result = $response->json();
+        // API endpoint
+            $apiUrl_lesson = 'https://nha-tutor.onrender.com/view-lesson';
+
+            // Send request to API
+            $response_lesson = Http::timeout(120)->post($apiUrl_lesson, [
+                'topic' => $topic_name,
+                'lesson_type' => strtoupper($module->category),
+            ]); 
+            $result_lesson = $response_lesson->json();
+
         }
+
 
         $submission = QuizSubmission::create([
             'user_id' => Auth::id(),
@@ -53,13 +66,13 @@ class QuizController extends Controller
             'status' => 'pending',
             'topic_name' => $topic_name,
             'score' => 0,
-            'total_questions' => $result['question_count'],
+            'total_questions' => $result['question_count'] ?? 0,
             'answers' => $result['questions'],
             'generation_time' => $result['generation_time'],
             'wrong_questions' => [],
         ]);
 
-        return view('pages.quiz', ['data' => $result, 'topic_name' => $topic_name, 'submission_id' => $submission->id]);
+        return view('pages.quiz', ['data' => $result, 'data_lesson' => $result_lesson, 'topic_name' => $topic_name, 'submission_id' => $submission->id]);
     }
 
 

@@ -33,8 +33,10 @@ class CheckPlanAccess
 
         $userPlanName = $planMap[$userPlanStripeId] ?? null;
 
-        if (!$userPlanName || !in_array($userPlanName, $allowedPlans)) {
-            return redirect()->route('dashboard')->with('error', 'Your current plan does not grant access to this feature.');
+        if (!empty($allowedPlans)) {
+            if (!$userPlanName || !in_array($userPlanName, $allowedPlans)) {
+                return redirect()->route('dashboard')->with('error', 'Your current plan does not grant access to this feature.');
+            }
         }
 
         return $next($request);

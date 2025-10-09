@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>NHA Tutor Pro - Exam Results</title>
+  <title>NHA Tutor Pro - Quiz Result</title>
   <style>
     * {
       box-sizing: border-box;
@@ -494,6 +494,102 @@
       -webkit-transform: scale(1);
       transform: scale(1);
     }
+
+    
+    /* Styles for the Insight Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1001;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 100%;
+      max-width: 800px;
+      border-radius: 1rem;
+      position: relative;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-close {
+      color: #aaa;
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .modal-close:hover,
+    .modal-close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .modal-header {
+      font-size: 1.25rem;
+      font-weight: 600;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 15px;
+    }
+
+    .modal-body {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 4px solid #3498db;
+      width: 40px;
+      height: 40px;
+      animation: spin 2s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .spinner {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border-left-color: #09f;
+        animation: spin 1s ease infinite;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
   </style>
 </head>
 
@@ -501,14 +597,14 @@
   <div class="container">
     <header class="header-bar">
       <h1>NHA Tutor Pro</h1>
-      <h3>Exam Results</h3>
+      <h3>Quiz Result</h3>
       <a href="/">Log Out</a>
     </header>
 
     <main class="main-content" style="margin: 20px 0px">
       <article class="lesson-content">
         <div style="text-align: center;">
-          <h2 style="margin-bottom: 5px;">Exam Results</h2>
+          <h2 style="margin-bottom: 5px;">Quiz Result</h2>
           <p style="margin-top: 0; margin-bottom: 5px;">Your Score: <strong>{{ $submission->score }} / {{ $submission->total_questions }}</strong></p>
         </div>
         @if(!empty($submission->wrong_questions['questions']))
@@ -549,24 +645,21 @@
         $planName = Auth::user()->getPlanName();
         @endphp
         <div class="tools-grid">
+          <button id="get-insight-btn" class="tool-btn" style=" font-weight: bold; text-decoration: none;">
+            👋  Intention of this Federal Guideline
+          </button>
           @if($planName === 'All or Nothing' || $planName === 'Admin')
-          <button class="tool-btn not-preloader" id="generate-flashcards-btn">
-            &#128196; Key Takeaways
+            <button class="tool-btn" id="download-flashcards-btn">
+              <span class="btn-text">&#128229; Download Flash Cards</span>
+              <span class="spinner" style="display: none;"></span>
           </button>
-          <button class="tool-btn" id="download-flashcards-btn" disabled>
-            &#128229; Download Flash Cards
-          </button>
+          <div id="flashcard-status"></div>
           @else
-          <button class="tool-btn" disabled>
-            &#128196; Key Takeaways
-          </button>
           <button class="tool-btn" disabled>
             &#128229; Download Flash Cards
           </button>
           @endif
         </div>
-        <div id="flashcard-status" style="margin-top: 10px; text-align: center;"></div>
-
         @if($planName === 'Half In')
         <div style="margin-top: 20px; text-align: center; background-color: #f3f4f6; padding: 15px; border-radius: 8px;">
           <p class="font-semibold text-gray-700">Upgrade to unlock more tools!</p>
@@ -577,95 +670,84 @@
         @endif
 
         @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
-        <a href="https://the2023nhaexam.nhatutorpro.com/exam-selection.php" class="tool-btn" style=" font-weight: bold; text-decoration: none;">
-          &#128170; Take Exam
-        </a>
-        <div id="exam-difficulties" class="tools-grid d-none" style="max-width: 600px; margin: 10px auto; grid-template-columns: repeat(2, 1fr); display: none;">
-          <a href="{{ route('exam.start', ['difficulty' => 'easy']) }}" class="tool-btn" style="text-decoration: none;">
-            <span style="font-size: 2em;">&#128512;</span> Easy
+          <a href="https://the2023nhaexam.nhatutorpro.com/exam-selection.php" class="tool-btn" style=" font-weight: bold;  text-decoration: none;">
+            &#128170; Take Exam
           </a>
-          <a href="{{ route('exam.start', ['difficulty' => 'medium']) }}" class="tool-btn" style="text-decoration: none;">
-            <span style="font-size: 2em;">&#128524;</span> Medium
-          </a>
-          <a href="{{ route('exam.start', ['difficulty' => 'hard']) }}" class="tool-btn" style="text-decoration: none;">
-            <span style="font-size: 2em;">&#128170;</span> Hard
-          </a>
-          <a href="{{ route('exam.start', ['difficulty' => 'expert']) }}" class="tool-btn" style="text-decoration: none;">
-            <span style="font-size: 2em;">&#129299;</span> Expert
-          </a>
-          <button id="get-insight-btn" class="tool-btn" style=" font-weight: bold; text-decoration: none;">
-            👋 Intention of this Federal Guideline
-          </button>
-        </div>
         @endif
       </aside>
     </main>
   </div>
 
+  <div id="insight-modal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <div class="modal-header">Federal Guideline Insight</div>
+      <div class="modal-body" id="insight-modal-body">
+      </div>
+    </div>
+  </div>
+
   @include('includes.bottom-navigation')
-  @include('includes.security-scripts')
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const generateBtn = document.getElementById('generate-flashcards-btn');
-      const downloadBtn = document.getElementById('download-flashcards-btn');
-      const statusDiv = document.getElementById('flashcard-status');
-      let downloadUrl = null;
+@include('includes.security-scripts')
 
-      if (generateBtn) {
-        generateBtn.addEventListener('click', async () => {
-          generateBtn.disabled = true;
-          downloadBtn.disabled = true;
-          statusDiv.textContent = 'Generating flashcards...';
+      <script>
+          document.addEventListener('DOMContentLoaded', function() {
+              const downloadBtn = document.getElementById('download-flashcards-btn');
+              const statusDiv = document.getElementById('flashcard-status');
+              const btnText = downloadBtn.querySelector('.btn-text');
+              const spinner = downloadBtn.querySelector('.spinner');
 
-          const topicName = "{{ $submission->topic_name }}";
+              if (downloadBtn) {
+                  downloadBtn.addEventListener('click', async () => {
+                      downloadBtn.disabled = true;
+                      btnText.style.display = 'none';
+                      spinner.style.display = 'inline-block';
+                      statusDiv.textContent = 'Generating and downloading flashcards...';
 
-          // *** THIS IS THE FIX ***
-          const wrongQuestions = @json($submission - > wrong_questions);
-          const contextForApi = wrongQuestions;
+                      const topicName = "{{ $submission->topic_name }}";
+                      const wrongQuestions = @json($submission->wrong_questions);
+                      const contextForApi = wrongQuestions;
 
-          try {
-            const response = await fetch('https://nha-tutor.onrender.com/flashcards', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-              },
-              body: JSON.stringify({
-                topics: topicName,
-                context: contextForApi
-              })
-            });
+                      try {
+                          const response = await fetch('https://nha-tutor.onrender.com/flashcards', {
+                              method: 'POST',
+                              headers: {
+                                  'Content-Type': 'application/json',
+                                  'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                              },
+                              body: JSON.stringify({
+                                  topics: topicName,
+                                  context: contextForApi
+                              })
+                          });
 
-            const data = await response.json();
+                          const data = await response.json();
 
-            if (response.ok) {
-              downloadUrl = data.download_content;
-              downloadBtn.disabled = false;
-              statusDiv.textContent = 'Flashcards are ready to download!';
-            } else {
-              statusDiv.textContent = `Error: ${data.message || 'Failed to generate flashcards.'}`;
-            }
-          } catch (error) {
-            statusDiv.textContent = 'An error occurred. Please try again.';
-            console.error('Error generating flashcards:', error);
-          } finally {
-            generateBtn.disabled = false;
-          }
-        });
-      }
+                          if (response.ok) {
+                              const downloadUrl = data.download_content;
+                              if (downloadUrl) {
+                                  window.open(downloadUrl, '_blank');
+                                  statusDiv.textContent = 'Flashcards downloaded successfully!';
+                              } else {
+                                  statusDiv.textContent = 'Could not get the download link.';
+                              }
+                          } else {
+                              statusDiv.textContent = `Error: ${data.message || 'Failed to generate flashcards.'}`;
+                          }
+                      } catch (error) {
+                          statusDiv.textContent = 'An error occurred. Please try again.';
+                          console.error('Error:', error);
+                      } finally {
+                          downloadBtn.disabled = false;
+                          btnText.style.display = 'inline-block';
+                          spinner.style.display = 'none';
+                      }
+                  });
+              }
+          });
+      </script>
 
-      if (downloadBtn) {
-        downloadBtn.addEventListener('click', () => {
-          if (downloadUrl) {
-            window.open(downloadUrl, '_blank');
-          } else {
-            statusDiv.textContent = 'Please generate the flashcards first.';
-          }
-        });
-      }
-    });
-  </script>
-
+      
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const toggleExamBtn = document.getElementById('toggle-exam-btn');

@@ -136,7 +136,17 @@ class QuizController extends Controller
 
     public function showResults($submission_id)
     {
-        $submission = QuizSubmission::findOrFail($submission_id);
-        return view('pages.quiz_results', ['submission' => $submission]);
+          $submission = QuizSubmission::findOrFail($submission_id);
+          $module = Module::find($submission->module_id);
+            $apiUrl_lesson = 'https://nha-tutor.onrender.com/view-lesson';
+
+            // Send request to API
+            $response_lesson = Http::timeout(120)->post($apiUrl_lesson, [
+                'topic' => $module->title,
+                'lesson_type' => strtoupper($module->category),
+            ]); 
+            $result_lesson = $response_lesson->json();
+        
+        return view('pages.quiz_results', ['submission' => $submission ,'data' => $result_lesson]);
     }
 }

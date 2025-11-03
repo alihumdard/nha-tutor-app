@@ -61,6 +61,7 @@
       height: 70px;
       border-radius: 50%;
       background: #e5e7eb;
+      object-fit: cover; /* Added for better image scaling */
     }
 
     .profile-details_faizan h3 {
@@ -342,28 +343,43 @@
 
     <div class="right-col_faizan">
       @if(Auth::user()->subscribed('default'))
-      @php
-      $subscription = Auth::user()->subscription('default');
-      @endphp
+        @php
+            $subscription = Auth::user()->subscription('default');
+            
+            // 1. Get all plans from HomepageContent
+            $content = \App\Models\HomepageContent::first();
+            $allPlans = $content ? $content->plans : [];
+            
+            // 2. Get user's Stripe Price ID
+            $userStripePriceId = $subscription->stripe_price;
+            
+            // 3. Find the user's current plan details
+            $currentPlan = null;
+            if (is_array($allPlans)) {
+                foreach ($allPlans as $plan) {
+                    if (isset($plan['stripe_price_id']) && $plan['stripe_price_id'] === $userStripePriceId) {
+                        $currentPlan = $plan;
+                        break;
+                    }
+                }
+            }
+
+            // 4. Set dynamic values with fallbacks for safety
+            $planName = $currentPlan['name'] ?? 'Premium Plan';
+            $planDescription = $currentPlan['description'] ?? 'Everything you need to succeed';
+            $planPrice = $currentPlan['price'] ?? '29';
+            $planBillingCycle = $currentPlan['billing_cycle'] ?? 'month';
+            $planFeatures = $currentPlan['features'] ?? [];
+        @endphp
       <div class="premium-card_faizan">
-        <h4><i class="fa-solid fa-crown"></i> Premium Plan</h4>
-        <p>Everything you need to succeed</p>
+        <h4><i class="fa-solid fa-crown"></i> {{ Auth::user()->getPlanName(); }}</h4>
         <div class="twenty_faizan">
-          <h2>$29 <br> <span>per month</span></h2>
+          <h2>{{ $planPrice }} <br> <span>per {{ $planBillingCycle }}</span></h2>
         </div>
-        <p><b>Next billing</b> {{ $subscription->ends_at ? $subscription->ends_at->format('M d, Y') : 'N/A' }}</p>
         <div class="status_faizan">Status <span>{{ ucfirst($subscription->stripe_status) }}</span></div>
       </div>
 
       <div class="plan-features_faizan">
-        <h4>Plan Features</h4>
-        <ul>
-          <li><i class="fas fa-check-circle"></i> Unlimited projects</li>
-          <li><i class="fas fa-check-circle"></i> Priority support</li>
-          <li><i class="fas fa-check-circle"></i> Advanced analytics</li>
-          <li><i class="fas fa-check-circle"></i> Custom integrations</li>
-          <li><i class="fas fa-check-circle"></i> Team collaboration</li>
-        </ul>
         <button class="manage-btn_faizan" onclick="location.href='{{ route('home') }}'">Manage Billing</button>
         <div class="cancel_faizan">
           <form method="POST" action="{{ route('subscribe.cancel') }}">
@@ -379,7 +395,6 @@
         <div class="twenty_faizan">
           <h2>$0 <br> <span>per month</span></h2>
         </div>
-        <p><b>Next billing</b> N/A</p>
         <div class="status_faizan">Status <span style="background: #ef4444;">Inactive</span></div>
       </div>
       <div class="plan-features_faizan">
@@ -391,4 +406,4 @@
 </body>
 
 </html>
- @include('includes.security-scripts')
+@include('includes.security-scripts')

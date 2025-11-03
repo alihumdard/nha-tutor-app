@@ -101,6 +101,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/quiz/{module}', [QuizController::class, 'showQuiz'])->name('quiz');
         Route::post('/quiz/submit', [QuizController::class, 'submitQuiz'])->name('quiz.submit');
         Route::get('/quiz/results/{submission_id}', [QuizController::class, 'showResults'])->name('quiz.results');
+        
+        // ** FIX: Moved the lesson route inside this group **
+        Route::get('/lesson/{slug}', [LessonController::class, 'sendTopic'])->name('send.topic');
+        
         //exam routes
         Route::middleware('plan.access:All In,All or Nothing')->group(function () {
             Route::get('/exam/start', [ExamController::class, 'startExam'])->name('exam.start');
@@ -131,9 +135,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/subscribe/swap/{priceId}', [PaymentController::class, 'swapPlan'])->name('subscribe.swap');
     Route::post('/subscribe/cancel', [PaymentController::class, 'cancelSubscription'])->name('subscribe.cancel');
     Route::get('/subscribe/{priceId}', [PaymentController::class, 'subscribe'])->name('subscribe');
-    Route::get('/lesson/{slug}', [LessonController::class, 'sendTopic'])->name('send.topic');
 });
 
 Route::get('/terms_2', function () {
     return view('pages.terms_2');
-})->name('terms_2'); 
+})->name('terms_2');

@@ -21,30 +21,30 @@ Route::get('/run-commands', function (Request $request) {
     Artisan::call('optimize:clear');
     $optimizeClear = Artisan::output();
 
-    Artisan::call('optimize');
-    $optimize = Artisan::output();
+    // Artisan::call('optimize');
+    // $optimize = Artisan::output();
 
-    Artisan::call('route:clear');
-    $routeClear = Artisan::output();
+    // Artisan::call('route:clear');
+    // $routeClear = Artisan::output();
 
     Artisan::call('config:clear');
     $configClear = Artisan::output();
 
-    Artisan::call('key:generate');
-    $keyGenerate = Artisan::output();
+    // Artisan::call('key:generate');
+    // $keyGenerate = Artisan::output();
 
-    Artisan::call('storage:link');
-    $storageLink = Artisan::output();
+    // Artisan::call('storage:link');
+    // $storageLink = Artisan::output();
 
     return response()->json([
         'message' => 'Selected commands executed successfully.',
         'results' => [
             'optimize:clear' => $optimizeClear,
-            'optimize'       => $optimize,
-            'route:clear'    => $routeClear,
+            // 'optimize'       => $optimize,
+            // 'route:clear'    => $routeClear,
             'config:clear'   => $configClear,
-            'key:generate'   => $keyGenerate,
-            'storage:link'   => $storageLink,
+            // 'key:generate'   => $keyGenerate,
+            // 'storage:link'   => $storageLink,
         ]
     ]);
 });
@@ -87,14 +87,16 @@ Route::middleware('guest')->group(function () {
     Route::post('verify-otp', [ForgotPasswordController::class, 'verifyOtp'])->name('password.otp.verify');
     Route::get('reset-password', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset.form');
     Route::post('reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update');
+
 });
 
+Route::get('/terms-and-conditions', [PageController::class, 'terms'])->name('terms');
 Route::middleware('auth')->group(function () {
     Route::match(['post','get'],'logout', [AuthController::class, 'logout'])->name('logout');
-
+    Route::post('/manage/terms', [CrmController::class, 'updateTerms'])->name('terms.update');
+        
     Route::middleware('subscribed')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-        Route::get('/terms-and-conditions', [PageController::class, 'terms'])->name('terms');
         //quiz 
         Route::get('/quizzes', [QuizController::class, 'all_quizzes'])->name('quizzes');
         Route::get('/modules', [QuizController::class, 'all_modules'])->name('modules');

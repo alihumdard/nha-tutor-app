@@ -140,7 +140,9 @@
             margin-top: auto;
         }
 
+        /* Base styles for all plan buttons/links */
         .plan a,
+        .plan button,
         .plan span {
             width: 100%;
             color: #fff;
@@ -152,19 +154,27 @@
             text-decoration: none;
             text-align: center;
             display: block;
+            font-family: inherit; /* Ensure button inherits font */
         }
 
         .btn-subscribe {
             background: var(--teal);
         }
+        .btn-subscribe:hover {
+            background: #2e8b57; /* Darker teal */
+        }
 
         .btn-swap {
             background: var(--blue);
+        }
+        .btn-swap:hover {
+            background: #0056b3; /* Darker blue */
         }
 
         .btn-disabled {
             background-color: #999;
             cursor: not-allowed;
+            opacity: 0.7;
         }
 
         footer {
@@ -230,6 +240,97 @@
                 gap: 0px;
             }
         }
+
+
+
+        /* ======== MODAL STYLES START ======== */
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            z-index: 1000;
+            /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            /* Enable scroll if needed */
+            background-color: rgb(0, 0, 0);
+            /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.6);
+            /* Black w/ opacity */
+        }
+
+        .terms-modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            /* 5% from the top and centered */
+            padding: 24px;
+            border: 1px solid #888;
+            width: 100%;
+            /* Could be more or less, depending on screen size */
+            max-width: 700px;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .modal-close {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .modal-close:hover,
+        .modal-close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-terms-box {
+            height: 400px;
+            overflow-y: scroll;
+            border: 1px solid #eee;
+            padding: 16px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .modal-terms-box h1,
+        .modal-terms-box h2,
+        .modal-terms-box h3 {
+            color: #1f2937;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-terms-box p,
+        .modal-terms-box ul,
+        .modal-terms-box li {
+            color: #4b5563;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+
+        .modal-terms-box ul {
+            padding-left: 1.5rem;
+        }
+
+        /* Style for disabled modal proceed button */
+        #modal-proceed-link.btn-disabled {
+            background-color: #999;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        /* ======== MODAL STYLES END ======== */
+
     </style>
 </head>
 
@@ -266,69 +367,112 @@
         <p class="tagline">{{ $content->main_content ?? 'Default main content paragraph.' }}</p>
         <h2 class="section">{{ $content->plans_main_heading ?? 'Choose Your Plan' }}</h2>
         <div class="plan-grid">
+
+            {{-- Find the current user's plan index (rank) first --}}
+            @php
+                $currentUserPlanRank = -1; // -1 means not subscribed or plan not found
+                $subscription = auth()->check() ? auth()->user()->subscription('default') : null;
+                
+                if ($subscription && $subscription->valid()) {
+                    foreach ($content->plans as $index => $plan) {
+                        if ($subscription->hasPrice($plan['stripe_price_id'] ?? null)) {
+                            $currentUserPlanRank = $index; // 0, 1, or 2
+                            break;
+                        }
+                    }
+                }
+            @endphp
+
             @if(!empty($content->plans))
             @foreach($content->plans as $index => $plan)
             @php
-            $planName = '';
-            if ($index === 0) $planName = 'Half In';
-            if ($index === 1) $planName = 'All In';
-            if ($index === 2) $planName = 'All or Nothing';
+                // --- This block is mostly the same ---
+                $planName = '';
+                if ($index === 0) $planName = 'Half In';
+                if ($index === 1) $planName = 'All In';
+                if ($index === 2) $planName = 'All or Nothing';
 
-            $subscription = auth()->check() ? auth()->user()->subscription('default') : null;
-            $isSubscribed = $subscription && $subscription->valid();
-            $onGracePeriod = $subscription && $subscription->onGracePeriod();
-            $isCurrentPlan = $isSubscribed && $subscription->hasPrice($plan['stripe_price_id'] ?? null);
-            $stripePriceId = $plan['stripe_price_id'] ?? null;
+                $isSubscribed = $subscription && $subscription->valid();
+                $onGracePeriod = $subscription && $subscription->onGracePeriod();
+                $isCurrentPlan = $isSubscribed && ($index === $currentUserPlanRank); // Check if this is the current plan
+                $stripePriceId = $plan['stripe_price_id'] ?? null;
+                
+                // --- NEW LOGIC ---
+                // A plan is considered "lower" if its index is less than the user's current plan index.
+                // We only care about this if the user IS subscribed and NOT on a grace period.
+                $isLowerPlan = $isSubscribed && !$onGracePeriod && ($index < $currentUserPlanRank);
             @endphp
-            <div class="plan {{ $isCurrentPlan ? 'current-plan' : '' }}"><img src="{{ isset($plan['image_path']) ? asset('public/storage/' . $plan['image_path']) : asset('assets/images/p1.png') }}"
-     alt="{{ $plan['heading'] ?? '' }}"
-     style="width: 100%; height: 150px; border-radius: 6px; object-fit: cover;" />
+            <div class="plan {{ $isCurrentPlan ? 'current-plan' : '' }}">
+                <img src="{{ isset($plan['image_path']) ? asset('public/storage/' . $plan['image_path']) : asset('assets/images/p1.png') }}"
+                     alt="{{ $plan['heading'] ?? '' }}"
+                     style="width: 100%; height: 150px; border-radius: 6px; object-fit: cover;" />
 
- <h3>{{ $plan['heading'] ?? 'Plan Heading' }}</h3>
+                <h3>{{ $plan['heading'] ?? 'Plan Heading' }}</h3>
                 <p class="subhead">{{ $plan['description'] ?? 'Plan Description' }}</p>
                 <ul class="checklist">
                     @if(!empty($plan['details']))
                     @foreach($plan['details'] as $detail)
-                        <li>
-                            @if(($planName === 'Half In' || $planName === 'All In') && str_contains($detail, 'Answer Rationales'))
-                                {{ str_replace('Answer Rationales', 'Answer Explanations', $detail) }}
-                            @else
-                                {{ $detail }}
-                            @endif
-                        </li>
+                    <li>
+                        @if(($planName === 'Half In' || $planName === 'All In') && str_contains($detail, 'Answer Rationales'))
+                        {{ str_replace('Answer Rationales', 'Answer Explanations', $detail) }}
+                        @else
+                        {{ $detail }}
+                        @endif
+                    </li>
                     @endforeach
                     @endif
                 </ul>
                 <div class="price">{{ $plan['price'] ?? '$0.00' }}</div>
 
                 @guest
-                @if ($stripePriceId)
-                <a href="{{ route('login') }}" class="btn-subscribe">Subscribe</a>
-                @else
-                <span class="btn-disabled" title="Plan not available">Not Available</span>
-                @endif
+                    {{-- This part is unchanged --}}
+                    @if ($stripePriceId)
+                    <a href="{{ route('login') }}" class="btn-subscribe">Subscribe</a>
+                    @else
+                    <span class="btn-disabled" title="Plan not available">Not Available</span>
+                    @endif
                 @endguest
 
                 @auth
-                @if ($isCurrentPlan)
-                @if ($onGracePeriod)
-                <span class="btn-disabled" title="Your subscription is ending soon.">Canceling</span>
-                @else
-                <span class="btn-disabled" title="This is your current active plan.">Current Plan</span>
-                @endif
-                @elseif ($isSubscribed && !$onGracePeriod)
-                @if ($stripePriceId)
-                <a href="{{ route('subscribe.swap', ['priceId' => $stripePriceId]) }}" class="btn-swap">Swap Plan</a>
-                @else
-                <span class="btn-disabled" title="Plan not available">Not Available</span>
-                @endif
-                @else
-                @if ($stripePriceId)
-                <a href="{{ route('subscribe', ['priceId' => $stripePriceId]) }}" class="btn-subscribe">Subscribe</a>
-                @else
-                <span class="btn-disabled" title="Plan not available">Not Available</span>
-                @endif
-                @endif
+                    @if ($isCurrentPlan)
+                        {{-- This part is unchanged --}}
+                        @if ($onGracePeriod)
+                        <span class="btn-disabled" title="Your subscription is ending soon.">Canceling</span>
+                        @else
+                        <span class="btn-disabled" title="This is your current active plan.">Current Plan</span>
+                        @endif
+
+                    {{-- NEW CONDITION: Check if it's a lower plan --}}
+                    @elseif ($isLowerPlan)
+                        <span class="btn-disabled" title="You cannot downgrade to this plan.">Downgrade Not Allowed</span>
+
+                    @elseif ($isSubscribed && !$onGracePeriod)
+                        {{-- This is a HIGHER plan, so show the Swap button --}}
+                        @if ($stripePriceId)
+                        <button type="button" 
+                                class="open-terms-modal btn-swap" 
+                                data-action-url="{{ route('subscribe.swap', ['priceId' => $stripePriceId]) }}"
+                                data-plan-name="{{ $plan['heading'] ?? 'Plan' }}"
+                                data-btn-class="btn-swap">
+                            Swap Plan
+                        </button>
+                        @else
+                        <span class="btn-disabled" title="Plan not available">Not Available</span>
+                        @endif
+                    @else
+                        {{-- This is for users who are on a grace period or not subscribed at all --}}
+                        @if ($stripePriceId)
+                        <button type="button" 
+                                class="open-terms-modal btn-subscribe" 
+                                data-action-url="{{ route('subscribe', ['priceId' => $stripePriceId]) }}"
+                                data-plan-name="{{ $plan['heading'] ?? 'Plan' }}"
+                                data-btn-class="btn-subscribe">
+                            Subscribe
+                        </button>
+                        @else
+                        <span class="btn-disabled" title="Plan not available">Not Available</span>
+                        @endif
+                    @endif
                 @endauth
             </div>
             @endforeach
@@ -347,6 +491,97 @@
             @endif
         </div>
     </footer>
+
+    <div id="termsModal" class="modal ">
+        <div class="terms-modal-content">
+            <span class="modal-close">&times;</span>
+            <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Terms and Conditions</h2>
+            
+            <div class="modal-terms-box">
+                {!! $content->terms_and_conditions ?? '<p>Terms and conditions are loading...</p>' !!}
+            </div>
+            
+            <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                <input type="checkbox" id="modal_terms_checkbox" style="width: 1rem; height: 1rem; margin-right: 0.5rem;">
+                <label for="modal_terms_checkbox" style="font-size: 0.9rem;">
+                    I have read and agree to the Terms and Conditions.
+                </label>
+            </div>
+            
+            <a id="modal-proceed-link" 
+               href="#" 
+               class="btn-disabled" 
+               style="width: 100%; text-align: center; display: block; padding: 12px 0; text-decoration: none; border-radius: var(--radius); color: #fff; font-size: 1rem;">
+                Proceed
+            </a>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var modal = document.getElementById("termsModal");
+        var closeButton = document.querySelector(".modal-close");
+        var proceedLink = document.getElementById("modal-proceed-link");
+        var checkbox = document.getElementById("modal_terms_checkbox");
+        var planButtons = document.querySelectorAll(".open-terms-modal");
+
+        // When the user clicks a plan button, open the modal
+        planButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                // Get the data from the button
+                var actionUrl = button.getAttribute('data-action-url');
+                var planName = button.getAttribute('data-plan-name');
+                var btnClass = button.getAttribute('data-btn-class'); // Get the class
+                
+                // Set the link's URL
+                proceedLink.setAttribute('href', actionUrl);
+                
+                // Update the proceed button text
+                proceedLink.innerText = 'Proceed with ' + planName;
+                
+                // Reset the modal to its default state
+                checkbox.checked = false;
+                proceedLink.className = 'btn-disabled'; // Reset classes
+                proceedLink.setAttribute('data-btn-class', btnClass); // Store the correct class
+            
+                // Show the modal
+                modal.style.display = "block";
+            });
+        });
+
+        // When the user checks the box, enable the button
+        checkbox.addEventListener('change', function() {
+            if (checkbox.checked) {
+                var btnClass = proceedLink.getAttribute('data-btn-class');
+                proceedLink.className = btnClass; // Set the correct class (btn-subscribe or btn-swap)
+            } else {
+                proceedLink.className = 'btn-disabled'; // Set back to disabled
+            }
+        });
+
+        // When the user clicks the Proceed link, check if it's disabled
+        proceedLink.addEventListener('click', function(event) {
+            if (proceedLink.classList.contains('btn-disabled')) {
+                event.preventDefault(); // Stop the link from working
+                alert('You must accept the Terms and Conditions to proceed.');
+            }
+            // If not disabled, the link works normally and redirects
+        });
+
+        // When the user clicks on <span> (x), close the modal
+        closeButton.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    });
+    </script>
+
 
     @include('includes.security-scripts')
 </body>

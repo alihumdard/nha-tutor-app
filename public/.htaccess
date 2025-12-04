@@ -5,6 +5,13 @@
 
     RewriteEngine On
 
+    # Allow direct access to storage and public assets
+    RewriteCond %{REQUEST_URI} ^/storage
+    RewriteRule ^ - [L]
+
+    RewriteCond %{REQUEST_URI} ^/images
+    RewriteRule ^ - [L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

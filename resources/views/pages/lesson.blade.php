@@ -534,6 +534,7 @@
       }
     }
 
+    
     /* Styles for the Insight Modal */
     .modal {
       display: none;
@@ -553,7 +554,7 @@
       padding: 20px;
       border: 1px solid #888;
       width: 100%;
-      max-width: 800px;
+      max-width:1000px;
       border-radius: 1rem;
       position: relative;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -607,7 +608,7 @@
         transform: rotate(360deg);
       }
     }
-
+    
   </style>
 </head>
 
@@ -682,16 +683,15 @@
               <span style="font-size: 2em;">&#129299;</span> Expert
             </a>
           </div>
+          @endif
           <button id="get-insight-btn" class="tool-btn" style=" font-weight: bold; text-decoration: none;">
             👋  Intention of this Federal Guideline
           </button>
-          @endif
-
         </div>
 
         <div class="chatbot-container">
           <div class="chat-header">
-            💬 Ask NHA Tutor Pro
+             💬 Ask NHA Tutor Pro
           </div>
 
           <div class="chat-messages" id="chat-messages">
@@ -710,6 +710,7 @@
     </main>
   </div>
 
+
   <div id="insight-modal" class="modal">
     <div class="modal-content">
       <span class="modal-close">&times;</span>
@@ -720,6 +721,7 @@
   </div>
 
   @include('includes.bottom-navigation')
+  @include('includes.security-scripts')
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const toggleExamBtn = document.getElementById('toggle-exam-btn');
@@ -897,6 +899,7 @@
       });
     });
   </script>
+
 
 </body>
 

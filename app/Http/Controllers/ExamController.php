@@ -25,7 +25,7 @@ class ExamController extends Controller
         $apiUrl = 'https://nha-tutor.onrender.com/take-exam';
 
         try {
-            $response = Http::timeout(300)
+            $response = Http::timeout(120)
                 ->withHeaders([
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/json',
@@ -113,6 +113,12 @@ class ExamController extends Controller
         ]);
 
         // Redirect to the results page, passing the submission ID
-        return redirect()->route('quiz.results', ['submission_id' => $submission->id]);
+        return redirect()->route('exam.results', ['submission_id' => $submission->id]);
+    }
+
+        public function showResults($submission_id)
+    {
+        $submission = QuizSubmission::findOrFail($submission_id);
+        return view('pages.exam_results', ['submission' => $submission]);
     }
 }

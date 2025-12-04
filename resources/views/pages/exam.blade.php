@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>NHA Tutor Pro - Module 2</title>
+  <title>Exam</title>
   <style>
     * {
       box-sizing: border-box;
@@ -471,7 +471,7 @@
       top: 0;
       width: 18px;
       height: 18px;
-      border: 1px solid #999494ff;
+      border: 1px solid #999494ff;;
       border-radius: 100%;
       background: #fff;
     }
@@ -511,7 +511,7 @@
     <!-- Header -->
     <header class="header-bar">
       <h1>NHA Tutor Pro</h1>
-      <h3>Module 2 – Resident Rights</h3>
+      <h3>Exam</h3>
       <a href="/">Log Out</a>
     </header>
 
@@ -572,13 +572,8 @@
 
       <!-- Tools -->
       <aside class="lesson-tools">
-        <h3>Lesson Tools</h3>
+        <h3>Untimed Exam</h3>
         <div class="tools-grid">
-          <!-- <button class="tool-btn">
-            📑
-            Take Quiz
-          </button> -->
-
         </div>
       </aside>
     </main>

@@ -74,17 +74,10 @@
       width: 120px;
       height: 120px;
       border-radius: 50%;
-
       background: radial-gradient(closest-side,
-        white 79%,
-        transparent 80% 100%),
-      conic-gradient(#229a76 {
-            {
-            $progressPercentage
-          }
-        }
-
-        %, #dcfce7 0);
+          white 79%,
+          transparent 80% 100%),
+        conic-gradient(#229a76 {{ $progressPercentage }}%, #dcfce7 0);
     }
 
     .progress-bar::before {
@@ -533,105 +526,105 @@
       stroke-width: 2;
       fill: none;
     }
-
+    
     .mobile-hidden-nav {
       display: flex;
       align-items: center;
     }
-
     .mobile-hidden-nav form button {
-      background-color: transparent;
-      color: gray;
-      border: none;
-      font-weight: 400;
+        background-color: transparent;
+        color: gray;
+        border: none;
+        font-weight: 400;
     }
-
     .mobile-hidden-nav a {
-      background-color: transparent;
-      color: gray;
-      border: none;
-      font-weight: 400;
+        background-color: transparent;
+        color: gray;
+        border: none;
+        font-weight: 400;
     }
-
+.paragraph p span{
+    font-weight: bolder;
+}
+.paragraph p{
+    font-weight:400;
+}
+.paragraph-1{
+    margin-bottom: 10px;
+}
+.paragraph-2{
+    margin-bottom: 10px;
+}
     .header-nav-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      padding: 12px 24px;
-      background-color: #f9fafb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 12px 24px;
+        background-color: #f9fafb;
     }
-
     .header-brand {
-      font-size: 1.6rem;
-      font-weight: 600;
-      color: #1f2937;
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: #1f2937;
     }
-
     .user-menu-button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      background-color: #f97316;
-      color: white;
-      font-weight: 600;
-      border-radius: 9999px;
-      transition: background-color 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background-color: #f97316;
+        color: white;
+        font-weight: 600;
+        border-radius: 9999px;
+        transition: background-color 0.2s;
     }
-
     .user-menu-button:hover {
-      background-color: #ea580c;
+        background-color: #ea580c;
     }
-
     .user-menu-dropdown {
-      position: absolute;
-      right: 0;
-      margin-top: 8px;
-      width: 192px;
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      border: 1px solid #e5e7eb;
-      z-index: 10;
-      overflow: hidden;
+        position: absolute;
+        right: 0;
+        margin-top: 8px;
+        width: 192px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e5e7eb;
+        z-index: 10;
+        overflow: hidden;
     }
-
     .user-menu-dropdown a {
-      display: block;
-      width: 100%;
-      text-align: left;
-      padding: 8px 16px;
-      font-size: 0.875rem;
-      color: #374151;
-      text-decoration: none;
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 8px 16px;
+        font-size: 0.875rem;
+        color: #374151;
+        text-decoration: none;
     }
-
     .user-menu-dropdown a:hover {
-      background-color: #f3f4f6;
+        background-color: #f3f4f6;
     }
-
     .logout-btn {
-      padding: 8px 16px;
-      font-size: 0.875rem;
-      color: #374151;
-      background-color: transparent;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-      text-align: left;
-      display: block;
+        padding: 8px 16px;
+        font-size: 0.875rem;
+        color: #374151;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        text-align: left;
+        display: block;
     }
-
     .logout-btn:hover {
-      background-color: #f3f4f6;
+        background-color: #f3f4f6;
     }
-
     @media (max-width: 640px) {
-      .mobile-hidden-nav {
-        display: none;
-      }
+        .mobile-hidden-nav {
+            display: none;
+        }
     }
   </style>
 </head>
@@ -641,80 +634,80 @@
 
   <header class="header-nav-container">
     <div class="mobile-hidden-nav">
-      @auth
-      @if(auth()->user()->subscribed('default'))
-      <form method="POST" action="{{ route('subscribe.cancel') }}">
-        @csrf
-        <button type="submit">Unsubscribe</button>
-      </form>
-      @else
-      <a href="{{ route('home') }}">View Plans</a>
-      @endif
-      @else
-      <div style="width: 120px;"></div>
-      @endauth
+        @auth
+            @if(auth()->user()->subscribed('default'))
+                <form method="POST" action="{{ route('subscribe.cancel') }}">
+                    @csrf
+                    <button type="submit">Unsubscribe</button>
+                </form>
+            @else
+                <a href="{{ route('home') }}">View Plans</a>
+            @endif
+        @else
+            <div style="width: 120px;"></div>
+        @endauth
     </div>
     <div class="header-brand">NHA Tutor Pro</div>
     <div class="relative flex items-center space-x-4">
-      @auth
-      @if(Auth::user()->role === 'admin')
-      <div class="relative">
-        <button id="notification-menu-button" class="user-menu-button bg-blue-500 hover:bg-blue-600">
-          <i class="fas fa-bell"></i>
-          @if($unreadNotifications->count() > 0)
-          <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white"></span>
-          @endif
-        </button>
-        <div id="notification-menu" class="user-menu-dropdown hidden" style="width: 320px;">
-          <div class="px-4 py-3 border-b flex justify-between items-center">
-            <p class="text-sm font-semibold text-gray-800">Notifications</p>
-            <a href="{{ route('admin.notifications.index') }}" class="text-xs text-blue-500 hover:underline">View All</a>
-          </div>
-          <div class="py-1">
-            @forelse($unreadNotifications as $notification)
-            <a href="{{ route('admin.notifications.show', $notification) }}" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-              <p class="font-semibold">{{ $notification->title }}</p>
-              <p class="text-xs text-gray-500">{{ $notification->message }}</p>
+        @auth
+            @if(Auth::user()->role === 'admin')
+            <div class="relative">
+                <button id="notification-menu-button" class="user-menu-button bg-blue-500 hover:bg-blue-600">
+                    <i class="fas fa-bell"></i>
+                    @if($unreadNotifications->count() > 0)
+                        <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white"></span>
+                    @endif
+                </button>
+                <div id="notification-menu" class="user-menu-dropdown hidden" style="width: 320px;">
+                    <div class="px-4 py-3 border-b flex justify-between items-center">
+                        <p class="text-sm font-semibold text-gray-800">Notifications</p>
+                        <a href="{{ route('admin.notifications.index') }}" class="text-xs text-blue-500 hover:underline">View All</a>
+                    </div>
+                    <div class="py-1">
+                        @forelse($unreadNotifications as $notification)
+                            <a href="{{ route('admin.notifications.show', $notification) }}" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <p class="font-semibold">{{ $notification->title }}</p>
+                                <p class="text-xs text-gray-500">{{ $notification->message }}</p>
+                            </a>
+                        @empty
+                            <p class="text-center text-sm text-gray-500 py-4">No unread notifications.</p>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+            @endif
+            <div class="relative">
+                <button id="user-menu-button" class="user-menu-button">
+                    @if(Auth::user()->user_pic)
+                        <img src="{{ isset(Auth::user()->user_pic) ? asset('public/storage/' . Auth::user()->user_pic) : asset('https://via.placeholder.com/70') }}" alt="Profile" class="w-full h-full object-cover rounded-full">
+                    @else
+                        <i class="fas fa-user"></i>
+                    @endif
+                </button>
+                <div id="user-menu" class="user-menu-dropdown hidden">
+                    <div class="px-4 py-3 border-b">
+                        <p class="text-sm font-semibold text-gray-800">Hello, {{ Auth::user()->name }}</p>
+                    </div>
+                    <div class="py-1">
+                        <a href="{{ route('profile.show') }}">Profile</a>
+                        <a href="{{ route('activity.index') }}">Activity</a>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="logout-btn">
+                                Logout
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @else
+            <a href="{{ route('login') }}" class="user-menu-button">
+                <i class="fas fa-user"></i>
             </a>
-            @empty
-            <p class="text-center text-sm text-gray-500 py-4">No unread notifications.</p>
-            @endforelse
-          </div>
-        </div>
-      </div>
-      @endif
-      <div class="relative">
-        <button id="user-menu-button" class="user-menu-button">
-          @if(Auth::user()->user_pic)
-          <img src="{{ isset(Auth::user()->user_pic) ? asset('public/storage/' . Auth::user()->user_pic) : asset('https://via.placeholder.com/70') }}" alt="Profile" class="w-full h-full object-cover rounded-full">
-          @else
-          <i class="fas fa-user"></i>
-          @endif
-        </button>
-        <div id="user-menu" class="user-menu-dropdown hidden">
-          <div class="px-4 py-3 border-b">
-            <p class="text-sm font-semibold text-gray-800">Hello, {{ Auth::user()->name }}</p>
-          </div>
-          <div class="py-1">
-            <a href="{{ route('profile.show') }}">Profile</a>
-            <a href="{{ route('activity.index') }}">Activity</a>
-            <form method="POST" action="{{ route('logout') }}">
-              @csrf
-              <button type="submit" class="logout-btn">
-                Logout
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-      @else
-      <a href="{{ route('login') }}" class="user-menu-button">
-        <i class="fas fa-user"></i>
-      </a>
-      @endauth
+        @endauth
     </div>
-  </header>
-
+</header>
+  
   <div class="min-h-screen w-full flex flex-col">
     <main class="main-content">
       <div class="container mx-auto">
@@ -737,33 +730,39 @@
 
           <div class="card w-full md:w-1/3 bg-white rounded-lg shadow-md p-4">
             <div class="card-content text-center">
-              <h1 class="exam-title text-2xl font-semibold my-10">Exam</h1>
-              @php
-              $planName = Auth::user()->getPlanName();
-              @endphp
-              @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
-              <a href="https://the2023nhaexam.nhatutorpro.com/exam-selection.php" class="exam-button bg-[#1fac8d] text-white px-5 py-2 rounded-md text-lg font-semibold">
-                Start Exam
-              </a>
+                <h1 class="exam-title text-2xl font-semibold my-10">Exam</h1>
+                @php
+                    $planName = Auth::user()->getPlanName();
+                @endphp
+                @if($planName === 'All In' || $planName === 'All or Nothing' || $planName === 'Admin')
+                <a href="https://the2023nhaexam.nhatutorpro.com/exam-selection.php" class="exam-button bg-[#1fac8d] text-white px-5 py-2 rounded-md text-xl font-semibold">
+                    Start Exam
+                </a>
 
-              @else
-              <button class="exam-button bg-gray-400 text-white px-5 py-2 rounded-md text-lg font-semibold cursor-not-allowed" disabled>
-                Upgrade to Access Exams
-              </button>
-              @endif
+                @else
+                    <button class="exam-button bg-gray-400 text-white px-5 py-2 rounded-md text-xl font-semibold cursor-not-allowed" disabled>
+                        Upgrade to Access Exams
+                    </button>
+                @endif
             </div>
           </div>
         </div>
 
         <h2 style=" text-align: center; padding-top: 25px; font-size: x-large; font-weight: 500;">
-          Make the Most of your study time
+          Imagine and Believe
         </h2>
+
+        <div class="paragraph"> 
+          <p class="paragraph-1"><span>CORE:</span> The foundational knowledge shared across all long-term care settings. It focuses on four key areas: Care, Services and Supports; Operations; Environment and Quality; and Leadership and Strategy. </p>
+          <p class="paragraph-2"><span>LOS (Line of Service):</span> The specialized body of knowledge unique to each specific line of care—such as Nursing Home or Assisted Living. It builds on the CORE to address the distinctive practices, standards, and regulatory requirements of that service area. </p>
+          <p> Each of the following lessons integrates both the CORE and the NHA Line of Service to prepare you for success as an entry-level Nursing Home Administrator.</p>
+        </div>
 
         <div class="modules-section">
           <div class="modules-container">
             <div class="module-section core-section">
               <div class="section-header">
-                <h2>CORE</h2>
+                <h2>You Can</h2>
               </div>
 
               <div class="modules-grid" id="coreModulesContainer">
@@ -771,10 +770,10 @@
                 <div class="module-card">
                   <div class="flex-grow" style="cursor: pointer;">
                     <a href="{{ route('send.topic', ['slug' => $module->slug]) }}" class="send-topic" style="color: revert; text-decoration: revert;">
-                      {{ $module->title }}
-                      @if($module->completed)
-                      <i class="fas fa-check-circle" style="color: #22c55e; margin-left: 8px;"></i>
-                      @endif
+                        {{ $module->title }}
+                        @if($module->completed)
+                            <i class="fas fa-check-circle" style="color: #22c55e; margin-left: 8px;"></i>
+                        @endif
                     </a>
                   </div>
                   <div class="mt-auto text-center">
@@ -796,7 +795,7 @@
 
             <div class="module-section los-section">
               <div class="section-header">
-                <h2>LOS</h2>
+                <h2>Do It</h2>
               </div>
 
               <div class="modules-grid" id="losModulesContainer">
@@ -804,10 +803,10 @@
                 <div class="module-card">
                   <div class="flex-grow">
                     <a href="{{ route('send.topic', ['slug' => $module->slug]) }}" class="send-topic" style="color: revert; text-decoration: revert;">
-                      {{ $module->title }}
-                      @if($module->completed)
-                      <i class="fas fa-check-circle" style="color: #22c55e; margin-left: 8px;"></i>
-                      @endif
+                        {{ $module->title }}
+                        @if($module->completed)
+                            <i class="fas fa-check-circle" style="color: #22c55e; margin-left: 8px;"></i>
+                        @endif
                     </a>
                   </div>
                   <div class="mt-auto text-center">
@@ -816,7 +815,7 @@
                 </div>
                 @endforeach
               </div>
-              <div class="show-more-container">
+               <div class="show-more-container">
                 <button id="showMoreLosBtn" class="show-more-button font-bold">
                   Show More Modules
                   <svg xmlns="http://www.w3.org/2000/svg" class="chevron-icon" fill="none" viewBox="0 0 24 24"
@@ -908,38 +907,38 @@
       initPagination(showMoreLosBtn, losModules, losVisible);
     }
   </script>
-
+  
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      const userMenuButton = document.getElementById('user-menu-button');
-      const userMenu = document.getElementById('user-menu');
-      const notificationMenuButton = document.getElementById('notification-menu-button');
-      const notificationMenu = document.getElementById('notification-menu');
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userMenu = document.getElementById('user-menu');
+        const notificationMenuButton = document.getElementById('notification-menu-button');
+        const notificationMenu = document.getElementById('notification-menu');
 
-      if (userMenuButton && userMenu) {
-        userMenuButton.addEventListener('click', function(event) {
-          event.stopPropagation();
-          userMenu.classList.toggle('hidden');
-          if (notificationMenu) notificationMenu.classList.add('hidden');
-        });
-      }
-
-      if (notificationMenuButton && notificationMenu) {
-        notificationMenuButton.addEventListener('click', function(event) {
-          event.stopPropagation();
-          notificationMenu.classList.toggle('hidden');
-          if (userMenu) userMenu.classList.add('hidden');
-        });
-      }
-
-      document.addEventListener('click', function(event) {
-        if (userMenu && !userMenu.classList.contains('hidden') && !userMenu.contains(event.target) && !userMenuButton.contains(event.target)) {
-          userMenu.classList.add('hidden');
+        if (userMenuButton && userMenu) {
+            userMenuButton.addEventListener('click', function(event) {
+                event.stopPropagation();
+                userMenu.classList.toggle('hidden');
+                if (notificationMenu) notificationMenu.classList.add('hidden');
+            });
         }
-        if (notificationMenu && !notificationMenu.classList.contains('hidden') && !notificationMenu.contains(event.target) && !notificationMenuButton.contains(event.target)) {
-          notificationMenu.classList.add('hidden');
+
+        if (notificationMenuButton && notificationMenu) {
+            notificationMenuButton.addEventListener('click', function(event) {
+                event.stopPropagation();
+                notificationMenu.classList.toggle('hidden');
+                if (userMenu) userMenu.classList.add('hidden');
+            });
         }
-      });
+
+        document.addEventListener('click', function(event) {
+            if (userMenu && !userMenu.classList.contains('hidden') && !userMenu.contains(event.target) && !userMenuButton.contains(event.target)) {
+                userMenu.classList.add('hidden');
+            }
+            if (notificationMenu && !notificationMenu.classList.contains('hidden') && !notificationMenu.contains(event.target) && !notificationMenuButton.contains(event.target)) {
+                notificationMenu.classList.add('hidden');
+            }
+        });
     });
   </script>
   <script>

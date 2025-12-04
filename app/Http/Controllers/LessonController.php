@@ -43,15 +43,15 @@ class LessonController extends Controller
 
 
         $module = Module::where('slug', $slug)->firstOrFail();
-        
         // API endpoint
         $apiUrl = 'https://nha-tutor.onrender.com/view-lesson';
 
         // Send request to API
         $response = Http::timeout(120)->post($apiUrl, [
             'topic' => $module->title,
-            'lesson_type' => $module->category,
+            'lesson_type' => strtoupper($module->category),
         ]);
+
 
         $result =  $response->json();
 

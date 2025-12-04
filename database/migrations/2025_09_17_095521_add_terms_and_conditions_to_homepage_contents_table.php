@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('homepage_contents', function (Blueprint $table) {
             // Add the new column. 'text' is suitable for a text editor.
             // It's nullable as requested.
-            $table->text('terms_and_conditions')->nullable()->after('why_choose_us_items');
+            $table->longText('terms_and_conditions')->nullable()->after('why_choose_us_items');
         });
     }
 

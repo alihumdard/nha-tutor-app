@@ -381,6 +381,47 @@
         transform: scale(0.98);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
+    
+    /* ADDED STYLES FOR THE EDITOR AND CONTENT */
+    .admin-editor-container {
+        background-color: #fff;
+        border-radius: 0.75rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border-color);
+        padding: 1.5rem;
+        margin: 1rem 0;
+    }
+    .admin-editor-container button {
+         display: inline-flex; /* Fix button layout */
+    }
+    .ck-editor__editable {
+        min-height: 400px; /* Give the editor some space */
+    }
+    .terms-content-display {
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+        margin-top: 2rem;
+    }
+    .terms-content-display h1,
+    .terms-content-display h2,
+    .terms-content-display h3 {
+        color: var(--text-color);
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    .terms-content-display p {
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+        line-height: 1.7;
+    }
+    .terms-content-display ul,
+    .terms-content-display ol {
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+        padding-left: 1.5rem;
+    }
     </style>
 </head>
 
@@ -390,12 +431,43 @@
     <header>
         <div class="brand">NHA Tutor Pro</div>
     </header>
+    
     <div class="page-container">
-        <!-- Main Content -->
         <main class="main-content">
             <div class="content-wrapper">
-                <!-- Contact Information -->
-                <div class="contact-section">
+
+                @auth
+                    @php
+                        // This code is now safe because we are inside @auth
+                        $planName = Auth::user()->getPlanName();
+                    @endphp
+                
+                    @if($planName == 'Admin')
+                        <div class="admin-editor-container">
+                            <h2 class="main-heading">Edit Terms and Conditions</h2>
+                            @if(session('success'))
+                                <div style="color: green; margin-bottom: 1rem;">{{ session('success') }}</div>
+                            @endif
+                            <form action="{{ route('terms.update') }}" method="POST">
+                                @csrf
+                                <textarea name="terms_and_conditions" id="editor">
+                                    {!! $content->terms_and_conditions ?? '' !!}
+                                </textarea>
+                                <button type*="submit">Save Changes</button>
+                            </form>
+                        </div>
+
+                    @else
+                        <div class="terms-content-display">
+                            {!! $content->terms_and_conditions ?? '<p>Terms and Conditions are not available yet.</p>' !!}
+                        </div>
+                    @endif
+                
+                @else
+                    <div class="terms-content-display">
+                        {!! $content->terms_and_conditions ?? '<p>Terms and Conditions are not available yet.</p>' !!}
+                    </div>
+                    <div class="contact-section">
                     <h3 class="contact-heading">Contact Us</h3>
                     <p class="contact-text">
                         If you have any questions about these Terms and Conditions,
@@ -403,18 +475,27 @@
                     </p>
                     <p class="contact-email">nhaaitutor@gmail.com</p>
                 </div>
-            </div>
-    </div>
-    </main>
+                @endguest
 
-    <!-- Footer -->
-    <footer class="page-footer">
-        <div class="footer-content">
-            <p class="footer-text">© 2023 NHA Tutor Pro. All rights reserved.</p>
-        </div>
-    </footer>
-    </div>
+
+                
+            </div> </main> <footer class="page-footer">
+            <div class="footer-content">
+                <p class="footer-text">© 2023 NHA Tutor Pro. All rights reserved.</p>
+            </div>
+        </footer>
+        
+    </div> <script>
+        if (document.querySelector('#editor')) {
+            ClassicEditor
+                .create(document.querySelector('#editor'))
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+    </script>
+
+    @include('includes.security-scripts')
 </body>
 
 </html>
-@include('includes.security-scripts')

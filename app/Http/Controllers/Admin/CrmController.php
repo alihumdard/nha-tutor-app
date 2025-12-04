@@ -71,7 +71,6 @@ class CrmController extends Controller
             'plans.*.stripe_price_id' => 'nullable|string',
             'why_choose_us_main_heading' => 'nullable|string',
             'why_choose_us_items' => 'nullable|array',
-            'terms_and_conditions' => 'nullable',
         ]);
 
         $content = HomepageContent::first();
@@ -102,7 +101,6 @@ class CrmController extends Controller
 
         $content->update([
             'main_heading' => $request->main_heading,
-            'terms_and_conditions' => $request->terms_and_conditions,
             'main_content' => $request->main_content,
             'plans_main_heading' => $request->plans_main_heading,
             'plans' => $newPlansData,
@@ -116,39 +114,40 @@ class CrmController extends Controller
         ]);
     }
 
-    public function propet_update(Request $request)
-    {
-        $request->validate([
-            'prompet_type' => 'required|in:system,lesson',
-            'prompet_content' => 'nullable|string',
+  public function propet_update(Request $request)
+{
+    $request->validate([
+        'prompet_type' => 'required|in:system,lesson',
+        'prompet_content' => 'nullable|string',
+    ]);
+
+    $content = HomepageContent::first();
+
+    try {
+        $apiUrl = 'https://nha-tutor.onrender.com/prompt';
+        $response = Http::timeout(120)->put($apiUrl, [
+            'prompt_type' => $request->prompet_type,   // ✅ Correct field
+            'prompt'      => $request->prompet_content, // ✅ Correct field
         ]);
 
-        $content = HomepageContent::first();
+        if ($response->successful()) {
+            $result = $response->json();
 
-        try {
-            $apiUrl = 'https://nha-tutor.onrender.com/prompt';
-            $response = Http::timeout(120)->put($apiUrl, [
-                'prompt_type' => $request->prompet_type,   // ✅ Correct field
-                'prompt'      => $request->prompet_content, // ✅ Correct field
+            // Update DB with API response values (safer)
+            $content->update([
+                'prompet_type'    => $result['prompt_type'] ?? $request->prompet_type,
+                'prompet_content' => $result['prompt'] ?? $request->prompet_content,
             ]);
 
-            if ($response->successful()) {
-                $result = $response->json();
-
-                // Update DB with API response values (safer)
-                $content->update([
-                    'prompet_type'    => $result['prompt_type'] ?? $request->prompet_type,
-                    'prompet_content' => $result['prompt'] ?? $request->prompet_content,
-                ]);
-
-                return redirect()->back()->with('success', 'Data updated successfully.');
-            }
-
-            return redirect()->back()->with('error', 'API request failed. Please try again.');
-        } catch (\Throwable $e) {
-            return redirect()->back()->with('error', 'Failed to update prompt via API. Please try again.');
+            return redirect()->back()->with('success', 'Data updated successfully.');
         }
+
+        return redirect()->back()->with('error', 'API request failed. Please try again.');
+
+    } catch (\Throwable $e) {
+        return redirect()->back()->with('error', 'Failed to update prompt via API. Please try again.');
     }
+}
 
     public function propet_type_update(Request $request)
     {
@@ -178,5 +177,22 @@ class CrmController extends Controller
             'message' => 'Homepage content updated successfully!',
             'content' => $result['prompt'] ?? '',
         ]);
+    }
+
+    public function updateTerms(Request $request)
+    {
+        $content = HomepageContent::first();
+        if (!$content) {
+            $content = new HomepageContent();
+        }
+
+        $request->validate([
+            'terms_and_conditions' => 'required|string',
+        ]);
+
+        $content->terms_and_conditions = $request->terms_and_conditions;
+        $content->save();
+
+        return redirect()->route('terms')->with('success', 'Terms and Conditions updated successfully.');
     }
 }

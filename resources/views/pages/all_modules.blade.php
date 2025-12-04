@@ -590,7 +590,7 @@
           <div class="modules-container">
             <div class="module-section core-section">
               <div class="section-header">
-                <h2>CORE</h2>
+                <h2>You Can</h2>
               </div>
 
               <div class="modules-grid" id="coreModulesContainer">
@@ -618,13 +618,13 @@
 
             <div class="module-section los-section">
               <div class="section-header">
-                <h2>LOS</h2>
+                <h2>Do It</h2>
               </div>
 
               <div class="modules-grid" id="losModulesContainer">
                 @foreach($losModules as $module)
                 <div class="module-card">
-                  <div class="flex-grow">
+                  <div class="flex-grow"> 
                     <a href="{{ route('send.topic', ['slug' => $module->slug]) }}" style="color: revert; text-decoration: revert;">{{ $module->title }}</a>
                   </div>
                   <div class="mt-auto text-center">
